@@ -4,8 +4,8 @@ module Matsuri
       include Matsuri::Task
 
       let(:etcd_name)          { 'etcd' }
-      let(:master_name)        { 'k8s_master' }
-      let(:service_proxy_name) { 'k8s_proxy' }
+      let(:master_name)        { 'kubernetes_master' }
+      let(:service_proxy_name) { 'kubernetes_proxy' }
 
       def up!
         docker_run! etcd

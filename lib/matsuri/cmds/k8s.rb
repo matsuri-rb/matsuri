@@ -16,6 +16,11 @@ module Matsuri
         Matsuri::Tasks::Docker.new(final_options).kill_all!
       end
 
+      desc 'fix_pts', 'fixes pts after booting'
+      def fix_pts
+        Matsuri::Tasks::Docker.new(final_options).fix_pts!
+      end
+
       private
       def final_options
         options.merge(parent_options)
