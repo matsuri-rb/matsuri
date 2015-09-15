@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+BASE_PATH=File.expand_path(File.join(File.dirname(__FILE__), '..'))
+$:.unshift File.join(BASE_PATH, 'lib')
+
+SHELLOUT_DEFAULTS = { cwd: BASE_PATH }
+
+# Flush stdout to keep Jenkins updated
+STDOUT.sync = true
+
+require 'matsuri'
+require 'thor'
+require 'json'
+
+Matsuri::Cmds::Cli.start(ARGV)
