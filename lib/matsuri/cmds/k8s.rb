@@ -1,30 +1,36 @@
 module Matsuri
   module Cmds
     class K8s < Thor
+      include Matsuri::Cmd
+
       desc 'boot', 'boot up Kubernetes'
       def boot
-        Matsuri::Tasks::Kubernetes.new(final_options).up!
+        with_config do |opt|
+          Matsuri::Tasks::Kubernetes.new(opt).up!
+        end
       end
 
       desc 'kill', 'kill Kubernetes'
       def kill
-        Matsuri::Tasks::Kubernetes.new(final_options).down!
+        with_config do |opt|
+          Matsuri::Tasks::Kubernetes.new(opt).down!
+        end
       end
 
       desc 'kill_all', 'kill all Docker containers'
       def kill_all
-        Matsuri::Tasks::Docker.new(final_options).kill_all!
+        with_config do |opt|
+          Matsuri::Tasks::Docker.new(opt).kill_all!
+        end
       end
 
       desc 'fix_pts', 'fixes pts after booting'
       def fix_pts
-        Matsuri::Tasks::Docker.new(final_options).fix_pts!
+        with_config do |opt|
+          Matsuri::Tasks::Docker.new(opt).fix_pts!
+        end
       end
 
-      private
-      def final_options
-        options.merge(parent_options)
-      end
     end
   end
 end

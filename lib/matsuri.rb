@@ -1,6 +1,8 @@
 module Matsuri
+  autoload :Config,   'matsuri/config'
   autoload :ShellOut, 'matsuri/shell_out'
   autoload :Task,     'matsuri/task'
+  autoload :Cmd,      'matsuri/cmd'
 
   module Cmds
     autoload :Cli,    'matsuri/cmds/cli'

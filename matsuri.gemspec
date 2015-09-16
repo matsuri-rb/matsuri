@@ -20,6 +20,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'thor'
   spec.add_dependency 'mixlib-shellout'
+  spec.add_dependency 'mixlib-config'
   spec.add_dependency 'rlet', '~> 0.7.0'
 
   spec.add_development_dependency "bundler", "~> 1.10"

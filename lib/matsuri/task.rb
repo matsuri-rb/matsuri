@@ -10,8 +10,9 @@ module Matsuri
       include RLet::LazyOptions
       include Matsuri::ShellOut
 
-      let(:verbose) { options[:verbose] }
-      let(:debug)   { options[:debug] }
+      let(:verbose) { options[:verbose] || config.verbose }
+      let(:debug)   { options[:debug]   || config.debug }
+      let(:config)  { Matsuri::Config }
     end
   end
 end
