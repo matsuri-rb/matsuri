@@ -26,7 +26,7 @@ module Matsuri
     default :master_url,       'http://127.0.0.1:8080'
 
     # Platform paths
-    default(:config_path)   { File.join base_path, 'config', 'config.rb' }
+    default(:config_path)   { File.join base_path, 'config' }
     default(:secrets_path)  { File.join config_path, 'secrets' }
     default(:build_path)    { File.join base_path, 'build' }
     default(:docker_path)   { File.join base_path, 'docker' }
@@ -35,6 +35,7 @@ module Matsuri
     default(:platform_path) { File.join base_path, 'platform' }
     default(:images_path)   { File.join platform_path, 'images' }
     default(:pods_path)     { File.join platform_path, 'pods' }
+    default(:rc_path)       { File.join platform_path, 'replication_controllers' }
     default(:services_path) { File.join platform_path, 'services' }
 
     default :manifests_path, '/etc/kubernetes/manifests'
