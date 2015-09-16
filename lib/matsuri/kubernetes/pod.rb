@@ -4,6 +4,7 @@ module Matsuri
       let(:kind) { 'Pod' }
 
       # Overridables
+      let(:metadata) { { labels: labels } }
       let(:spec) do
         {
           containers: containers,
@@ -11,8 +12,12 @@ module Matsuri
         }
       end
 
-      let(:containers) { [ container ] }
-      let(:volumes)    { [ volume ] }
+      let(:containers) { [container] }
+      let(:volumes)    { [volume] }
+
+      let(:labels)     { { } }
+      let(:container)  { fail NotImplementedError, 'Must define let(:container)'}
+      let(:volume)     { fail NotImplementedError, 'Must define let(:volume)' }
 
       # Helper methods
       def config_file(path)
