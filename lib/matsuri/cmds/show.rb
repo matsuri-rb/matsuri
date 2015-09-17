@@ -22,13 +22,25 @@ module Matsuri
       end
 
       desc 'pod POD_NAME', 'show manifest for pod'
-      def pod(pod_name)
+      def pod(name)
         with_config do |_|
-          pod = Matsuri::Registry.pod(pod_name).new
+          pod = Matsuri::Registry.pod(name).new
           if options[:json]
             puts pod.pretty_print
           else
             puts pod.to_yaml
+          end
+        end
+      end
+
+      desc 'service SERVICE_NAME', 'show manifest for service'
+      def service(name)
+        with_config do |_|
+          service = Matsuri::Registry.service(name).new
+          if options[:json]
+            puts service.pretty_print
+          else
+            puts service.to_yaml
           end
         end
       end

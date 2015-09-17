@@ -78,8 +78,8 @@ module Matsuri
       def load_path_for(type)
         case type.to_s
         when 'pod'                    then Matsuri::Config.pods_path
-        when 'replication_controller' then Matsuri.rc_path
-        when 'service'                then Matsuri.services_path
+        when 'replication_controller' then Matsuri::Config.rcs_path
+        when 'service'                then Matsuri::Config.services_path
         else
           fail ArgumentError, "Unknown Kubernetes type #{type}"
         end
@@ -93,7 +93,7 @@ module Matsuri
         case type.to_s
         when 'pod'                    then maybe_define_module('Pods')
         when 'replication_controller' then maybe_define_module('ReplicationControllers')
-        when 'services'               then maybe_define_module('Services')
+        when 'service'                then maybe_define_module('Services')
         else
           fail ArgumentError, "Unknown Kubernetes type #{type}"
         end

@@ -35,7 +35,7 @@ module Matsuri
     default(:platform_path) { File.join base_path, 'platform' }
     default(:images_path)   { File.join platform_path, 'images' }
     default(:pods_path)     { File.join platform_path, 'pods' }
-    default(:rc_path)       { File.join platform_path, 'replication_controllers' }
+    default(:rcs_path)      { File.join platform_path, 'replication_controllers' }
     default(:services_path) { File.join platform_path, 'services' }
 
     default :manifests_path, '/etc/kubernetes/manifests'

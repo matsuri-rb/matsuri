@@ -33,12 +33,12 @@ module Matsuri
         fail NotImplementedError, 'Must implement #build!'
       end
 
-      def up!
-        fail NotImplementedError, 'Must implement #up!'
+      def start!
+        fail NotImplementedError, 'Must implement #start!'
       end
 
-      def down!
-        fail NotImplementedError, 'Must implement #down!'
+      def stop!
+        fail NotImplementedError, 'Must implement #stop!'
       end
 
       def reload!
