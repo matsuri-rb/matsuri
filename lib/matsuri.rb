@@ -16,6 +16,9 @@ module Matsuri
     autoload :Cli,    'matsuri/cmds/cli'
     autoload :K8s,    'matsuri/cmds/k8s'
     autoload :Show,   'matsuri/cmds/show'
+    autoload :Start,  'matsuri/cmds/start'
+    autoload :Reload, 'matsuri/cmds/reload'
+    autoload :Stop,   'matsuri/cmds/stop'
   end
 
   module Tasks

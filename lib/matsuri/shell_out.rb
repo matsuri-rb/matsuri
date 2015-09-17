@@ -6,7 +6,11 @@ module Matsuri
 
     # Override
     def verbose
-      false
+      Matsuri::Config.verbose
+    end
+
+    def debug
+      Matsuri::Config.debug
     end
 
     def shell_out(_cmd, options = {})

@@ -7,11 +7,12 @@ module Matsuri
   module Kubernetes
     class Base
       include Let
+      include Matsuri::ShellOut
 
       # Kubernetes manifest
       let(:manifest) do
         {
-          api_version: api_version,
+          apiVersion:  api_version,
           kind:        kind,
           metadata:    final_metadata,
           spec:        spec
