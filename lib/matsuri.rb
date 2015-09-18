@@ -10,6 +10,11 @@ module Matsuri
     autoload :Pod,                   'matsuri/kubernetes/pod'
     autoload :ReplicationController, 'matsuri/kubernetes/replication_controller'
     autoload :Service,               'matsuri/kubernetes/service'
+    autoload :Endpoints,             'matsuri/kubernetes/endpoints'
+  end
+
+  module AddOns
+    autoload :DNS, 'matsuri/add_ons/dns'
   end
 
   module Cmds

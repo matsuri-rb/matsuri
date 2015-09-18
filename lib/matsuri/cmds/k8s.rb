@@ -3,6 +3,13 @@ module Matsuri
     class K8s < Thor
       include Matsuri::Cmd
 
+      desc 'generate_setup', 'generate setup script for etcd and flanneld'
+      def generate_setup
+        with_config do |opt|
+          Matsuri::Tasks::Kubernetes.new(opt).generate_setup!
+        end
+      end
+
       desc 'boot', 'boot up Kubernetes'
       def boot
         with_config do |opt|
@@ -24,7 +31,7 @@ module Matsuri
         end
       end
 
-      desc 'fix_pts', 'fixes pts after booting'
+      desc 'fix_pts', 'fixes pts after booting. sudo required'
       def fix_pts
         with_config do |opt|
           Matsuri::Tasks::Docker.new(opt).fix_pts!

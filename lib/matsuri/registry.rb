@@ -5,7 +5,7 @@ require 'active_support/core_ext/string/inflections'
 module Matsuri
   class Registry
     include Singleton
-    VALID_TYPES = %w(pod replication_controller service).freeze
+    VALID_TYPES = %w(pod replication_controller service endpoints).freeze
 
     def data
       @data ||= Map.new
@@ -30,6 +30,7 @@ module Matsuri
                      when 'pod'                    then Matsuri::Kubernetes::Pod
                      when 'replication_controller' then Matsuri::Kubernetes::ReplicationController
                      when 'service'                then Matsuri::Kubernetes::Service
+                     when 'endpoints'              then Matsuri::Kubernetes::Endpoints
                      else
                        fail "Cannot find type #{type}"
                      end
@@ -53,8 +54,12 @@ module Matsuri
       end
 
       def fetch_or_load(type, name)
-        return if instance.data.get(type, name)
-        load_definition(type, name)
+        _type = normalize_and_validate_type(type)
+
+        resource = instance.data.get(_type, name)
+        return resource if resource
+
+        load_definition(_type, name)
       end
 
       def pod(name)
@@ -73,6 +78,10 @@ module Matsuri
         replication_controller(name)
       end
 
+      def endpoints(name)
+        fetch_or_load :endpoints, name
+      end
+
       private
 
       def load_path_for(type)
@@ -80,6 +89,7 @@ module Matsuri
         when 'pod'                    then Matsuri::Config.pods_path
         when 'replication_controller' then Matsuri::Config.rcs_path
         when 'service'                then Matsuri::Config.services_path
+        when 'endpoins'               then Matsuri::Config.endpoints_path
         else
           fail ArgumentError, "Unknown Kubernetes type #{type}"
         end
@@ -94,6 +104,7 @@ module Matsuri
         when 'pod'                    then maybe_define_module('Pods')
         when 'replication_controller' then maybe_define_module('ReplicationControllers')
         when 'service'                then maybe_define_module('Services')
+        when 'endpoints'              then maybe_define_module('Endpoints')
         else
           fail ArgumentError, "Unknown Kubernetes type #{type}"
         end

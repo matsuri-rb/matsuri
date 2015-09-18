@@ -5,7 +5,7 @@ module Matsuri
 
       def kill_all!
         docker! 'stop $(docker ps -a -q)'
-        docker! 'rm $(docker ps -a -q)'
+        docker! 'rm -f $(docker ps -a -q)'
       end
 
       def fix_pts!

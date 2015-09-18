@@ -19,8 +19,11 @@ module Matsuri
         }
       end
 
-      let(:final_metadata)    { default_metadata.merge(metadata) }
-      let(:default_metadata)  { { name: name } }
+      let(:final_metadata)   { default_metadata.merge(metadata) }
+      let(:default_metadata) { { name: name, namespace: namespace, labels: labels } }
+      let(:namespace)        { 'default' }
+      let(:resource_type)    { kind.to_s.downcase }
+      let(:labels)           { { } }
 
       # Overridables
       let(:api_version) { 'v1' }
@@ -34,15 +37,23 @@ module Matsuri
       end
 
       def start!
-        fail NotImplementedError, 'Must implement #start!'
+        puts to_json if config.verbose
+        shell_out! "kubectl --namespace=#{namespace} create -f -", input: to_json
       end
 
       def stop!
-        fail NotImplementedError, 'Must implement #stop!'
+        shell_out! "kubectl --namespace=#{namespace} delete #{resource_type}/#{name}"
       end
 
       def reload!
         fail NotImplementedError, 'Must implement #reload!'
+        puts to_json if config.verbose
+        shell_out! "kubectl replace -f -", input: to_json
+      end
+
+      def rebuild!
+        stop!
+        start!
       end
 
       # Helper functions
@@ -51,17 +62,21 @@ module Matsuri
       end
 
       def pod(name)
-        Matsuri::Registry.pod(name)
+        Matsuri::Registry.pod(name).new
       end
 
       def replication_controller(name)
-        Matsuri::Registry.replication_controller(name)
+        Matsuri::Registry.replication_controller(name).new
       end
 
       alias_method :rc, :replication_controller
 
       def service(name)
-        Matsuri::Registry.service(name)
+        Matsuri::Registry.service(name).new
+      end
+
+      def endpoints(name)
+        Matsuri::Registry.endpoints(name).new
       end
 
       # Transform functions

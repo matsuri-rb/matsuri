@@ -5,6 +5,13 @@ module Matsuri
 
       class_option :'no-deps', type: :boolean, default: false
 
+      desc 'dns', 'starts cluster dns'
+      def dns
+        with_config do |_|
+          Matsuri::AddOns::DNS.start!
+        end
+      end
+
       desc 'pod POD_NAME', 'start a pod'
       def pod(name)
         with_config do |opt|

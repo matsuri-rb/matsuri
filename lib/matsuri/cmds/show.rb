@@ -21,6 +21,13 @@ module Matsuri
         end
       end
 
+      desc 'dns', 'displays DNS Add On definition'
+      def dns
+        with_config do |opt|
+          Matsuri::AddOns::DNS.show!(opt)
+        end
+      end
+
       desc 'pod POD_NAME', 'show manifest for pod'
       def pod(name)
         with_config do |_|
