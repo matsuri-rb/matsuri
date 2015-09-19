@@ -17,8 +17,11 @@ module Matsuri
       desc 'start SUBCOMMAND ...ARGS', 'start resource'
       subcommand 'start', Matsuri::Cmds::Start
 
-      desc 'reload SUBCOMMAND ...ARGS', 'reload resource'
-      subcommand 'reload', Matsuri::Cmds::Reload
+      #desc 'reload SUBCOMMAND ...ARGS', 'reload resource'
+      #subcommand 'reload', Matsuri::Cmds::Reload
+
+      desc 'restart SUBCOMMAND ...ARGS', 'restart resource'
+      subcommand 'restart', Matsuri::Cmds::Restart
 
       desc 'stop SUBCOMMAND ...ARGS', 'stop resource'
       subcommand 'stop', Matsuri::Cmds::Stop

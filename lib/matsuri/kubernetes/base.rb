@@ -51,7 +51,7 @@ module Matsuri
         shell_out! "kubectl replace -f -", input: to_json
       end
 
-      def rebuild!
+      def restart!
         stop!
         start!
       end
