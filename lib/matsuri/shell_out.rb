@@ -1,4 +1,5 @@
 require 'mixlib/shellout'
+require 'rainbow/ext/string'
 
 module Matsuri
   module ShellOut
@@ -14,7 +15,7 @@ module Matsuri
     end
 
     def shell_out(_cmd, options = {})
-      puts "$ #{_cmd}" if verbose
+      puts "$ #{_cmd}".color(:green) if verbose
       no_stdout = options.delete(:no_stdout)
       options = SHELLOUT_DEFAULTS.merge(timeout: 3600).merge(options)
       cmd = Mixlib::ShellOut.new(_cmd, options)
@@ -26,7 +27,7 @@ module Matsuri
     def shell_out!(_cmd, options = {})
       cmd = shell_out(_cmd, options)
       return cmd if cmd.status.success?
-      $stderr.print "ERROR: #{cmd.exitstatus}\nSTDOUT:\n#{cmd.stdout}\n\nSTDERR:\n#{cmd.stderr}\n"
+      $stderr.print "ERROR: #{cmd.exitstatus}\nSTDOUT:\n#{cmd.stdout}\n\nSTDERR:\n#{cmd.stderr}\n".red.bright
       exit 1
     end
 

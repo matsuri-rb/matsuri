@@ -2,6 +2,7 @@ require 'rlet'
 require 'json'
 require 'yaml'
 require 'active_support/core_ext/hash/keys'
+require 'rainbow/ext/string'
 
 module Matsuri
   module Kubernetes
@@ -37,13 +38,13 @@ module Matsuri
       end
 
       def start!
-        puts "Starting #{resource_type}/#{name}" if config.verbose
+        puts "Starting #{resource_type}/#{name}".color(:yellow).bright if config.verbose
         puts to_json if config.debug
         shell_out! "kubectl --namespace=#{namespace} create -f -", input: to_json
       end
 
       def stop!
-        puts "Stopping #{resource_type}/#{name}" if config.verbose
+        puts "Stopping #{resource_type}/#{name}".color(:yellow).bright if config.verbose
         shell_out! "kubectl --namespace=#{namespace} delete #{resource_type}/#{name}"
       end
 
@@ -59,8 +60,8 @@ module Matsuri
       end
 
       def converge!(opts = {})
-        puts "Converging #{resource_type}/#{name}" if config.verbose
-        puts "Rebuild not implemented. Restarting instead." if opts[:rebuild]
+        puts "Converging #{resource_type}/#{name}".color(:yellow) if config.verbose
+        puts "Rebuild not implemented. Restarting instead.".color(:red).bright if opts[:rebuild]
 
         if opts[:restart] || opts[:rebuild]
           if started?
@@ -84,7 +85,7 @@ module Matsuri
                  else
                    "not started"
                  end
-        puts "#{resource_type}/#{name} #{status}"
+        puts "#{resource_type}/#{name} #{status}".color(:yellow)
         cmd.status.success?
       end
 

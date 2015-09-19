@@ -1,5 +1,7 @@
 require 'map'
 require 'active_support/core_ext/class/attribute'
+require 'rainbow/ext/string'
+
 module Matsuri
   class App
     include Let
@@ -57,11 +59,11 @@ module Matsuri
     end
 
     def converge!(opts = {})
-      puts "Converging #{name}" if config.verbose
+      puts "Converging #{name}".color(:red).bright if config.verbose
       self.class.build_order.each do |(type, name)|
         resource = dep(type, name).new
         if type == :app && !opts[:reboot]
-          puts "Shallow converging app #{name}" if config.verbose
+          puts "Shallow converging app #{name}".color(:red).bright if config.verbose
           resource.converge!
         else
           resource.converge!(opts)
