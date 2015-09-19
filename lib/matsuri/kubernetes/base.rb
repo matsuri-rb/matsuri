@@ -61,13 +61,30 @@ module Matsuri
       def converge!(opts = {})
         puts "Converging #{resource_type}/#{name}" if config.verbose
         puts "Rebuild not implemented. Restarting instead." if opts[:rebuild]
-        start! and return unless started? && !(opts[:restart] || opts[:rebuild])
-        restart!
+
+        if opts[:restart] || opts[:rebuild]
+          if started?
+            restart!
+          else
+            start!
+          end
+        else
+          start! unless started?
+        end
+
       end
 
       # Helper functions
       def started?
-        cmd = shell_out "kubectl --namespace=#{namespace} get #{resource_type}/#{name}"
+        cmd = shell_out "kubectl --namespace=#{namespace} get #{resource_type}/#{name}", no_stdout: true
+        return cmd.status.success? unless config.verbose
+
+        status = if cmd.status.success?
+                   "already started"
+                 else
+                   "not started"
+                 end
+        puts "#{resource_type}/#{name} #{status}"
         cmd.status.success?
       end
 
