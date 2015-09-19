@@ -37,11 +37,13 @@ module Matsuri
       end
 
       def start!
-        puts to_json if config.verbose
+        puts "Starting #{resource_type}/#{name}" if config.verbose
+        puts to_json if config.debug
         shell_out! "kubectl --namespace=#{namespace} create -f -", input: to_json
       end
 
       def stop!
+        puts "Stopping #{resource_type}/#{name}" if config.verbose
         shell_out! "kubectl --namespace=#{namespace} delete #{resource_type}/#{name}"
       end
 
@@ -56,7 +58,19 @@ module Matsuri
         start!
       end
 
+      def converge!(opts = {})
+        puts "Converging #{resource_type}/#{name}" if config.verbose
+        puts "Rebuild not implemented. Restarting instead." if opts[:rebuild]
+        start! and return unless started? && !(opts[:restart] || opts[:rebuild])
+        restart!
+      end
+
       # Helper functions
+      def started?
+        cmd = shell_out "kubectl --namespace=#{namespace} get #{resource_type}/#{name}"
+        cmd.status.success?
+      end
+
       def config
         Matsuri::Config
       end

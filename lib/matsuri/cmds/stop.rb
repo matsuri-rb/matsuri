@@ -23,6 +23,15 @@ module Matsuri
           Matsuri::Registry.service(name).new.stop!
         end
       end
+
+      desc 'app APP_NAME', 'stops all resources in an app'
+      def app(name)
+        with_config do |_|
+          Matsuri::Registry.app(name).new.stop!
+        end
+      end
+
+
     end
   end
 end

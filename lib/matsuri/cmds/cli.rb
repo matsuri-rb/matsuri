@@ -14,17 +14,41 @@ module Matsuri
       desc 'show SUBCOMMAND ...ARGS', 'show resource'
       subcommand 'show', Matsuri::Cmds::Show
 
+      desc 'build', 'Not Implementd'
+      def build
+        puts "Build not implemented yet"
+        exit (1)
+      end
+
       desc 'start SUBCOMMAND ...ARGS', 'start resource'
       subcommand 'start', Matsuri::Cmds::Start
 
       #desc 'reload SUBCOMMAND ...ARGS', 'reload resource'
       #subcommand 'reload', Matsuri::Cmds::Reload
+      desc 'reload', 'Not Implementd'
+      def reload
+        puts "Reload not implemented yet"
+        exit (1)
+      end
+
+      desc 'rebuild', 'Not Implementd'
+      def rebuild
+        puts "Rebuild not implemented yet"
+        exit (1)
+      end
 
       desc 'restart SUBCOMMAND ...ARGS', 'restart resource'
       subcommand 'restart', Matsuri::Cmds::Restart
 
       desc 'stop SUBCOMMAND ...ARGS', 'stop resource'
       subcommand 'stop', Matsuri::Cmds::Stop
+
+      desc 'converge APP_NAME', 'Idempotently converges an app and all dependencies'
+      def converge(name)
+        with_config do |opt|
+          Matsuri::Registry.app(name).new.converge!(opt)
+        end
+      end
     end
   end
 end

@@ -1,9 +1,11 @@
 module Matsuri
   autoload :Config,   'matsuri/config'
   autoload :ShellOut, 'matsuri/shell_out'
+  autoload :Registry, 'matsuri/registry'
+
   autoload :Task,     'matsuri/task'
   autoload :Cmd,      'matsuri/cmd'
-  autoload :Registry, 'matsuri/registry'
+  autoload :App,      'matsuri/app'
 
   module Kubernetes
     autoload :Base,                  'matsuri/kubernetes/base'
