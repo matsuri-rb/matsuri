@@ -31,7 +31,6 @@ module Matsuri
         end
       end
 
-
     end
   end
 end

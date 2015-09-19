@@ -7,7 +7,7 @@ module Matsuri
       let(:spec) do
         {
           containers: containers,
-          volumes:    volumes
+          volumes:    volumes,
         }
       end
 
@@ -20,6 +20,19 @@ module Matsuri
       # Helper methods
       def config_file(path)
         File.join config.config_path, path
+      end
+
+      def src_path(path)
+        File.join config.src_path, path
+      end
+
+      def base_path(path)
+        File.join config.base_path, path
+      end
+
+      # Ruby 2.0+ uses ordered hashes
+      def expand_env(hash)
+        hash.map { |k,v| { name: k, value: v } }
       end
 
       def port(num, protocol: 'TCP', name: nil)

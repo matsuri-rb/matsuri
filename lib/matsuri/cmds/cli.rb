@@ -14,10 +14,16 @@ module Matsuri
       desc 'show SUBCOMMAND ...ARGS', 'show resource'
       subcommand 'show', Matsuri::Cmds::Show
 
-      desc 'build', 'Not Implementd'
-      def build
-        puts "Build not implemented yet"
+      desc 'build APP_NAME', 'builds an app'
+      def build(name)
+        # Build is problematic, running make files. It's not
+        # entirely necessary, so will implement this later if
+        # there is enough demand for it.
+        puts "build not implemented yet"
         exit (1)
+        with_config do |opt|
+          Matsuri::Registry.app(name).new.build!(opt)
+        end
       end
 
       desc 'start SUBCOMMAND ...ARGS', 'start resource'
@@ -44,6 +50,7 @@ module Matsuri
       subcommand 'stop', Matsuri::Cmds::Stop
 
       desc 'converge APP_NAME', 'Idempotently converges an app and all dependencies'
+      option :restart, type: :boolean, default: false
       def converge(name)
         with_config do |opt|
           Matsuri::Registry.app(name).new.converge!(opt)

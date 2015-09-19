@@ -31,7 +31,7 @@ module Matsuri
                      when 'replication_controller' then Matsuri::Kubernetes::ReplicationController
                      when 'service'                then Matsuri::Kubernetes::Service
                      when 'endpoints'              then Matsuri::Kubernetes::Endpoints
-                     when 'app'                  then Matsuri::App
+                     when 'app'                    then Matsuri::App
                      else
                        fail "Cannot find type #{type}"
                      end
@@ -118,7 +118,8 @@ module Matsuri
       end
 
       def maybe_define_module(mod)
-        Object.const_set(mod, Module.new) unless Object.const_defined?(mod)
+        return Object.const_get(mod) if Object.const_defined?(mod)
+        Object.const_set(mod, Module.new)
       end
 
       def normalize_and_validate_type(type)

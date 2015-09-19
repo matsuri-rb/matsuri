@@ -36,7 +36,7 @@ module Matsuri
     default(:secrets_path)   { File.join config_path, 'secrets' }
     default(:build_path)     { File.join base_path, 'build' }
     default(:docker_path)    { File.join base_path, 'docker' }
-    default(:source_path)    { File.join base_path, 'src' }
+    default(:src_path)       { File.join base_path, 'src' }
     default(:lib_path)       { File.join base_path, 'lib' }
     default(:platform_path)  { File.join base_path, 'platform' }
     default(:images_path)    { File.join platform_path, 'images' }
