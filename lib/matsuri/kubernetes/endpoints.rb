@@ -12,15 +12,19 @@ module Matsuri
       end
 
       # Overridables
-      let(:subsets) do
+      let(:subsets) { [subset] }
+      let(:subset) do
         {
           addresses: addresses,
           ports: ports
         }
       end
 
-      let(:addresses)         { [address] }
-      let(:address)           { { IP: public_ip_address } }
+      let(:addresses)         { [localhost, address] }
+      let(:localhost)         { { ip: '127.0.0.1' } }
+      let(:address)           { { ip: public_ip_address, targetRef: target_ref } }
+      let(:target_ref)        { fail NotImplementedError, 'Must define let(:target_ref)' }
+
       let(:ports)             { [port(port_num)] }
       let(:public_ip_address) { config.dev_addr }
       let(:port_num)          { fail NotImplementedError, 'Must define let(:port_num)' }

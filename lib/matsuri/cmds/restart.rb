@@ -19,6 +19,12 @@ module Matsuri
         end
       end
 
+      desc 'endpoints ENDPOINTS_NAME', 'restart an endpoint set'
+      def endpoints(name)
+        with_config do |opt|
+          Matsuri::Registry.endpoints(name).new.restart!
+        end
+      end
     end
   end
 end

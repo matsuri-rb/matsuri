@@ -24,6 +24,13 @@ module Matsuri
         end
       end
 
+      desc 'endpoints ENDPOINTS_NAME', 'stop an endpoint set'
+      def endpoints(name)
+        with_config do |_|
+          Matsuri::Registry.endpoints(name).new.stop!
+        end
+      end
+
       desc 'app APP_NAME', 'stops all resources in an app'
       def app(name)
         with_config do |_|

@@ -52,6 +52,18 @@ module Matsuri
         end
       end
 
+      desc 'endpoints ENDPOINT_NAME', 'show manifest for endpoints'
+      def endpoints(name)
+        with_config do |_|
+          endpoints = Matsuri::Registry.endpoints(name).new
+          if options[:json]
+            puts endpoints.pretty_print
+          else
+            puts endpoints.to_yaml
+          end
+        end
+      end
+
     end
   end
 end

@@ -26,6 +26,13 @@ module Matsuri
         end
       end
 
+      desc 'endpoints ENDPOINTS_NAME', 'start an endpoint set'
+      def endpoints(name)
+        with_config do |opt|
+          Matsuri::Registry.endpoints(name).new.start!
+        end
+      end
+
     end
   end
 end
