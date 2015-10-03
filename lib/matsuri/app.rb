@@ -43,7 +43,11 @@ module Matsuri
     # Override this. This command defines how all app dependencies are stopped
     def stop!
       self.class.build_order.each do |(type, name)|
-        puts "Skipping app #{name}" and next if type == :app
+        if type == :app
+          puts "Skipping app #{name}"
+          next
+        end
+
         dep(type, name).new.stop!
       end
     end

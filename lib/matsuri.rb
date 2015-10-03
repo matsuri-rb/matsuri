@@ -35,7 +35,7 @@ module Matsuri
     autoload :Pod,        'matsuri/tasks/pod'
   end
 
-  def self.define(type, name, &blk)
-    Matsuri::Registry.define type, name, &blk
+  def self.define(*args, &blk)
+    Matsuri::Registry.define(*args, &blk)
   end
 end

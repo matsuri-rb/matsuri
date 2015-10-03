@@ -41,8 +41,8 @@ module Matsuri
         return _port
       end
 
-      def mount(name, path)
-        { name: name, mountPath: path }
+      def mount(name, path, read_only: false)
+        { name: name, mountPath: path, readOnly: read_only }
       end
 
       def host_path_volume(name, host_path)

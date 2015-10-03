@@ -25,17 +25,9 @@ module Matsuri
       end
 
       # Helper to generate Kubernetes artifact definitions
-      def define(type, name, &blk)
-        klass_type = case normalize_and_validate_type(type)
-                     when 'pod'                    then Matsuri::Kubernetes::Pod
-                     when 'replication_controller' then Matsuri::Kubernetes::ReplicationController
-                     when 'service'                then Matsuri::Kubernetes::Service
-                     when 'endpoints'              then Matsuri::Kubernetes::Endpoints
-                     when 'app'                    then Matsuri::App
-                     else
-                       fail "Cannot find type #{type}"
-                     end
-        klass = Class.new(klass_type)
+      def define(type, name, inherits: nil, &blk)
+        parent_klass = parent_class(type, inherits)
+        klass = Class.new(parent_klass)
         module_for(type).const_set(class_name_for(name), klass)
         klass.class_eval do
           let(:name) { name }
@@ -88,6 +80,19 @@ module Matsuri
       end
 
       private
+
+      def parent_class(type, parent_name)
+        return fetch_or_load(type, parent_name) if parent_name
+        case normalize_and_validate_type(type)
+        when 'pod'                    then Matsuri::Kubernetes::Pod
+        when 'replication_controller' then Matsuri::Kubernetes::ReplicationController
+        when 'service'                then Matsuri::Kubernetes::Service
+        when 'endpoints'              then Matsuri::Kubernetes::Endpoints
+        when 'app'                    then Matsuri::App
+        else
+          fail "Cannot find type #{type}"
+        end
+      end
 
       def load_path_for(type)
         case type.to_s
