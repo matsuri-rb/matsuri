@@ -35,12 +35,17 @@ module Matsuri
       exit 1
     end
 
+    # This is so that it is easier to write app commands
+    def kubectl_cmd(_cmd)
+      "kubectl --context=#{kube_environment} #{_cmd}"
+    end
+
     def kubectl(_cmd, options = {})
-      shell_out("kubectl --context=#{kube_environment} #{_cmd}", options)
+      shell_out(kubectl_cmd(_cmd), options)
     end
 
     def kubectl!(_cmd, options = {})
-      shell_out!("kubectl --context=#{kube_environment} #{_cmd}", options)
+      shell_out!(kubectl_cmd(_cmd), options)
     end
 
     def docker(_cmd, options = {})

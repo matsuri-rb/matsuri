@@ -57,6 +57,15 @@ module Matsuri
           Matsuri::Registry.app(name).new.converge!(opt)
         end
       end
+
+      desc 'console APP_NAME', 'Shells into an app container'
+      option :root, type: :boolean, default: false
+      option :user, type: :string
+      def console(name, *args)
+        with_config do |opt|
+          Matsuri::Registry.app(name).new.console!(opt, args)
+        end
+      end
     end
   end
 end
