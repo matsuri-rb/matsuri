@@ -4,9 +4,10 @@ module Matsuri
     class Cli < Thor
       include Matsuri::Cmd
 
-      class_option :config,  aliases: :c, type: :string,  default: File.join(ENV['PWD'], 'config', 'matsuri.rb')
+      class_option :config,  aliases: :c, type: :string, default: File.join(ENV['PWD'], 'config', 'matsuri.rb')
       class_option :verbose, aliases: :v, type: :boolean
       class_option :debug,                type: :boolean
+      class_option :environment, aliases: :e, type: :boolean, default: ENV['MATSURI_ENVIRONMENT']
 
       desc "k8s SUBCOMMAND ...ARGS", "manage Kubernetes"
       subcommand 'k8s', Matsuri::Cmds::K8s
