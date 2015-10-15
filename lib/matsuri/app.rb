@@ -76,8 +76,12 @@ module Matsuri
     end
 
     # Hooks
-    def console!(opt, args)
+    def sh!(opt, args)
       Matsuri.log :fatal, "I don't know how to shell into #{name}. Define me at in the app config."
+    end
+
+    def console!(opt, args)
+      Matsuri.log :fatal, "I don't know how to get to the console for #{name}. Define me at in the app config."
     end
 
     # Helper functions
