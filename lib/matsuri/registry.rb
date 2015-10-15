@@ -28,11 +28,11 @@ module Matsuri
         def_file     = "#{name}.rb"
         env_def_path = File.join(load_path, Matsuri.environment, def_file)
         return env_def_path if File.file?(env_def_path)
-        Matsuri.log :info, "Unable to find #{env_def_path} ... trying global definition"
+        Matsuri.log :debug, "Unable to find #{env_def_path} ... trying global definition"
 
         def_path = File.join(load_path, def_file)
         return def_path if File.file?(def_path)
-        Matsuri.log :fatal, "Unable to find #{def_path}"
+        Matsuri.log :fatal, "Unable to find #{env_def_path} or #{def_path}"
       end
 
       # Helper to generate Kubernetes artifact definitions
