@@ -14,14 +14,25 @@ module Matsuri
     class << self
       # Helper to load class definitions
       def load_definition(type, name)
-        definition_path = File.join(load_path_for(type), "#{name}.rb")
-        fail "Unable to load #{type} #{name} at #{definition_path}" unless File.file?(definition_path)
+        def_path = definition_path(type, name)
 
-        eval(File.read(definition_path), TOPLEVEL_BINDING, definition_path)
+        eval(File.read(def_path), TOPLEVEL_BINDING, def_path)
         _klass = instance.data.get(type, name)
         return _klass if _klass
 
-        fail "Unable to find #{type}/#{name} in #{definition_path}"
+        Matsuri.log :fatal, "Unable to find #{type}/#{name} defined in #{def_path}"
+      end
+
+      def definition_path(type, name)
+        load_path    = load_path_for(type)
+        def_file     = "#{name}.rb"
+        env_def_path = File.join(load_path, Matsuri.environment, def_file)
+        return env_def_path if File.file?(env_def_path)
+        Matsuri.log :info, "Unable to find #{env_def_path} ... trying global definition"
+
+        def_path = File.join(load_path, def_file)
+        return def_path if File.file?(def_path)
+        Matsuri.log :fatal, "Unable to find #{def_path}"
       end
 
       # Helper to generate Kubernetes artifact definitions

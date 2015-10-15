@@ -12,6 +12,7 @@ module Matsuri
     default :base_path, ENV['PWD']
     default :verbose, false
     default :debug, false
+    default :environment, 'dev'
 
     # Container Image Versions
     default :etcd_version,      nil # 2.0.12

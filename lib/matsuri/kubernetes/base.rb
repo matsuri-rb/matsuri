@@ -40,18 +40,18 @@ module Matsuri
       def start!
         puts "Starting #{resource_type}/#{name}".color(:yellow).bright if config.verbose
         puts to_json if config.debug
-        shell_out! "kubectl --namespace=#{namespace} create -f -", input: to_json
+        kubectl! "--namespace=#{namespace} create -f -", input: to_json
       end
 
       def stop!
         puts "Stopping #{resource_type}/#{name}".color(:yellow).bright if config.verbose
-        shell_out! "kubectl --namespace=#{namespace} delete #{resource_type}/#{name}"
+        kubectl! "--namespace=#{namespace} delete #{resource_type}/#{name}"
       end
 
       def reload!
         fail NotImplementedError, 'Must implement #reload!'
         puts to_json if config.verbose
-        shell_out! "kubectl replace -f -", input: to_json
+        kubectl! "replace -f -", input: to_json
       end
 
       def restart!
@@ -77,7 +77,7 @@ module Matsuri
 
       # Helper functions
       def started?
-        cmd = shell_out "kubectl --namespace=#{namespace} get #{resource_type}/#{name}", no_stdout: true
+        cmd = kubectl "--namespace=#{namespace} get #{resource_type}/#{name}", no_stdout: true
         return cmd.status.success? unless config.verbose
 
         status = if cmd.status.success?

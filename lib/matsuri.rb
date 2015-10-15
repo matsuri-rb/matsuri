@@ -38,4 +38,19 @@ module Matsuri
   def self.define(*args, &blk)
     Matsuri::Registry.define(*args, &blk)
   end
+
+  def self.environment
+    Matsuri::Config.environment
+  end
+
+  def self.log(level, message)
+    case level
+    when :fatal then
+      puts message
+      exit(1)
+    when :error, :warn then puts message
+    when :info         then puts message if Matsuri::Config.verbose
+    when :debug        then puts message if Matsuri::Config.debug
+    end
+  end
 end

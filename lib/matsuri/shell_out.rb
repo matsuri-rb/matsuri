@@ -14,6 +14,10 @@ module Matsuri
       Matsuri::Config.debug
     end
 
+    def kube_environment
+      Matsuri::Config.environment
+    end
+
     def shell_out(_cmd, options = {})
       puts "$ #{_cmd}".color(:green) if verbose
       no_stdout = options.delete(:no_stdout)
@@ -29,6 +33,14 @@ module Matsuri
       return cmd if cmd.status.success?
       $stderr.print "ERROR: #{cmd.exitstatus}\nSTDOUT:\n#{cmd.stdout}\n\nSTDERR:\n#{cmd.stderr}\n".red.bright
       exit 1
+    end
+
+    def kubectl(_cmd, options = {})
+      shell_out("kubectl --context=#{kube_environment} #{_cmd}", options)
+    end
+
+    def kubectl!(_cmd, options = {})
+      shell_out!("kubectl --context=#{kube_environment} #{_cmd}", options)
     end
 
     def docker(_cmd, options = {})
