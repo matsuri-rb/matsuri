@@ -1,3 +1,5 @@
+require 'active_support/concern'
+
 module Matsuri
   autoload :Config,   'matsuri/config'
   autoload :ShellOut, 'matsuri/shell_out'
