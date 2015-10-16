@@ -64,6 +64,18 @@ module Matsuri
         end
       end
 
+      desc 'secret SECRET_NAME', 'show a secret'
+      def secret(name)
+        with_config do |opt|
+          secret = Matsuri::Registry.secret(name).new
+          if options[:json]
+            puts secret.pretty_print
+          else
+            puts secret.to_yaml
+          end
+        end
+      end
+
     end
   end
 end

@@ -33,6 +33,12 @@ module Matsuri
         end
       end
 
+      desc 'secret SECRET_NAME', 'upload a secret'
+      def secret(name)
+        with_config do |opt|
+          Matsuri::Registry.secret(name).new.start!
+        end
+      end
     end
   end
 end

@@ -5,7 +5,7 @@ require 'active_support/core_ext/string/inflections'
 module Matsuri
   class Registry
     include Singleton
-    VALID_TYPES = %w(pod replication_controller service endpoints app).freeze
+    VALID_TYPES = %w(pod replication_controller service endpoints secret app).freeze
 
     def data
       @data ||= Map.new
@@ -86,6 +86,10 @@ module Matsuri
         fetch_or_load :endpoints, name
       end
 
+      def secret(name)
+        fetch_or_load :secret, name
+      end
+
       def app(name)
         fetch_or_load :app, name
       end
@@ -99,6 +103,7 @@ module Matsuri
         when 'replication_controller' then Matsuri::Kubernetes::ReplicationController
         when 'service'                then Matsuri::Kubernetes::Service
         when 'endpoints'              then Matsuri::Kubernetes::Endpoints
+        when 'secret'                 then Matsuri::Kubernetes::Secret
         when 'app'                    then Matsuri::App
         else
           fail "Cannot find type #{type}"
@@ -111,6 +116,7 @@ module Matsuri
         when 'replication_controller' then Matsuri::Config.rcs_path
         when 'service'                then Matsuri::Config.services_path
         when 'endpoints'              then Matsuri::Config.endpoints_path
+        when 'secret'                then Matsuri::Config.secrets_path
         when 'app'                    then Matsuri::Config.apps_path
         else
           fail ArgumentError, "Unknown Matsuri type #{type}"
@@ -127,6 +133,7 @@ module Matsuri
         when 'replication_controller' then maybe_define_module('ReplicationControllers')
         when 'service'                then maybe_define_module('Services')
         when 'endpoints'              then maybe_define_module('Endpoints')
+        when 'secret'                then maybe_define_module('Secrets')
         when 'app'                    then maybe_define_module('Apps')
         else
           fail ArgumentError, "Unknown Matsuri type #{type}"

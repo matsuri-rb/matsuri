@@ -8,11 +8,13 @@ module Matsuri
         {
           containers: containers,
           volumes:    volumes,
+          imagePullSecrets: image_pull_secrets
         }
       end
 
-      let(:containers) { [container] }
-      let(:volumes)    { [volume] }
+      let(:containers)         { [container] }
+      let(:volumes)            { [volume] }
+      let(:image_pull_secrets) { [] }
 
       let(:container)  { fail NotImplementedError, 'Must define let(:container)'}
       let(:volume)     { fail NotImplementedError, 'Must define let(:volume)' }

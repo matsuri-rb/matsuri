@@ -38,6 +38,13 @@ module Matsuri
         end
       end
 
+      desc 'secret SECRET_NAME', 'delete a secret'
+      def secret(name)
+        with_config do |opt|
+          Matsuri::Registry.secret(name).new.stop!
+        end
+      end
+
     end
   end
 end

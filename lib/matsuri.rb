@@ -15,6 +15,7 @@ module Matsuri
     autoload :ReplicationController, 'matsuri/kubernetes/replication_controller'
     autoload :Service,               'matsuri/kubernetes/service'
     autoload :Endpoints,             'matsuri/kubernetes/endpoints'
+    autoload :Secret,                'matsuri/kubernetes/secret'
   end
 
   module AddOns
@@ -43,6 +44,18 @@ module Matsuri
 
   def self.environment
     Matsuri::Config.environment
+  end
+
+  def self.dev?
+    Matsuri::Config.environment == 'dev'
+  end
+
+  def self.staging?
+    Matsuri::Config.environment == 'staging'
+  end
+
+  def self.production?
+    Matsuri::Config.environment == 'production'
   end
 
   def self.log(level, message)

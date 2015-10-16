@@ -33,8 +33,9 @@ module Matsuri
     default :cluster_domain,   'dev.local'
 
     # Platform paths
-    default(:config_path)    { File.join base_path, 'config' }
-    default(:secrets_path)   { File.join config_path, 'secrets' }
+    default(:config_path)           { File.join base_path, 'config' }
+    default(:config_secrets_path)   { File.join config_path, 'secrets' } # Actual secrets themselves, should not be versioned
+
     default(:build_path)     { File.join base_path, 'build' }
     default(:docker_path)    { File.join base_path, 'docker' }
     default(:src_path)       { File.join base_path, 'src' }
@@ -46,6 +47,7 @@ module Matsuri
     default(:services_path)  { File.join platform_path, 'services' }
     default(:endpoints_path) { File.join platform_path, 'endpoints' }
     default(:apps_path)      { File.join platform_path, 'apps' }
+    default(:secrets_path)   { File.join platform_path, 'secrets' } # Kubernetes Secret definition, not the actual secrets
 
     default :manifests_path, '/etc/kubernetes/manifests'
 
