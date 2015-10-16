@@ -7,7 +7,7 @@ module Matsuri
     include Let
     include Matsuri::ShellOut
 
-    class_attribute :build_order
+    class_attribute :build_order, :failure_hooks
 
     # Defines a list of deps, used to  to idempotently converge Kubernetes
     # resources. Generally, you will add a an app as a dep for resources you are
@@ -22,9 +22,19 @@ module Matsuri
     # needs :rc,      'rails-app'
     # needs :service, 'rails-app'
     class << self
-      def needs(type, name)
+      def needs(type, name, on_failure: nil)
         self.build_order ||= []
         self.build_order << [type.to_sym, name.to_s]
+        on_failure(type, name, on_failure) if on_failure
+      end
+
+      def on_failure(type, name, hook_name)
+        self.failure_hooks ||= Map.new
+        self.failure_hooks.set(type, name, hook_name)
+      end
+
+      def config_file(path)
+        File.join(Matsuri::Config.config_path, path)
       end
     end
 
@@ -65,6 +75,12 @@ module Matsuri
     def converge!(opts = {})
       puts "Converging #{name}".color(:red).bright if config.verbose
       self.class.build_order.each do |(type, name)|
+        if type == :file
+          Matsuri.log :info, "Checking for required file #{name}"
+          next if File.file?(name)
+          call_on_failure(type, name) || Matsuri.log(:fatal, "Cannot find required file #{name}")
+        end
+
         resource = dep(type, name).new
         if type == :app && !opts[:reboot]
           puts "Shallow converging app #{name}".color(:red).bright if config.verbose
@@ -73,6 +89,11 @@ module Matsuri
           resource.converge!(opts)
         end
       end
+    end
+
+    def call_on_failure(type, name)
+      return nil unless hook = self.class.failure_hooks.get(type, name)
+      send(hook, type, name)
     end
 
     # Hooks
