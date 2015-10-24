@@ -59,8 +59,9 @@ module Matsuri
       end
 
       desc 'sh APP_NAME', 'Shells into an app container'
-      option :root, type: :boolean, default: false
-      option :user, type: :string
+      option :root, aliases: :r, type: :boolean, default: false
+      option :user, aliases: :u, type: :string
+      option :pod,  aliases: :p, type: :string
       def sh(name, *args)
         with_config do |opt|
           Matsuri::Registry.app(name).new.sh!(opt, args)
@@ -70,6 +71,7 @@ module Matsuri
       desc 'console APP_NAME', 'Gets to the console of an app'
       option :root, type: :boolean, default: false
       option :user, type: :string
+      option :pod,  aliases: :p, type: :string
       def console(name, *args)
         with_config do |opt|
           Matsuri::Registry.app(name).new.console!(opt, args)
