@@ -6,10 +6,13 @@ module Matsuri
       let(:kind) { 'Secret' }
 
       # Overridables
-      let(:spec) do
+      let(:manifest) do
         {
-          type: secret_type,
-          data: data
+          apiVersion: api_version,
+          kind:       kind,
+          metadata:   final_metadata,
+          type:       secret_type,
+          data:       data
         }
       end
 
@@ -19,19 +22,29 @@ module Matsuri
 
       let(:secret_key)   { fail NotImplementedError, 'Must define let(:secret_key)' }
       let(:secret_value) { secret_from(secret_path) }
+      let(:secret_path)  { fail NotImplementedError, 'Must define let(:secret_path)' }
+
+      # Override let(:data) with yaml_data if the secret file is
+      # in yaml form
+      let(:yaml_data)   { base64_hash(yaml_secret) }
+      let(:yaml_secret) { YAML.load_file(secret_file(secret_path)) }
 
       # Helpers
 
       # Secrets must be Base64 Encoded. This load the secret from
-      # disk (default: config/secrets) and base64 encode it.
+      # disk (default: config/securets/)  base64 encode it.
       def secret_from(path)
-        secret_from_path(File.join(Matsuri::Config.config_secrets_path, path))
+        secret_from_path(secret_file(path))
       end
 
-      # This will load secret from any path without assuming
-      # that it is in the secret path
+      # Load secret file and base64 encode it from any file location
       def secret_from_path(path)
         base64(File.read(path))
+      end
+
+      # Helper to load secrets file from default location
+      def secret_file(path)
+        File.join(Matsuri::Config.config_secrets_path, path)
       end
 
       # Helper for base64 encoder. This allows us to pull
@@ -39,6 +52,11 @@ module Matsuri
       # or from an encrypted AWS S3 bucket item
       def base64(secret)
         Base64.encode64(secret)
+      end
+
+      # Helper to transform the values of a hash to base64
+      def base64_hash(hash)
+        Hash[hash.map { |k,v| [k, base64(v) ] }]
       end
 
     end
