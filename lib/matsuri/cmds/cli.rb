@@ -58,6 +58,13 @@ module Matsuri
         end
       end
 
+      desc 'scale RC_NAME', 'Scales a replication controller'
+      def scale(name, replicas)
+        with_config do |opt|
+          Matsuri::Registry.rc(name).new.scale!(replicas, opt)
+        end
+      end
+
       desc 'sh APP_NAME', 'Shells into an app container'
       option :root, aliases: :r, type: :boolean, default: false
       option :user, aliases: :u, type: :string

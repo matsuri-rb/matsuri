@@ -25,6 +25,11 @@ module Matsuri
       # registered to Matsuri::Registry
       let(:pod_name) { fail NotImplementedError, 'Must define let(:pod_name)' }
       let(:pod_def)  { pod(pod_name) }
+
+      def scale!(replicas, opt={})
+        puts "Scaling #{resource_type}/#{name} to #{replicas}".color(:yellow).bright if config.verbose
+        kubectl! "--namespace=#{namespace} scale --replicas=#{replicas} rc #{name}"
+      end
     end
   end
 end

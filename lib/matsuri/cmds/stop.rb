@@ -17,6 +17,13 @@ module Matsuri
         end
       end
 
+      desc 'rc RC_NAME', 'stop a replication controller'
+      def rc(name)
+        with_config do |_|
+          Matsuri::Registry.rc(name).new.stop!
+        end
+      end
+
       desc 'service SERVICE_NAME', 'stop a service'
       def service(name)
         with_config do |_|

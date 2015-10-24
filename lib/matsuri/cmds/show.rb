@@ -40,6 +40,18 @@ module Matsuri
         end
       end
 
+      desc 'rc RC_NAME', 'show manifest for replication controller'
+      def rc(name)
+        with_config do |_|
+          rc = Matsuri::Registry.rc(name).new
+          if options[:json]
+            puts rc.pretty_print
+          else
+            puts rc.to_yaml
+          end
+        end
+      end
+
       desc 'service SERVICE_NAME', 'show manifest for service'
       def service(name)
         with_config do |_|

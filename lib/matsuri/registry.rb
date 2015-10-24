@@ -37,6 +37,7 @@ module Matsuri
 
       # Helper to generate Kubernetes artifact definitions
       def define(type, name, inherits: nil, &blk)
+        type = normalize_and_validate_type(type)
         parent_klass = parent_class(type, inherits)
         klass = Class.new(parent_klass)
         module_for(type).const_set(class_name_for(name), klass)
@@ -116,7 +117,7 @@ module Matsuri
         when 'replication_controller' then Matsuri::Config.rcs_path
         when 'service'                then Matsuri::Config.services_path
         when 'endpoints'              then Matsuri::Config.endpoints_path
-        when 'secret'                then Matsuri::Config.secrets_path
+        when 'secret'                 then Matsuri::Config.secrets_path
         when 'app'                    then Matsuri::Config.apps_path
         else
           fail ArgumentError, "Unknown Matsuri type #{type}"
@@ -133,7 +134,7 @@ module Matsuri
         when 'replication_controller' then maybe_define_module('ReplicationControllers')
         when 'service'                then maybe_define_module('Services')
         when 'endpoints'              then maybe_define_module('Endpoints')
-        when 'secret'                then maybe_define_module('Secrets')
+        when 'secret'                 then maybe_define_module('Secrets')
         when 'app'                    then maybe_define_module('Apps')
         else
           fail ArgumentError, "Unknown Matsuri type #{type}"
