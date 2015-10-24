@@ -84,6 +84,26 @@ module Matsuri
           Matsuri::Registry.app(name).new.console!(opt, args)
         end
       end
+
+      desc 'build APP_NAME', 'Builds docker image for app'
+      option :dev,     type: :boolean, default: false
+      option :version, type: :string, default: 'latest'
+      option :branch,  type: :string, default: 'master'
+      option :repo,    type: :string
+      def build(name)
+        with_config do |opt|
+          Matsuri::Registry.app(name).new.build!(opt)
+        end
+      end
+
+      desc 'push APP_NAME', 'Pushes docker image for app'
+      option :dev,     type: :boolean, default: false
+      option :version, type: :string,  default: 'latest'
+      def push(name)
+        with_config do |opt|
+          Matsuri::Registry.app(name).new.push!(opt)
+        end
+      end
     end
   end
 end

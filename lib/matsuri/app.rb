@@ -105,6 +105,14 @@ module Matsuri
       Matsuri.log :fatal, "I don't know how to get to the console for #{name}. Define me at in the app config."
     end
 
+    def build!(opt={})
+      Matsuri.log :fatal, "I don't know how to build #{name}. Define me at in the app config."
+    end
+
+    def push!(opt={})
+      Matsuri.log :fatal, "I don't know how to push #{name}. Define me at in the app config."
+    end
+
     # Helper functions
     def config
       Matsuri::Config
