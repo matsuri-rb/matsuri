@@ -8,20 +8,33 @@ module Matsuri
         {
           containers: containers,
           volumes:    volumes,
-          imagePullSecrets: image_pull_secrets
+          imagePullSecrets: image_pull_secrets,
         }
       end
 
       let(:containers)         { [container] }
       let(:volumes)            { [volume] }
       let(:image_pull_secrets) { [] }
+      let(:resources)          { { requests: resource_requests, limits: resource_limits } }
+      let(:resource_requests)  { { cpu: cpu_request, memory: mem_request } }
+      let(:resource_limits)    { { cpu: cpu_limit,   memory: mem_limit  } }
 
-      let(:container)  { fail NotImplementedError, 'Must define let(:container)'}
-      let(:volume)     { fail NotImplementedError, 'Must define let(:volume)' }
+      let(:container)   { fail NotImplementedError, 'Must define let(:container)'}
+      let(:volume)      { fail NotImplementedError, 'Must define let(:volume)' }
+
+      # We want to make sure all limits are defined
+      let(:cpu_limit)   { fail NotImplementedError, 'Must define let(:cpu_limit)' }
+      let(:mem_limit)   { fail NotImplementedError, 'Must define let(:mem_limit)' }
+      let(:cpu_request) { cpu_limit }
+      let(:mem_request) { cpu_limit }
 
       # Helper methods
       def config_file(path)
         File.join config.config_path, path
+      end
+
+      def cache_path(path)
+        File.join config.cache_path, path
       end
 
       def src_path(path)
@@ -53,6 +66,10 @@ module Matsuri
 
       def empty_dir_volume(name)
         { name: name, emptyDir: {} }
+      end
+
+      def secret_volume(name, secret_name:)
+        { name: name, secret: { secretName: secret_name } }
       end
     end
   end
