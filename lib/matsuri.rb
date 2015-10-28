@@ -38,6 +38,11 @@ module Matsuri
     autoload :Pod,        'matsuri/tasks/pod'
   end
 
+  module Concerns
+    autoload :Await,           'matsuri/concerns/await'
+    autoload :RegistryHelpers, 'matsuri/concerns/registry_helpers'
+  end
+
   def self.define(*args, &blk)
     Matsuri::Registry.define(*args, &blk)
   end

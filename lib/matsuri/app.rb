@@ -8,6 +8,7 @@ module Matsuri
     include Let
     include RLet::LazyOptions
     include Matsuri::ShellOut
+    include Matsuri::Concerns::RegistryHelpers
 
     class_attribute :build_order, :failure_hooks
 
@@ -120,30 +121,8 @@ module Matsuri
     end
 
     # Helper functions
-    def config
-      Matsuri::Config
-    end
-
     def dep(type, name)
       Matsuri::Registry.fetch_or_load type, name
-    end
-
-    def pod(name, opt={})
-      Matsuri::Registry.pod(name).new(opt)
-    end
-
-    def replication_controller(name, opt={})
-      Matsuri::Registry.replication_controller(name).new(opt)
-    end
-
-    alias_method :rc, :replication_controller
-
-    def service(name, opt={})
-      Matsuri::Registry.service(name).new(opt)
-    end
-
-    def endpoints(name, opt={})
-      Matsuri::Registry.endpoints(name).new(opt)
     end
 
     def app(name, opt={})
