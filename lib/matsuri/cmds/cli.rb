@@ -72,6 +72,14 @@ module Matsuri
         end
       end
 
+      desc 'update APP_NAME VERSION', 'Updates an app to VERSION'
+      option :skip_migrations
+      def update(name, version)
+        with_config do |opt|
+          Matsuri::Registry.app(name).new.update!(version, opt)
+        end
+      end
+
       desc 'sh APP_NAME', 'Shells into an app container'
       option :root, aliases: :r, type: :boolean, default: false
       option :user, aliases: :u, type: :string

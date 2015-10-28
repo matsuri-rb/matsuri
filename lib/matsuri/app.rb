@@ -1,10 +1,12 @@
 require 'map'
 require 'active_support/core_ext/class/attribute'
 require 'rainbow/ext/string'
+require 'rlet/lazy_options'
 
 module Matsuri
   class App
     include Let
+    include RLet::LazyOptions
     include Matsuri::ShellOut
 
     class_attribute :build_order, :failure_hooks
@@ -97,6 +99,10 @@ module Matsuri
     end
 
     # Hooks
+    def update!(version, opt={})
+      Matsuri.log :fatal, "I don't know how to update #{name}. Define me at in the app config."
+    end
+
     def sh!(opt, args)
       Matsuri.log :fatal, "I don't know how to shell into #{name}. Define me at in the app config."
     end
@@ -122,26 +128,26 @@ module Matsuri
       Matsuri::Registry.fetch_or_load type, name
     end
 
-    def pod(name)
-      Matsuri::Registry.pod(name).new
+    def pod(name, opt={})
+      Matsuri::Registry.pod(name).new(opt)
     end
 
-    def replication_controller(name)
-      Matsuri::Registry.replication_controller(name).new
+    def replication_controller(name, opt={})
+      Matsuri::Registry.replication_controller(name).new(opt)
     end
 
     alias_method :rc, :replication_controller
 
-    def service(name)
-      Matsuri::Registry.service(name).new
+    def service(name, opt={})
+      Matsuri::Registry.service(name).new(opt)
     end
 
-    def endpoints(name)
-      Matsuri::Registry.endpoints(name).new
+    def endpoints(name, opt={})
+      Matsuri::Registry.endpoints(name).new(opt)
     end
 
-    def app(name)
-      Matsuri::Registry.app(name).new
+    def app(name, opt={})
+      Matsuri::Registry.app(name).new(opt)
     end
   end
 end
