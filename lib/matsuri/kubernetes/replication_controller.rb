@@ -25,10 +25,16 @@ module Matsuri
       # registered to Matsuri::Registry
       let(:pod_name) { fail NotImplementedError, 'Must define let(:pod_name)' }
       let(:pod_def)  { pod(pod_name) }
+      let(:primary_image) { pod_def.primary_image }
 
       def scale!(replicas, opt={})
         puts "Scaling #{resource_type}/#{name} to #{replicas}".color(:yellow).bright if config.verbose
         kubectl! "--namespace=#{namespace} scale --replicas=#{replicas} rc #{name}"
+      end
+
+      def rollout!(image_tag, opt={})
+        Matsuri.log :info, "Rolling out #{resource_type}/#{name} to #{primary_image}:#{image_tag}".color(:yellow).bright
+        kubectl! "--namespace=#{namespace} rolling-update #{name} --image=#{primary_image}:#{image_tag}"
       end
     end
   end

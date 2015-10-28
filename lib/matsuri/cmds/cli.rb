@@ -65,6 +65,13 @@ module Matsuri
         end
       end
 
+      desc 'rollout RC_NAME TAG', 'Rolls out a new image for a replication controller'
+      def rollout(name, image_tag)
+        with_config do |opt|
+          Matsuri::Registry.rc(name).new.rollout!(image_tag, opt)
+        end
+      end
+
       desc 'sh APP_NAME', 'Shells into an app container'
       option :root, aliases: :r, type: :boolean, default: false
       option :user, aliases: :u, type: :string
@@ -86,10 +93,11 @@ module Matsuri
       end
 
       desc 'build APP_NAME', 'Builds docker image for app'
-      option :dev,     type: :boolean, default: false
-      option :version, type: :string, default: 'latest'
-      option :branch,  type: :string, default: 'master'
-      option :repo,    type: :string
+      option :dev,         type: :boolean,  default: false
+      option :version,     type: :string
+      option :branch,      type: :string
+      option :github_user, type: :string
+      option :repo,        type: :string
       def build(name)
         with_config do |opt|
           Matsuri::Registry.app(name).new.build!(opt)
