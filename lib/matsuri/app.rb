@@ -9,6 +9,7 @@ module Matsuri
     include RLet::LazyOptions
     include Matsuri::ShellOut
     include Matsuri::Concerns::RegistryHelpers
+    include Matsuri::Concerns::Awaiting
 
     class_attribute :build_order, :failure_hooks
 

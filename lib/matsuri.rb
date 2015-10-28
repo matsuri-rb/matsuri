@@ -39,7 +39,7 @@ module Matsuri
   end
 
   module Concerns
-    autoload :Await,           'matsuri/concerns/await'
+    autoload :Awaiting,        'matsuri/concerns/awaiting'
     autoload :RegistryHelpers, 'matsuri/concerns/registry_helpers'
   end
 
