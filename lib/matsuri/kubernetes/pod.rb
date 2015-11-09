@@ -14,6 +14,9 @@ module Matsuri
         }
       end
 
+      # Get image tag from the command line
+      let(:image_tag)          { options[:image_tag] || 'latest' }
+
       let(:containers)         { [container] }
       let(:volumes)            { [volume] }
       let(:image_pull_secrets) { [] }

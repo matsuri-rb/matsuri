@@ -24,10 +24,11 @@ module Matsuri
       end
 
       let(:final_metadata)   { default_metadata.merge(metadata) }
-      let(:default_metadata) { { name: name, namespace: namespace, labels: labels } }
+      let(:default_metadata) { { name: name, namespace: namespace, labels: labels, annotations: annotations } }
       let(:namespace)        { 'default' }
       let(:resource_type)    { kind.to_s.downcase }
       let(:labels)           { { } }
+      let(:annotations)      { { } }
 
       # Overridables
       let(:api_version) { 'v1' }
@@ -60,6 +61,12 @@ module Matsuri
       def restart!
         stop!
         start!
+      end
+
+      def annotate!(hash = {})
+        json = JSON.generate( { metadata: { annotations: hash } } )
+        Matsuri.log :info, "Annotating #{resource_type}/#{name} with #{hash.inspect}"
+        kubectl! "patch --namespace=#{namespace} patch #{resource_type} #{name} -p '#{json}'"
       end
 
       def converge!(opts = {})

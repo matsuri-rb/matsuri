@@ -52,9 +52,9 @@ module Matsuri
 
       desc 'converge APP_NAME', 'Idempotently converges an app and all dependencies'
       option :restart, type: :boolean, default: false
-      def converge(name)
+      def converge(name, image_tag = 'latest')
         with_config do |opt|
-          Matsuri::Registry.app(name).new.converge!(opt)
+          Matsuri::Registry.app(name).new(image_tag: image_tag).converge!(opt)
         end
       end
 

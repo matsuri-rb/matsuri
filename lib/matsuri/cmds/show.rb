@@ -28,10 +28,10 @@ module Matsuri
         end
       end
 
-      desc 'pod POD_NAME', 'show manifest for pod'
-      def pod(name)
+      desc 'pod POD_NAME [IMAGE_TAG]', 'show manifest for pod'
+      def pod(name, image_tag='latest')
         with_config do |_|
-          pod = Matsuri::Registry.pod(name).new
+          pod = Matsuri::Registry.pod(name).new(image_tag: image_tag)
           if options[:json]
             puts pod.pretty_print
           else
@@ -40,10 +40,10 @@ module Matsuri
         end
       end
 
-      desc 'rc RC_NAME', 'show manifest for replication controller'
-      def rc(name)
+      desc 'rc RC_NAME [IMAGE_TAG]', 'show manifest for replication controller'
+      def rc(name, image_tag = 'latest')
         with_config do |_|
-          rc = Matsuri::Registry.rc(name).new
+          rc = Matsuri::Registry.rc(name).new(image_tag: image_tag)
           if options[:json]
             puts rc.pretty_print
           else

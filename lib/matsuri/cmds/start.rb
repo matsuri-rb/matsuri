@@ -12,17 +12,17 @@ module Matsuri
         end
       end
 
-      desc 'pod POD_NAME', 'start a pod'
-      def pod(name)
+      desc 'pod POD_NAME [IMAGE_TAG]', 'start a pod'
+      def pod(name, image_tag = 'latest')
         with_config do |opt|
-          Matsuri::Registry.pod(name).new.start!
+          Matsuri::Registry.pod(name).new(image_tag: image_tag).start!
         end
       end
 
-      desc 'rc RC_NAME', 'start a replication controller'
-      def rc(name)
+      desc 'rc RC_NAME [IMAGE_TAG]', 'start a replication controller'
+      def rc(name, image_tag = 'latest')
         with_config do |opt|
-          Matsuri::Registry.rc(name).new.start!
+          Matsuri::Registry.rc(name).new(image_tag: image_tag).start!
         end
       end
 
