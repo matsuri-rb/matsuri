@@ -72,6 +72,13 @@ module Matsuri
         end
       end
 
+      desc 'migrate APP_NAME VERSION', 'Migrates an app to VERSION'
+      def migrate(name, version)
+        with_config do |opt|
+          Matsuri::Registry.app(name).new.migrate!(version, opt)
+        end
+      end
+
       desc 'update APP_NAME VERSION', 'Updates an app to VERSION'
       option :skip_migrations
       def update(name, version)
