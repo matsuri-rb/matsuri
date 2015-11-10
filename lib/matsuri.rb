@@ -63,14 +63,18 @@ module Matsuri
     Matsuri::Config.environment == 'production'
   end
 
-  def self.log(level, message)
+  def self.log(level, message = nil, &blk)
     case level
     when :fatal then
-      puts message
+      log_output! message, &blk
       exit(1)
-    when :error, :warn then puts message
-    when :info         then puts message if Matsuri::Config.verbose
-    when :debug        then puts message if Matsuri::Config.debug
+    when :error, :warn then log_output! message, &blk
+    when :info         then log_output! message, &blk if Matsuri::Config.verbose
+    when :debug        then log_output! message, &blk if Matsuri::Config.debug
     end
+  end
+
+  def self.log_output!(message)
+    puts(message || yield)
   end
 end
