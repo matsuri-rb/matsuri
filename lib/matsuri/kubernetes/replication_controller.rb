@@ -7,9 +7,6 @@ module Matsuri
       # Overridables
 
       let(:default_metadata) { { name: maybe_param_name, namespace: namespace, labels: final_labels, annotations: annotations } }
-      let(:default_labels)   { { 'app-name' => name } } # Needed for autodetecting 'current' for rolling-updates
-      let(:final_labels)     { default_labels.merge(labels) }
-
       let(:spec) do
         {
           replicas: replicas,
@@ -64,18 +61,18 @@ module Matsuri
         return name if cmd.status.success?
 
         # Fallback to using selector
-        Matsuri.log :info, "Unable to find #{name}. Searching for rc with label app-name=#{name}"
+        Matsuri.log :info, "Unable to find #{name}. Searching for rc with label matsuri-name=#{name}"
 
-        cmd = kubectl "--namespace=#{namespace} get #{resource_type} --selector='app-name=#{name}' -o json", no_stdout: true
-        Matsuri.log :fatal, "Unable to find a replication controller with label app-name=#{name}" unless cmd.status.success?
+        cmd = kubectl "--namespace=#{namespace} get #{resource_type} --selector='matsuri-name=#{name}' -o json", no_stdout: true
+        Matsuri.log :fatal, "Unable to find a replication controller with label matsuri-name=#{name}" unless cmd.status.success?
         resp = parse_json(cmd)
 
-        Matsuri.log :fatal, "Unable to find a replication controller with label app-name=#{name}" if resp['items'].empty?
+        Matsuri.log :fatal, "Unable to find a replication controller with label matsuri-name=#{name}" if resp['items'].empty?
 
         if resp['items'].size == 1
           return resp['items'][0]['metadata']['name']
         else
-          Matsuri.log :fatal, "Multiple replication controllers found with label app-name=#{name}. Not yet supported"
+          Matsuri.log :fatal, "Multiple replication controllers found with label matsuri-name=#{name}. Not yet supported"
         end
       end
 
