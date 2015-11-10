@@ -24,11 +24,16 @@ module Matsuri
       end
 
       let(:final_metadata)   { default_metadata.merge(metadata) }
-      let(:default_metadata) { { name: name, namespace: namespace, labels: labels, annotations: annotations } }
+      let(:default_metadata) { { name: name, namespace: namespace, labels: final_labels, annotations: annotations } }
+      let(:default_labels)   { { 'matsuri-name' => name } } # Needed for autodetecting 'current' for rolling-updates
+      let(:final_labels)     { default_labels.merge(labels) }
       let(:namespace)        { 'default' }
       let(:resource_type)    { kind.to_s.downcase }
       let(:labels)           { { } }
       let(:annotations)      { { } }
+
+      # Optional parameters
+      let(:release)     { (options[:release] || '0').to_s }
 
       # Overridables
       let(:api_version) { 'v1' }

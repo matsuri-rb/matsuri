@@ -32,17 +32,20 @@ module Matsuri
       # Define this to point to an existing pod definition. This is the name
       # registered to Matsuri::Registry
       let(:pod_name) { fail NotImplementedError, 'Must define let(:pod_name)' }
-      let(:pod_def)  { pod(pod_name, image_tag: image_tag) }
+      let(:pod_def)  { pod(pod_name, image_tag: image_tag, release: release) }
       let(:primary_image) { pod_def.primary_image }
 
       def scale!(replicas, opt={})
-        puts "Scaling #{resource_type}/#{name} to #{replicas}".color(:yellow).bright if config.verbose
-        kubectl! "--namespace=#{namespace} scale --replicas=#{replicas} rc #{name}"
+        current_rc = current_rc_name
+
+        puts "Scaling #{resource_type}/#{current_rc} to #{replicas}".color(:yellow).bright if config.verbose
+        kubectl! "--namespace=#{namespace} scale --replicas=#{replicas} rc #{current_rc}"
       end
 
       def rollout!(image_tag, opt={})
         current_rc = current_rc_name
-        next_rc    = "#{name}-#{image_tag}"
+        next_rel   = release_number(current_rc) + 1
+        next_rc    = "#{name}-r#{next_rel}"
 
         Matsuri.log :info, "Current replication controller: #{current_rc}"
         Matsuri.log :info, "Next replication controller: #{next_rc}"
@@ -50,7 +53,7 @@ module Matsuri
 
         # Create a next controller, overriding image tag, name, and replicas
         # Start replicas with 1 and move from there.
-        rc_next = rc(name, name: next_rc, image_tag: image_tag, replicas: 1)
+        rc_next = rc(name, name: next_rc, release: next_rel, image_tag: image_tag, replicas: 1)
         #rc_next.start!
 
         kubectl! "--namespace=#{namespace} rolling-update #{current_rc} #{name}-#{image_tag} -f -", input: rc_next.to_json
@@ -80,6 +83,12 @@ module Matsuri
       def parse_json(cmd)
         JSON.parse(cmd.stdout)
       end
+
+      # Extract release number from the name
+      def release_number(k8s_name)
+        k8s_name =~ /-r(\d+)$/ ? ($1).to_i : 0
+      end
+
     end
   end
 end
