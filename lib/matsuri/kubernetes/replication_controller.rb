@@ -38,7 +38,7 @@ module Matsuri
       def scale!(replicas, opt={})
         current_rc = current_rc_name
 
-        puts "Scaling #{resource_type}/#{current_rc} to #{replicas}".color(:yellow).bright if config.verbose
+        Matsuri.log :info, "Scaling #{resource_type}/#{current_rc} to #{replicas}".color(:yellow).bright
         kubectl! "--namespace=#{namespace} scale --replicas=#{replicas} rc #{current_rc}"
       end
 
@@ -61,13 +61,13 @@ module Matsuri
       end
 
       def current_rc_name
-        cmd = kubectl "--namespace=#{namespace} get #{resource_type}/#{name}-#{image_tag}", no_stdout: true
+        cmd = kubectl "--namespace=#{namespace} get #{resource_type}/#{name}-#{image_tag}", echo_level: :debug, no_stdout: true
         return name if cmd.status.success?
 
         # Fallback to using selector
         Matsuri.log :info, "Unable to find #{name}. Searching for rc with label matsuri-name=#{name}"
 
-        cmd = kubectl "--namespace=#{namespace} get #{resource_type} --selector='matsuri-name=#{name}' -o json", no_stdout: true
+        cmd = kubectl "--namespace=#{namespace} get #{resource_type} --selector='matsuri-name=#{name}' -o json", echo_level: :debug, no_stdout: true
         Matsuri.log :fatal, "Unable to find a replication controller with label matsuri-name=#{name}" unless cmd.status.success?
         resp = parse_json(cmd)
 

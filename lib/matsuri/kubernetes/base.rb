@@ -92,7 +92,7 @@ module Matsuri
 
       # Helper functions
       def started?
-        cmd = kubectl "--namespace=#{namespace} get #{resource_type}/#{name}", no_stdout: true
+        cmd = kubectl "--namespace=#{namespace} get #{resource_type}/#{name}", echo_level: :debug, no_stdout: true
         return cmd.status.success? unless config.verbose
 
         status = if cmd.status.success?

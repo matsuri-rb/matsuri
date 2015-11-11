@@ -19,8 +19,10 @@ module Matsuri
     end
 
     def shell_out(_cmd, options = {})
-      puts "$ #{_cmd}".color(:green) if verbose
+      echo_level = options.delete(:echo_level) || :info
       no_stdout = options.delete(:no_stdout)
+
+      Matsuri.log echo_level, "$ #{_cmd}".color(:green)
       options = SHELLOUT_DEFAULTS.merge(timeout: 3600).merge(options)
       cmd = Mixlib::ShellOut.new(_cmd, options)
       cmd.live_stream = STDOUT unless no_stdout && !debug
