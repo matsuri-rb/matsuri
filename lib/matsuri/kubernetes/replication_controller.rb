@@ -57,7 +57,7 @@ module Matsuri
         #rc_next.start!
 
         Matsuri.log(:debug) { rc_next.pretty_print }
-        kubectl! "--namespace=#{namespace} rolling-update #{current_rc} #{name}-#{image_tag} -f -", input: rc_next.to_json
+        kubectl! "--namespace=#{namespace} rolling-update #{current_rc} #{next_rc} -f -", input: rc_next.to_json
       end
 
       def current_rc_name
