@@ -11,6 +11,7 @@ module Matsuri
           containers: containers,
           volumes:    volumes,
           imagePullSecrets: image_pull_secrets,
+          nodeSelector: node_selector
         }
       end
 
@@ -23,6 +24,8 @@ module Matsuri
       let(:resources)          { { requests: resource_requests, limits: resource_limits } }
       let(:resource_requests)  { { cpu: cpu_request, memory: mem_request } }
       let(:resource_limits)    { { cpu: cpu_limit,   memory: mem_limit  } }
+
+      let(:node_selector)      { { } }
 
       let(:container)   { fail NotImplementedError, 'Must define let(:container)'}
       let(:volume)      { fail NotImplementedError, 'Must define let(:volume)' }
