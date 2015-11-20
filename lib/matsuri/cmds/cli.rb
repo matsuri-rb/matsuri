@@ -15,17 +15,8 @@ module Matsuri
       desc 'show SUBCOMMAND ...ARGS', 'show resource'
       subcommand 'show', Matsuri::Cmds::Show
 
-      desc 'build APP_NAME', 'builds an app'
-      def build(name)
-        # Build is problematic, running make files. It's not
-        # entirely necessary, so will implement this later if
-        # there is enough demand for it.
-        puts "build not implemented yet"
-        exit (1)
-        with_config do |opt|
-          Matsuri::Registry.app(name).new.build!(opt)
-        end
-      end
+      desc 'show SUBCOMMAND ...ARGS', 'resource status'
+      subcommand 'status', Matsuri::Cmds::Status
 
       desc 'start SUBCOMMAND ...ARGS', 'start resource'
       subcommand 'start', Matsuri::Cmds::Start
@@ -65,8 +56,8 @@ module Matsuri
         end
       end
 
-      desc 'rollout RC_NAME TAG', 'Rolls out a new image for a replication controller'
-      def rollout(name, image_tag)
+      desc 'rollout RC_NAME [TAG]', 'Rolls out a new image for a replication controller'
+      def rollout(name, image_tag = nil)
         with_config do |opt|
           Matsuri::Registry.rc(name).new.rollout!(image_tag, opt)
         end

@@ -35,6 +35,12 @@ module Matsuri
       let(:pod_def)  { pod(pod_name, image_tag: image_tag, release: release) }
       let(:primary_image) { pod_def.primary_image }
 
+      def status!
+        current_rc = current_rc_name
+        puts "Current rc name: #{current_rc}"
+        puts "Current image_tag: #{current_image_tag(current_rc)}"
+      end
+
       def scale!(replicas, opt={})
         current_rc = current_rc_name
 
@@ -46,6 +52,8 @@ module Matsuri
         current_rc = current_rc_name
         next_rel   = release_number(current_rc) + 1
         next_rc    = "#{name}-r#{next_rel}"
+
+        image_tag = current_image_tag(current_rc) unless image_tag
 
         Matsuri.log :info, "Current replication controller: #{current_rc}"
         Matsuri.log :info, "Next replication controller: #{next_rc}"
@@ -61,7 +69,7 @@ module Matsuri
       end
 
       def current_rc_name
-        cmd = kubectl "--namespace=#{namespace} get #{resource_type}/#{name}-#{image_tag}", echo_level: :debug, no_stdout: true
+        cmd = kubectl "--namespace=#{namespace} get #{resource_type}/#{name}", echo_level: :debug, no_stdout: true
         return name if cmd.status.success?
 
         # Fallback to using selector
@@ -80,9 +88,31 @@ module Matsuri
         end
       end
 
+      def current_image_tag(rc_name)
+        cmd = kubectl "--namespace=#{namespace} get #{resource_type}/#{rc_name} -o json", echo_level: :debug, no_stdout: true
+        Matsuri.log :fatal, "Unable to find #{resource_type}/#{rc_name}" unless cmd.status.success?
+        resp = parse_json(cmd)
+
+        image_name = resp['spec']['template']['spec']['containers'][0]['image']
+        Matsuri.log :info, "Found primary image: #{image_name}"
+        image_tag = extract_image_tag(image_name)
+
+        if image_tag.empty?
+          Matsuri.log :warn, "Unable to extract image tag from #{image_name}"
+        else
+          Matsuri.log :info, "Current image tag: #{image_tag}"
+        end
+
+        return image_tag
+      end
+
       private
       def parse_json(cmd)
         JSON.parse(cmd.stdout)
+      end
+
+      def extract_image_tag(image_name)
+        image_name =~ /:(.*)$/ ? $1 : ''
       end
 
       # Extract release number from the name

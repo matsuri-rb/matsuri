@@ -68,6 +68,10 @@ module Matsuri
         start!
       end
 
+      def status!
+        Matsuri.log :fatal, "I don't know how to display a status for #{resource_type}"
+      end
+
       def annotate!(hash = {})
         json = JSON.generate( { metadata: { annotations: hash } } )
         Matsuri.log :info, "Annotating #{resource_type}/#{name} with #{hash.inspect}"

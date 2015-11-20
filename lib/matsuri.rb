@@ -26,6 +26,7 @@ module Matsuri
     autoload :Cli,     'matsuri/cmds/cli'
     autoload :K8s,     'matsuri/cmds/k8s'
     autoload :Show,    'matsuri/cmds/show'
+    autoload :Status,  'matsuri/cmds/status'
     autoload :Start,   'matsuri/cmds/start'
     autoload :Reload,  'matsuri/cmds/reload'
     autoload :Restart, 'matsuri/cmds/restart'
