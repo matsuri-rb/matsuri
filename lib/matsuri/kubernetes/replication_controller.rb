@@ -27,7 +27,7 @@ module Matsuri
 
       # By default, point the template to an existing pod definition
       # Overide let(:pod_name)
-      let(:template) { { metadata: { labels: pod_def.labels }, spec: pod_def.spec } }
+      let(:template) { { metadata: { labels: pod_def.labels, annotations: pod_def.annotations }, spec: pod_def.spec } }
 
       # Define this to point to an existing pod definition. This is the name
       # registered to Matsuri::Registry
