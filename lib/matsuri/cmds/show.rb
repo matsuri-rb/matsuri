@@ -13,10 +13,11 @@ module Matsuri
         with_config do |opt|
           puts opt.inspect if opt[:debug]
           conf = Matsuri::Config.save(true)
+          platform = Matsuri::Platform.save(true)
           if options[:json]
-            puts JSON.pretty_generate(conf)
+            puts JSON.pretty_generate(conf), JSON.pretty_generate(platform)
           else
-            puts conf.deep_stringify_keys.to_yaml
+            puts conf.deep_stringify_keys.to_yaml, platform.deep_stringify_keys.to_yaml
           end
         end
       end

@@ -2,6 +2,7 @@ require 'active_support/concern'
 
 module Matsuri
   autoload :Config,   'matsuri/config'
+  autoload :Platform, 'matsuri/platform'
   autoload :ShellOut, 'matsuri/shell_out'
   autoload :Registry, 'matsuri/registry'
 

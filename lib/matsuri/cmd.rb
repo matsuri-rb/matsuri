@@ -10,11 +10,9 @@ module Matsuri
 
       def with_config(opts = {})
         _final_options = final_options(opts)
-        config_file = _final_options[:config]
-        Matsuri::Config.from_file(config_file) if File.file?(config_file)
-        Matsuri::Config.verbose = _final_options[:verbose] if _final_options[:verbose]
-        Matsuri::Config.debug   = _final_options[:debug]   if _final_options[:debug]
-        Matsuri::Config.environment = _final_options[:environment] if _final_options[:environment]
+
+        Matsuri::Config.load_configuration(_final_options)
+        Matsuri::Platform.load_configuration(Matsuri::Config.platform_load_paths)
 
         yield _final_options
       end

@@ -1,9 +1,11 @@
-# This file aggregates all the different configs for the tests
 
 require 'mixlib/config'
 require 'pathname'
 
 module Matsuri
+  # Matsuri-specific configuration. These are things you probably
+  # do not want to change. User-defined configs are found in Matsuri::Platform
+  # TODO: Move K8S configs out to Platform
   module Config
     extend Mixlib::Config
     config_strict_mode true  # will see how annoying this is
@@ -35,6 +37,7 @@ module Matsuri
     # Platform paths
     default(:config_path)           { File.join base_path, 'config' }
     default(:config_secrets_path)   { File.join config_path, 'secrets' } # Actual secrets themselves, should not be versioned
+    default(:platform_load_paths)   { [ File.join(config_path, 'platform.rb'), File.join(base_path, '.platform.rb') ] }
 
     default(:cache_path)     { File.join base_path, '.cache' }
     default(:build_path)     { File.join base_path, 'build' }
@@ -57,5 +60,12 @@ module Matsuri
       /darwin/ =~ RUBY_PLATFORM
     end
 
+    def self.load_configuration(options = {})
+      config_file = options[:config]
+      Matsuri::Config.from_file(config_file) if File.file?(config_file)
+      Matsuri::Config.verbose     = options[:verbose]     if options[:verbose]
+      Matsuri::Config.debug       = options[:debug]       if options[:debug]
+      Matsuri::Config.environment = options[:environment] if options[:environment]
+    end
   end
 end
