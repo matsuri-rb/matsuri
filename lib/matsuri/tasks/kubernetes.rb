@@ -92,6 +92,7 @@ END
     --volume=/var/lib/kubelet/:/var/lib/kubelet:rw \
     --volume=/var/run:/var/run:rw \
     --net=host \
+    --pid=host \
     --privileged=true \
     -d \
     #{hyperkube_image} \
