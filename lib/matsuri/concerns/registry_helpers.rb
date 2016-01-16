@@ -13,6 +13,14 @@ module Matsuri
           Matsuri::Config
         end
 
+        def platform
+          Matsuri::Platform
+        end
+
+        def please_define(key, notes = '')
+          Matsuri.log :fatal, "Please define '#{key}' in '.platform.rb'\n#{notes}"
+        end
+
         def pod(name, opt={})
           Matsuri::Registry.pod(name).new(opt)
         end
