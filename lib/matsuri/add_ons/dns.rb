@@ -42,6 +42,8 @@ module Matsuri
           }
         end
 
+        let(:dev_address) { platform.dev_addr || config.dev_addr }
+
         # Set dnsPolicy to 'Default' so we don't use cluster dns
         let(:spec) { { containers: containers, volumes: volumes, dnsPolicy: 'Default' } }
         let(:containers) { [etcd, kube2sky, skydns, healthz] }
@@ -69,7 +71,7 @@ module Matsuri
             name: 'kube2sky',
             image: 'gcr.io/google_containers/kube2sky:1.12',
             resources: { limits: { cpu: '100m', memory: '50Mi' }, requests: { cpu: '100m', memory: '50Mi' } },
-            args: ["-domain=#{config.cluster_domain}", "-kube_master_url=http://#{config.dev_addr}:8080"]
+            args: ["-domain=#{config.cluster_domain}", "-kube_master_url=http://#{dev_address}:8080"]
           }
         end
 
