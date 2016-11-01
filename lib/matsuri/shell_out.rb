@@ -14,7 +14,13 @@ module Matsuri
       Matsuri::Config.debug
     end
 
-    def kube_environment
+    # Overridable
+    # By default, the environment name is used. However, if you are using
+    # something like GCP, it is easier to set this in config/platform.rb
+    # and pull it from there. To override this, use let() or just define
+    # a method. For example, put this in a Staging mixin:
+    # let(:kube_context) { platform.staging.kube_context }
+    def kube_context
       Matsuri::Config.environment
     end
 
@@ -39,7 +45,7 @@ module Matsuri
 
     # This is so that it is easier to write app commands
     def kubectl_cmd(_cmd)
-      "kubectl --context=#{kube_environment} #{_cmd}"
+      "kubectl --context=#{kube_context} #{_cmd}"
     end
 
     def kubectl(_cmd, options = {})
