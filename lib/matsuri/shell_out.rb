@@ -39,7 +39,7 @@ module Matsuri
     def shell_out!(_cmd, options = {})
       cmd = shell_out(_cmd, options)
       return cmd if cmd.status.success?
-      $stderr.print "ERROR: #{cmd.exitstatus}\nSTDOUT:\n#{cmd.stdout}\n\nSTDERR:\n#{cmd.stderr}\n".red.bright
+      $stderr.print "ERROR: #{cmd.exitstatus}\nSTDOUT:\n#{cmd.stdout}\n\nSTDERR:\n#{cmd.stderr}\n".color(:red).bright
       exit 1
     end
 
