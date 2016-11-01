@@ -7,11 +7,11 @@ Gem::Specification.new do |spec|
   spec.name          = "matsuri"
   spec.version       = Matsuri::VERSION
   spec.authors       = ["Ho-Sheng Hsiao"]
-  spec.email         = ["hosh@shopapps.co"]
+  spec.email         = ["hosh@legal.io"]
 
   spec.summary       = %q{Build a dev environment using Docker and Kubernetes}
   spec.description   = %q{Framework and toolkit to build a dev environment using Docker and Kubernetes}
-  spec.homepage      = "https://github.com/shopappsio/matsuri"
+  spec.homepage      = "https://github.com/matsuri-rb/matsuri"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "bin"
