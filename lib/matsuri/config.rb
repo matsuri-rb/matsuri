@@ -16,6 +16,18 @@ module Matsuri
     default :debug, false
     default :environment, 'dev'
 
+    # If set to true, then Matsuri env names will be
+    # mapped to kube_context via Matsuri::Platform.
+    # By default, Matsuri assumes that the name of the environment
+    # is the name of the kubectl context. However, if you are using
+    # this with GKE, it is easier to let gcloud handle setting up
+    # authentication, in which case we want to map environment names
+    # to kubectl context
+    # Example: staging -> Matsuri::Platform.staging.kube_context
+    # With "staging", you must define Magsuri::Platform.staging.kube_context
+    # to pull the correct kube context.
+    default :map_env_to_kube_context, false
+
     # Container Image Versions
     default :etcd_version,      nil # 2.0.12
     default :hyperkube_version, nil # v1.0.1

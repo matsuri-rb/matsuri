@@ -21,7 +21,11 @@ module Matsuri
     # a method. For example, put this in a Staging mixin:
     # let(:kube_context) { platform.staging.kube_context }
     def kube_context
-      Matsuri::Config.environment
+      if Matsuri::Config.map_env_to_kube_context
+        Matsuri::Platform.send(Matsuri::Config.environment).kube_context
+      else
+        Matsuri::Config.environment
+      end
     end
 
     def shell_out(_cmd, options = {})
