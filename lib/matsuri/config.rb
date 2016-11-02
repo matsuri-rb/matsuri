@@ -48,7 +48,7 @@ module Matsuri
     default(:images_path)             { File.join platform_path, 'images' }
     default(:pods_path)               { File.join platform_path, 'pods' }
     default(:rcs_path)                { File.join platform_path, 'replication_controllers' }
-    default(:persistant_volumes_path) { File.join platform_path, 'persistant_volumes' }
+    default(:persistent_volumes_path) { File.join platform_path, 'persistent_volumes' }
     default(:services_path)           { File.join platform_path, 'services' }
     default(:endpoints_path)          { File.join platform_path, 'endpoints' }
     default(:apps_path)               { File.join platform_path, 'apps' }

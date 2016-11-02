@@ -89,7 +89,7 @@ module Matsuri
         end
       end
 
-      desc 'pv PV_NAME', 'show manifest for persistant volume'
+      desc 'pv PV_NAME', 'show manifest for persistent volume'
       def pv(name)
         show_resource(Matsuri::Registry.pv(name).new)
       end

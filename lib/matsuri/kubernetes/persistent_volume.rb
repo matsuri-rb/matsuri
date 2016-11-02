@@ -1,7 +1,7 @@
 module Matsuri
   module Kubernetes
-    # Kubernetes Persistant Volume
-    class PersistantVolume < Matsuri::Kubernetes::Base
+    # Kubernetes Persistent Volume
+    class PersistentVolume < Matsuri::Kubernetes::Base
       let(:kind)                { 'PersistentVolume' }
       let(:default_annotations) { { 'volume.beta.kubernetes.io/storage-class' => storage_class } } # http://kubernetes.io/docs/user-guide/persistent-volumes/
 
@@ -9,7 +9,7 @@ module Matsuri
         {
           capacity:                      capacity,
           accessModes:                   access_modes,
-          persistantVolumeReclaimPolicy: reclaim_policy
+          persistentVolumeReclaimPolicy: reclaim_policy
         }.merge(plugin_spec)
       end
 
@@ -18,11 +18,11 @@ module Matsuri
       let(:capacity)            { { storage: storage_size } } # http://kubernetes.io/docs/user-guide/persistent-volumes/#capacity
       let(:storage_size)        { fail NotImplementedError, 'Must define let(:storage_size)' }
       let(:reclaim_policy)      { fail NotImplementedError, 'Must define let(:reclaim_policy): Retain, Recycle, Delete' }
-      let(:plugin_spec)         { fail NotImplementedError, 'Must define let(:public_spec). Ex: gce_persistant_disk' }
+      let(:plugin_spec)         { fail NotImplementedError, 'Must define let(:public_spec). Ex: gce_persistent_disk' }
 
       # GCE peristant disk plugin
       # http://kubernetes.io/docs/api-reference/v1/definitions/#_v1_gcepersistentdiskvolumesource
-      let(:gce_persistant_disk) do
+      let(:gce_persistent_disk) do
         {
           pdName:    gce_pd_name,
           fsType:    gce_fstype,
