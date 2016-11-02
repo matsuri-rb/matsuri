@@ -17,6 +17,8 @@ module Matsuri
     autoload :Service,               'matsuri/kubernetes/service'
     autoload :Endpoints,             'matsuri/kubernetes/endpoints'
     autoload :Secret,                'matsuri/kubernetes/secret'
+
+    autoload :PersistantVolume,      'matsuri/kubernetes/persistant_volume'
   end
 
   module AddOns

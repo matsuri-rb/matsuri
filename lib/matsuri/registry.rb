@@ -5,7 +5,12 @@ require 'active_support/core_ext/string/inflections'
 module Matsuri
   class Registry
     include Singleton
-    VALID_TYPES = %w(pod replication_controller service endpoints secret app).freeze
+    VALID_TYPES = %w(pod replication_controller persistant_volume service endpoints secret app).freeze
+
+    ALIASES = {
+      'rc' => 'replication_controller',
+      'pv' => 'persistant_volume'
+    }.freeze
 
     def data
       @data ||= Map.new
@@ -83,6 +88,14 @@ module Matsuri
         replication_controller(name)
       end
 
+      def persistant_volume(name)
+        fetch_or_load :persistant_controller, name
+      end
+
+      def pv(name)
+        persistant_volume(name)
+      end
+
       def endpoints(name)
         fetch_or_load :endpoints, name
       end
@@ -102,6 +115,7 @@ module Matsuri
         case normalize_and_validate_type(type)
         when 'pod'                    then Matsuri::Kubernetes::Pod
         when 'replication_controller' then Matsuri::Kubernetes::ReplicationController
+        when 'persistant_volume'       then Matsuri::Kubernetes::PersistantVolume
         when 'service'                then Matsuri::Kubernetes::Service
         when 'endpoints'              then Matsuri::Kubernetes::Endpoints
         when 'secret'                 then Matsuri::Kubernetes::Secret
@@ -115,6 +129,7 @@ module Matsuri
         case type.to_s
         when 'pod'                    then Matsuri::Config.pods_path
         when 'replication_controller' then Matsuri::Config.rcs_path
+        when 'persistant_voume'       then Matsuri::Config.persistant_volumes_path
         when 'service'                then Matsuri::Config.services_path
         when 'endpoints'              then Matsuri::Config.endpoints_path
         when 'secret'                 then Matsuri::Config.secrets_path
@@ -132,6 +147,7 @@ module Matsuri
         case type.to_s
         when 'pod'                    then maybe_define_module('Pods')
         when 'replication_controller' then maybe_define_module('ReplicationControllers')
+        when 'persistant_volume'      then maybe_define_module('PersistantVolume')
         when 'service'                then maybe_define_module('Services')
         when 'endpoints'              then maybe_define_module('Endpoints')
         when 'secret'                 then maybe_define_module('Secrets')
@@ -148,7 +164,7 @@ module Matsuri
 
       def normalize_and_validate_type(type)
         _type = type.to_s.freeze
-        _type = 'replication_controller' if _type == 'rc'
+        _type = ALIASES[_type] if ALIASES.key?(_type)
         return _type if VALID_TYPES.include?(_type)
 
         fail "Registery type #{type.inspect} invalid. Use one of #{VALID_TYPES}" unless VALID_TYPES.include?(type)
