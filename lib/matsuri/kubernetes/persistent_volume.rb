@@ -47,11 +47,9 @@ module Matsuri
         end
 
         def definition_module_name
-          'PersistentVolume'
+          'PersistentVolumes'
         end
       end
     end
   end
 end
-
-Matsuri::Registry.register_class 'persistent_volume', class: Matsuri::Kubernetes::PersistentVolume, aliases: %w(pv)

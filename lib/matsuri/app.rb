@@ -129,5 +129,15 @@ module Matsuri
     def app(name, opt={})
       Matsuri::Registry.app(name).new(opt)
     end
+
+    class << self
+      def load_path
+        Matsuri::Config.apps_path
+      end
+
+      def definition_module_name
+        'Apps'
+      end
+    end
   end
 end

@@ -59,6 +59,15 @@ module Matsuri
         Hash[hash.map { |k,v| [k, base64(v) ] }]
       end
 
+      class << self
+        def load_path
+          Matsuri::Config.secrets_path
+        end
+
+        def definition_module_name
+          'Secrets'
+        end
+      end
     end
   end
 end

@@ -23,6 +23,16 @@ module Matsuri
           parameters:  parameters
         }
       end
+
+      class << self
+        def load_path
+          Matsuri::Config.storage_classes_path
+        end
+
+        def definition_module_name
+          'StorageClasses'
+        end
+      end
     end
   end
 end

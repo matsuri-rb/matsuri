@@ -91,6 +91,16 @@ module Matsuri
       def secret_volume(name, secret_name:)
         { name: name, secret: { secretName: secret_name } }
       end
+
+      class << self
+        def load_path
+          Matsuri::Config.pods_path
+        end
+
+        def definition_module_name
+          'Pods'
+        end
+      end
     end
   end
 end

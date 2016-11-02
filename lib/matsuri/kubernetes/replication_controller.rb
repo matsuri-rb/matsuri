@@ -120,6 +120,15 @@ module Matsuri
         k8s_name =~ /-r(\d+)$/ ? ($1).to_i : 0
       end
 
+      class << self
+        def load_path
+          Matsuri::Config.rcs_path
+        end
+
+        def definition_module_name
+          'ReplicationControllers'
+        end
+      end
     end
   end
 end

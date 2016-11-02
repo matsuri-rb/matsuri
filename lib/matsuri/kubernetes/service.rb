@@ -30,6 +30,15 @@ module Matsuri
         return _port
       end
 
+      class << self
+        def load_path
+          Matsuri::Config.services_path
+        end
+
+        def definition_module_name
+          'Services'
+        end
+      end
     end
   end
 end
