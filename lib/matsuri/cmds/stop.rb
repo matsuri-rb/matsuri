@@ -52,6 +52,23 @@ module Matsuri
         end
       end
 
+      def self.stop_cmd_for(resource_name)
+        define_method(resource_name) do |name|
+          stop_resource { Matsuri::Registry.send(resource_name, name).new }
+        end
+      end
+
+      desc 'pv PV_NAME', 'stop a persistent volume'
+      stop_cmd_for :pv
+
+      private
+
+      def stop_resource
+        with_config do |opt|
+          resource = yield
+          resource.stop!
+        end
+      end
     end
   end
 end

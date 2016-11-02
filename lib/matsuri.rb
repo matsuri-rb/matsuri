@@ -12,13 +12,17 @@ module Matsuri
 
   module Kubernetes
     autoload :Base,                  'matsuri/kubernetes/base'
+
+    # Core
     autoload :Pod,                   'matsuri/kubernetes/pod'
     autoload :ReplicationController, 'matsuri/kubernetes/replication_controller'
     autoload :Service,               'matsuri/kubernetes/service'
     autoload :Endpoints,             'matsuri/kubernetes/endpoints'
     autoload :Secret,                'matsuri/kubernetes/secret'
 
+    # Persistent Storage
     autoload :PersistentVolume,      'matsuri/kubernetes/persistent_volume'
+    autoload :StorageClass,          'matsuri/kubernetes/storage_class'
   end
 
   module AddOns

@@ -5,7 +5,7 @@ require 'active_support/core_ext/string/inflections'
 module Matsuri
   class Registry
     include Singleton
-    VALID_TYPES = %w(pod replication_controller persistent_volume service endpoints secret app).freeze
+    VALID_TYPES = %w(pod replication_controller persistent_volume storage_class service endpoints secret app).freeze
 
     ALIASES = {
       'rc' => 'replication_controller',
@@ -115,7 +115,8 @@ module Matsuri
         case normalize_and_validate_type(type)
         when 'pod'                    then Matsuri::Kubernetes::Pod
         when 'replication_controller' then Matsuri::Kubernetes::ReplicationController
-        when 'persistent_volume'       then Matsuri::Kubernetes::PersistentVolume
+        when 'persistent_volume'      then Matsuri::Kubernetes::PersistentVolume
+        when 'storage_class'          then Matsuri::Kubernetes::StorageClass
         when 'service'                then Matsuri::Kubernetes::Service
         when 'endpoints'              then Matsuri::Kubernetes::Endpoints
         when 'secret'                 then Matsuri::Kubernetes::Secret
@@ -130,6 +131,7 @@ module Matsuri
         when 'pod'                    then Matsuri::Config.pods_path
         when 'replication_controller' then Matsuri::Config.rcs_path
         when 'persistent_volume'      then Matsuri::Config.persistent_volumes_path
+        when 'storage_class'          then Matsuri::Config.storage_classes_path
         when 'service'                then Matsuri::Config.services_path
         when 'endpoints'              then Matsuri::Config.endpoints_path
         when 'secret'                 then Matsuri::Config.secrets_path
@@ -148,6 +150,7 @@ module Matsuri
         when 'pod'                    then maybe_define_module('Pods')
         when 'replication_controller' then maybe_define_module('ReplicationControllers')
         when 'persistent_volume'      then maybe_define_module('PersistentVolume')
+        when 'storage_class'          then maybe_define_module('StorageClass')
         when 'service'                then maybe_define_module('Services')
         when 'endpoints'              then maybe_define_module('Endpoints')
         when 'secret'                 then maybe_define_module('Secrets')
