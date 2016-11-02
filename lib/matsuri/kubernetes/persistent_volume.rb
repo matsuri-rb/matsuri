@@ -26,12 +26,13 @@ module Matsuri
       # http://kubernetes.io/docs/api-reference/v1/definitions/#_v1_gcepersistentdiskvolumesource
       let(:gce_persistent_disk) do
         {
-          pdName:    gce_pd_name,
-          fsType:    gce_fstype,
-          partition: gce_partition,
-          read_only: gce_read_only?
-
-        }.compact
+          gcePersistentDisk: {
+            pdName:    gce_pd_name,
+            fsType:    gce_fstype,
+            partition: gce_partition,
+            read_only: gce_read_only?
+          }.compact
+        }
       end
 
       let(:gce_pd_name)    { fail NotImplementedError, 'Must define let(:gce_pd_name) to unique PD resource on GCE' }
