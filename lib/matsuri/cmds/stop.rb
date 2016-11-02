@@ -37,6 +37,9 @@ module Matsuri
       desc 'pv PV_NAME', 'stop a persistent volume'
       stop_cmd_for :pv
 
+      desc 'pvc PVC_NAME', 'stop a persistent volume claim'
+      stop_cmd_for :pvc
+
       desc 'storage_class STORAGE_CLASS_NAME', 'delete a storage class'
       stop_cmd_for :storage_class
 

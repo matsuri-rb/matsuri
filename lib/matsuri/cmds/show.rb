@@ -57,6 +57,9 @@ module Matsuri
       desc 'pv PV_NAME', 'show manifest for persistent volume'
       show_cmd_for :pv
 
+      desc 'pvc PVC_NAME', 'show manifest for persistent volume claim'
+      show_cmd_for :pvc
+
       desc 'storage_class STORAGE_CLASS_NAME', 'show manifest for storage class'
       show_cmd_for :storage_class
 

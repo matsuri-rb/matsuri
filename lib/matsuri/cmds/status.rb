@@ -30,6 +30,9 @@ module Matsuri
       desc 'pv PV_NAME', 'persistent volume status'
       status_cmd_for :pv
 
+      desc 'pvc PVC_NAME', 'persistent volume claim status'
+      status_cmd_for :pvc
+
       desc 'storage_class STORAGE_CLASS_NAME', 'storage class status'
       status_cmd_for :storage_class
 
