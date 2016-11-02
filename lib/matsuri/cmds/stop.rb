@@ -61,6 +61,9 @@ module Matsuri
       desc 'pv PV_NAME', 'stop a persistent volume'
       stop_cmd_for :pv
 
+      desc 'storage_class STORAGE_CLASS_NAME', 'delete a storage class'
+      stop_cmd_for :storage_class
+
       private
 
       def stop_resource

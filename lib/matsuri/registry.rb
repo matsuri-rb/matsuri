@@ -107,6 +107,10 @@ module Matsuri
         persistent_volume(name)
       end
 
+      def storage_class(name)
+        fetch_or_load :storage_class, name
+      end
+
       def endpoints(name)
         fetch_or_load :endpoints, name
       end

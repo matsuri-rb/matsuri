@@ -54,6 +54,9 @@ module Matsuri
       desc 'pv PV_NAME', 'start a persistent volume'
       start_cmd_for :pv
 
+      desc 'storage_class STORAGE_CLASS_NAME', 'upload a storage class'
+      start_cmd_for :storage_class
+
       private
 
       def start_resource

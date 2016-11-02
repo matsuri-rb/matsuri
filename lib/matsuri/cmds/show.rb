@@ -59,6 +59,15 @@ module Matsuri
         show_resource { Matsuri::Registry.pv(name).new }
       end
 
+      def self.show_cmd_for(resource_name)
+        define_method(resource_name) do |name|
+          show_resource { Matsuri::Registry.send(resource_name, name).new }
+        end
+      end
+
+      desc 'storage_class STORAGE_CLASS_NAME', 'show manifest for storage class'
+      show_cmd_for :storage_class
+
       private
 
       def show_resource
