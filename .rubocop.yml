@@ -1,0 +1,9 @@
+
+Metrics/LineLength:
+  Enabled: false
+
+Style/SignalException:
+  EnforcedStyle: semantic
+
+#Style/FrozenStringLiteralComment:
+#    EnforcedStyle: always
