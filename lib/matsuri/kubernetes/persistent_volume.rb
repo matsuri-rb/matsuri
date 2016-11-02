@@ -10,7 +10,7 @@ module Matsuri
       let(:spec) do
         {
           capacity:                      capacity,
-          accessModes:                   access_modes,
+          accessModes:                   Array(access_modes),
           persistentVolumeReclaimPolicy: reclaim_policy
         }.merge(plugin_spec)
       end
@@ -30,7 +30,7 @@ module Matsuri
             pdName:    gce_pd_name,
             fsType:    gce_fstype,
             partition: gce_partition,
-            read_only: gce_read_only?
+            readOnly:  gce_read_only?
           }.compact
         }
       end
