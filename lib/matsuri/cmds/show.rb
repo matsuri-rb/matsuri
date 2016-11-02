@@ -8,6 +8,12 @@ module Matsuri
 
       class_option :json, aliases: :j, type: :boolean, default: false
 
+      def self.show_cmd_for(resource_name)
+        define_method(resource_name) do |name|
+          show_resource { Matsuri::Registry.send(resource_name, name).new }
+        end
+      end
+
       desc 'config', 'displays config'
       def config
         with_config do |opt|
@@ -40,30 +46,16 @@ module Matsuri
       end
 
       desc 'service SERVICE_NAME', 'show manifest for service'
-      def service(name)
-        show_resource { Matsuri::Registry.service(name).new }
-      end
+      show_cmd_for :services
 
       desc 'endpoints ENDPOINT_NAME', 'show manifest for endpoints'
-      def endpoints(name)
-        show_resource { Matsuri::Registry.endpoints(name).new }
-      end
+      show_cmd_for :endpoints
 
       desc 'secret SECRET_NAME', 'show a secret'
-      def secret(name)
-        show_resource { Matsuri::Registry.secret(name).new }
-      end
+      show_cmd_for :secret
 
       desc 'pv PV_NAME', 'show manifest for persistent volume'
-      def pv(name)
-        show_resource { Matsuri::Registry.pv(name).new }
-      end
-
-      def self.show_cmd_for(resource_name)
-        define_method(resource_name) do |name|
-          show_resource { Matsuri::Registry.send(resource_name, name).new }
-        end
-      end
+      show_cmd_for :pv
 
       desc 'storage_class STORAGE_CLASS_NAME', 'show manifest for storage class'
       show_cmd_for :storage_class
