@@ -1,3 +1,5 @@
+require 'active_support/core_ext/hash/compact'
+
 module Matsuri
   module Kubernetes
     # Kubernetes Persistent Volume

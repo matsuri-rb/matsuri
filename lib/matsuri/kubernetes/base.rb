@@ -28,7 +28,7 @@ module Matsuri
       let(:default_labels)      { { 'matsuri-name' => name } } # Needed for autodetecting 'current' for rolling-updates
       let(:default_annotations) { { } }
       let(:final_labels)        { default_labels.merge(labels) }
-      let(:final_labels)        { default_annotations.merge(annotations) }
+      let(:final_annotations)   { default_annotations.merge(annotations) }
       let(:namespace)           { 'default' }
       let(:resource_type)       { kind.to_s.downcase }
       let(:labels)              { { } }
