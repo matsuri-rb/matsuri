@@ -17,7 +17,7 @@ module Matsuri
       let(:access_modes)        { fail NotImplementedError, 'Must define let(:access_modes): ReadWriteOnce, ReadOnlyMany, ReadWriteMany' }
       let(:capacity)            { { storage: storage_size } } # http://kubernetes.io/docs/user-guide/persistent-volumes/#capacity
       let(:storage_size)        { fail NotImplementedError, 'Must define let(:storage_size)' }
-      let(:reclaim_policy)      { fail NotImplementedError, 'Must define let(:reclaime_policy): Retain, Recycle, Delete' }
+      let(:reclaim_policy)      { fail NotImplementedError, 'Must define let(:reclaim_policy): Retain, Recycle, Delete' }
       let(:plugin_spec)         { fail NotImplementedError, 'Must define let(:public_spec). Ex: gce_persistant_disk' }
 
       # GCE peristant disk plugin

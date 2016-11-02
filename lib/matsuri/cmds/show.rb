@@ -89,6 +89,22 @@ module Matsuri
         end
       end
 
+      desc 'pv PV_NAME', 'show manifest for persistant volume'
+      def pv(name)
+        show_resource(Matsuri::Registry.pv(name).new)
+      end
+
+      private
+
+      def show_resource(resource)
+        with_config do |_|
+          if options[:json]
+            puts resource.pretty_print
+          else
+            puts resource.to_yaml
+          end
+        end
+      end
     end
   end
 end
