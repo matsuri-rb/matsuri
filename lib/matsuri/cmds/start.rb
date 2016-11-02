@@ -42,8 +42,24 @@ module Matsuri
 
       desc 'secret SECRET_NAME', 'upload a secret'
       def secret(name)
+        start_resource { Matsuri::Registry.secret(name).new.start! }
+      end
+
+      def self.start_cmd_for(resource_name)
+        define_method(resource_name) do |name|
+          start_resource { Matsuri::Registry.send(resource_name, name).new }
+        end
+      end
+
+      desc 'pv PV_NAME', 'start a persistent volume'
+      start_cmd_for :pv
+
+      private
+
+      def start_resource
         with_config do |opt|
-          Matsuri::Registry.secret(name).new.start!
+          resource = yield
+          resource.start!
         end
       end
     end
