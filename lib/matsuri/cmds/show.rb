@@ -31,73 +31,39 @@ module Matsuri
 
       desc 'pod POD_NAME [IMAGE_TAG]', 'show manifest for pod'
       def pod(name, image_tag='latest')
-        with_config do |_|
-          pod = Matsuri::Registry.pod(name).new(image_tag: image_tag)
-          if options[:json]
-            puts pod.pretty_print
-          else
-            puts pod.to_yaml
-          end
-        end
+        show_resource { Matsuri::Registry.pod(name).new(image_tag: image_tag) }
       end
 
       desc 'rc RC_NAME [IMAGE_TAG]', 'show manifest for replication controller'
       def rc(name, image_tag = 'latest')
-        with_config do |_|
-          rc = Matsuri::Registry.rc(name).new(image_tag: image_tag)
-          if options[:json]
-            puts rc.pretty_print
-          else
-            puts rc.to_yaml
-          end
-        end
+        show_resource { Matsuri::Registry.rc(name).new(image_tag: image_tag) }
       end
 
       desc 'service SERVICE_NAME', 'show manifest for service'
       def service(name)
-        with_config do |_|
-          service = Matsuri::Registry.service(name).new
-          if options[:json]
-            puts service.pretty_print
-          else
-            puts service.to_yaml
-          end
-        end
+        show_resource { Matsuri::Registry.service(name).new }
       end
 
       desc 'endpoints ENDPOINT_NAME', 'show manifest for endpoints'
       def endpoints(name)
-        with_config do |_|
-          endpoints = Matsuri::Registry.endpoints(name).new
-          if options[:json]
-            puts endpoints.pretty_print
-          else
-            puts endpoints.to_yaml
-          end
-        end
+        show_resource { Matsuri::Registry.endpoints(name).new }
       end
 
       desc 'secret SECRET_NAME', 'show a secret'
       def secret(name)
-        with_config do |opt|
-          secret = Matsuri::Registry.secret(name).new
-          if options[:json]
-            puts secret.pretty_print
-          else
-            puts secret.to_yaml
-          end
-        end
+        show_resource { Matsuri::Registry.secret(name).new }
       end
 
       desc 'pv PV_NAME', 'show manifest for persistent volume'
       def pv(name)
-        show_resource(Matsuri::Registry.pv(name).new)
+        show_resource { Matsuri::Registry.pv(name).new }
       end
 
       private
 
-      def show_resource(resource)
-        with_config do |_|
+      def show_resource
+        with_config do |opt|
+          resource = yield opt
           if options[:json]
             puts resource.pretty_print
           else
