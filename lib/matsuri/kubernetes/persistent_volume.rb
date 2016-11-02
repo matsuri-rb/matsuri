@@ -39,6 +39,19 @@ module Matsuri
       let(:gce_fstype)     { 'ext4' } # Examples: ext4, xfs, ntfs
       let(:gce_partition)  { nil }
       let(:gce_read_only?) { false }
+
+      class << self
+        # Registry helpers
+        def load_path
+          Matsuri::Config.persistent_volumes_path
+        end
+
+        def definition_module_name
+          'PersistentVolume'
+        end
+      end
     end
   end
 end
+
+Matsuri::Registry.register_class 'persistent_volume', class: Matsuri::Kubernetes::PersistentVolume, aliases: %w(pv)

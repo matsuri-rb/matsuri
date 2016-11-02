@@ -8,15 +8,31 @@ module Matsuri
     VALID_TYPES = %w(pod replication_controller persistent_volume storage_class service endpoints secret app).freeze
 
     ALIASES = {
-      'rc' => 'replication_controller',
-      'pv' => 'persistent_volume'
+      'rc' => 'replication_controller'
     }.freeze
 
     def data
       @data ||= Map.new
     end
 
+    def k8s_class_registry
+      @k8s_class_registry ||= Map.new
+    end
+
+    def k8s_class_aliases
+      @k8s_class_aliases ||= Map.new
+    end
+
     class << self
+      # Registers a K8S class, which can then be used for definitions
+      def register_class(name, opt = {})
+        fail ArgumentError, 'need to pass class: parameter' unless opt[:class]
+        instance.k8s_class_registry[name] = opt[:class]
+        Array(opt[:aliases]).each do |class_alias|
+          instance.k8s_class_aliases[class_alias] = name
+        end
+      end
+
       # Helper to load class definitions
       def load_definition(type, name)
         def_path = definition_path(type, name)
@@ -110,19 +126,23 @@ module Matsuri
 
       private
 
-      def parent_class(type, parent_name)
+      def parent_class(type, parent_name = nil)
         return fetch_or_load(type, parent_name) if parent_name
         case normalize_and_validate_type(type)
         when 'pod'                    then Matsuri::Kubernetes::Pod
         when 'replication_controller' then Matsuri::Kubernetes::ReplicationController
-        when 'persistent_volume'      then Matsuri::Kubernetes::PersistentVolume
         when 'storage_class'          then Matsuri::Kubernetes::StorageClass
         when 'service'                then Matsuri::Kubernetes::Service
         when 'endpoints'              then Matsuri::Kubernetes::Endpoints
         when 'secret'                 then Matsuri::Kubernetes::Secret
         when 'app'                    then Matsuri::App
         else
-          fail "Cannot find type #{type}"
+          # Temporary: will refactor when everything gets refactored to class registry
+          if instance.k8s_class_registry[normalize_and_validate_type(type)]
+            instance.k8s_class_registry[normalize_and_validate_type(type)]
+          else
+            fail "Cannot find type #{type}"
+          end
         end
       end
 
@@ -130,14 +150,18 @@ module Matsuri
         case type.to_s
         when 'pod'                    then Matsuri::Config.pods_path
         when 'replication_controller' then Matsuri::Config.rcs_path
-        when 'persistent_volume'      then Matsuri::Config.persistent_volumes_path
         when 'storage_class'          then Matsuri::Config.storage_classes_path
         when 'service'                then Matsuri::Config.services_path
         when 'endpoints'              then Matsuri::Config.endpoints_path
         when 'secret'                 then Matsuri::Config.secrets_path
         when 'app'                    then Matsuri::Config.apps_path
         else
-          fail ArgumentError, "Unknown Matsuri type #{type}"
+          # Refactor later
+          if parent_class(type)
+            parent_class(type).load_path
+          else
+            fail ArgumentError, "Unknown Matsuri type #{type}"
+          end
         end
       end
 
@@ -149,14 +173,17 @@ module Matsuri
         case type.to_s
         when 'pod'                    then maybe_define_module('Pods')
         when 'replication_controller' then maybe_define_module('ReplicationControllers')
-        when 'persistent_volume'      then maybe_define_module('PersistentVolume')
         when 'storage_class'          then maybe_define_module('StorageClass')
         when 'service'                then maybe_define_module('Services')
         when 'endpoints'              then maybe_define_module('Endpoints')
         when 'secret'                 then maybe_define_module('Secrets')
         when 'app'                    then maybe_define_module('Apps')
         else
-          fail ArgumentError, "Unknown Matsuri type #{type}"
+          if parent_class(type)
+            maybe_define_module(parent_class(type).definition_module_name)
+          else
+            fail ArgumentError, "Unknown Matsuri type #{type}"
+          end
         end
       end
 
@@ -168,10 +195,14 @@ module Matsuri
       def normalize_and_validate_type(type)
         _type = type.to_s.freeze
         _type = ALIASES[_type] if ALIASES.key?(_type)
-        return _type if VALID_TYPES.include?(_type)
+        _type = instance.k8s_class_aliases[_type] if instance.k8s_class_aliases.key?(_type)
+        return _type if VALID_TYPES.include?(_type) || instance.k8s_class_registry.key?(_type)
 
-        fail "Registery type #{type.inspect} invalid. Use one of #{VALID_TYPES}" unless VALID_TYPES.include?(type)
+        fail "Registery type #{type.inspect} invalid. Use one of #{VALID_TYPES} #{instance.k8s_class_registry.keys}"
       end
     end
   end
 end
+
+# TODO: Consider making this dynamically and lazy loaded
+require 'matsuri/kubernetes/persistent_volume'
