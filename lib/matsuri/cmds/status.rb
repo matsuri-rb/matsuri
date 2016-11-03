@@ -15,6 +15,20 @@ module Matsuri
       desc 'pod POD_NAME', 'pod status'
       status_cmd_for :pod
 
+      desc 'pods', 'kubectl top pods'
+      def pods
+        with_config do |_|
+          Matsuri::ShellOut.kubectl 'top pods'
+        end
+      end
+
+      desc 'nodes', 'kubectl top nodes'
+      def nodes
+        with_config do |_|
+          Matsuri::ShellOut.kubectl 'top nodes'
+        end
+      end
+
       desc 'rc RC_NAME [IMAGE_TAG]', 'replication controller status'
       status_cmd_for :rc
 

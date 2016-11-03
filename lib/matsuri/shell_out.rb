@@ -3,6 +3,8 @@ require 'rainbow/ext/string'
 
 module Matsuri
   module ShellOut
+    module_function
+
     SHELLOUT_DEFAULTS = { cwd: ENV['PWD'] }
 
     # Override
