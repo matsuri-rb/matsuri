@@ -67,7 +67,7 @@ module Matsuri
 
       # Ruby 2.0+ uses ordered hashes
       def expand_env(hash)
-        hash.map { |k,v| { name: k, value: v } }
+        hash.map { |k,v| { name: k, value: v.to_s } }
       end
 
       def port(num, protocol: 'TCP', name: nil)
