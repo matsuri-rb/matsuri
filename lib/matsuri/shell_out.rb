@@ -49,6 +49,14 @@ module Matsuri
       exit 1
     end
 
+    # Log and exec a command. Useful for things such as
+    # attaching to a remote shell or console on the K8S cluster
+    def log_and_exec(_cmd, options = {})
+      echo_level = options.delete(:echo_level) || :info
+      Matsuri.log echo_level, "$ #{_cmd}".color(:green)
+      exec _cmd
+    end
+
     # This is so that it is easier to write app commands
     def kubectl_cmd(_cmd)
       "kubectl --context=#{kube_context} #{_cmd}"
