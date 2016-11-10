@@ -32,8 +32,12 @@ module Matsuri
         end
       end
 
-      desc 'replica_set REPLICA_SET_NAME', 'start a replica_set'
-      start_cmd_for :replica_set
+      desc 'replica-set RS_NAME [IMAGE_TAG]', 'start a replica set'
+      def replica_set(name, image_tag = 'latest')
+        with_config do |opt|
+          Matsuri::Registry.replica_set(name).new(image_tag: image_tag).start!
+        end
+      end
 
       desc 'service SERVICE_NAME', 'start a service'
       start_cmd_for :service
