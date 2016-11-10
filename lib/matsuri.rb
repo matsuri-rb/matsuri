@@ -20,6 +20,9 @@ module Matsuri
     autoload :Endpoints,             'matsuri/kubernetes/endpoints'
     autoload :Secret,                'matsuri/kubernetes/secret'
 
+    # Extensions
+    autoload :ReplicaSet,            'matsuri/kubernetes/replica_set'
+
     # Persistent Storage
     autoload :PersistentVolume,      'matsuri/kubernetes/persistent_volume'
     autoload :PersistentVolumeClaim, 'matsuri/kubernetes/persistent_volume_claim'

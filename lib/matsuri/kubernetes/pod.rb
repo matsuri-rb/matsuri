@@ -92,6 +92,10 @@ module Matsuri
         { name: name, secret: { secretName: secret_name } }
       end
 
+      def gce_volume(name, pd_name:, fs_type: 'ext4')
+        { name: name, gcePersistentDisk: { pdName: pd_name, fsType: fs_type } }
+      end
+
       class << self
         def load_path
           Matsuri::Config.pods_path

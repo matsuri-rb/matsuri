@@ -99,6 +99,10 @@ module Matsuri
         replication_controller(name)
       end
 
+      def replica_set(name)
+        fetch_or_load :replica_set, name
+      end
+
       def persistent_volume(name)
         fetch_or_load :persistent_volume, name
       end
@@ -174,6 +178,7 @@ Matsuri::Registry.register_class 'replication_controller',  class: Matsuri::Kube
 Matsuri::Registry.register_class 'service',                 class: Matsuri::Kubernetes::Service
 Matsuri::Registry.register_class 'endpoint',                class: Matsuri::Kubernetes::Endpoints
 Matsuri::Registry.register_class 'secret',                  class: Matsuri::Kubernetes::Secret
+Matsuri::Registry.register_class 'replica_set',             class: Matsuri::Kubernetes::ReplicaSet
 Matsuri::Registry.register_class 'persistent_volume',       class: Matsuri::Kubernetes::PersistentVolume,      aliases: %w(pv)
 Matsuri::Registry.register_class 'persistent_volume_claim', class: Matsuri::Kubernetes::PersistentVolumeClaim, aliases: %w(pvc)
 Matsuri::Registry.register_class 'storage_class',           class: Matsuri::Kubernetes::StorageClass
