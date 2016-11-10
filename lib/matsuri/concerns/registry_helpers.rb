@@ -31,6 +31,10 @@ module Matsuri
 
         alias_method :rc, :replication_controller
 
+        def replica_set(name, opt={})
+          Matsuri::Registry.replica_set(name).new(opt)
+        end
+
         def service(name, opt={})
           Matsuri::Registry.service(name).new(opt)
         end

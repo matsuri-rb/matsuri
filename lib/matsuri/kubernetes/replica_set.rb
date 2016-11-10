@@ -41,6 +41,18 @@ module Matsuri
       let(:pod_def)  { pod(pod_name, image_tag: image_tag, release: release) }
       let(:primary_image) { pod_def.primary_image }
 
+      ### Helpers
+      def selected_pods_json
+        fail NotImpelemntedError, 'Match Expressions not yet implemented' if Array(match_expressions).any?
+        sel = match_labels.to_a.map { |(k,v)| "#{k}=#{v}" }.join(',')
+        cmd = kubectl "--namespace=#{namespace} get pods -l #{sel} -o json", echo_level: :debug, no_stdout: true
+        JSON.parse(cmd.stdout)
+      end
+
+      def selected_pods
+        selected_pods_json['items']
+      end
+
       class << self
         def load_path
           Matsuri::Config.replica_sets_path
