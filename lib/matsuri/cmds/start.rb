@@ -32,6 +32,9 @@ module Matsuri
         end
       end
 
+      desc 'replica_set REPLICA_SET_NAME', 'start a replica_set'
+      start_cmd_for :replica_set
+
       desc 'service SERVICE_NAME', 'start a service'
       start_cmd_for :service
 

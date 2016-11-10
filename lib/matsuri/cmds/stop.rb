@@ -22,6 +22,9 @@ module Matsuri
       desc 'rc RC_NAME', 'stop a replication controller'
       stop_cmd_for :rc
 
+      desc 'replica_set REPLICA_SET_NAME', 'stop a replica_set'
+      stop_cmd_for :replica_set
+
       desc 'service SERVICE_NAME', 'stop a service'
       stop_cmd_for :service
 

@@ -45,7 +45,7 @@ module Matsuri
         show_resource { Matsuri::Registry.rc(name).new(image_tag: image_tag) }
       end
 
-      desc 'replica_set SERVICE_NAME', 'show manifest for replica_set'
+      desc 'replica_set REPLICA_SET_NAME', 'show manifest for replica_set'
       show_cmd_for :replica_set
 
       desc 'service SERVICE_NAME', 'show manifest for service'

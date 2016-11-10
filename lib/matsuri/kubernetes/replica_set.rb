@@ -1,8 +1,8 @@
 module Matsuri
   module Kubernetes
     class ReplicaSet < Matsuri::Kubernetes::Base
-      let(:api)  { 'extensions/v1beta1' } # http://kubernetes.io/docs/api-reference/extensions/v1beta1/definitions/#_v1beta1_replicaset
-      let(:kind) { 'ReplicaSet' }         # http://kubernetes.io/docs/user-guide/replicasets/
+      let(:api_version) { 'extensions/v1beta1' } # http://kubernetes.io/docs/api-reference/extensions/v1beta1/definitions/#_v1beta1_replicaset
+      let(:kind)        { 'ReplicaSet' }         # http://kubernetes.io/docs/user-guide/replicasets/
 
       # Overridables
 
@@ -19,6 +19,7 @@ module Matsuri
 
       # Parameters passed from command line
       # These are here to support rolling updates
+      # Copied from ReplicationController, but
       # Don't know if we are going to keep this around
       let(:maybe_param_name)     { options[:name] || name }
       let(:maybe_param_replicas) { options[:relicas] || replicas }
