@@ -2,7 +2,7 @@ module Matsuri
   module Kubernetes
     class Deployment < Matsuri::Kubernetes::Base
       let(:api_version) { 'extensions/v1beta1' } # http://kubernetes.io/docs/api-reference/extensions/v1beta1/definitions/#_v1beta1_deployment
-      let(:kind)        { 'ReplicaSet' }         # http://kubernetes.io/docs/user-guide/deployments/
+      let(:kind)        { 'Deployment' }         # http://kubernetes.io/docs/user-guide/deployments/
 
       # Overridables
 
@@ -13,7 +13,7 @@ module Matsuri
           selector: selector,
           template: template,
           strategy: strategy,
-          min_ready_seconds: min_ready_seconds,
+          minReadySeconds: min_ready_seconds,
           revisionHistoryLimit: revision_history_limit
         }.compact
       end
