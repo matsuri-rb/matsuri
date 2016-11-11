@@ -25,6 +25,9 @@ module Matsuri
       desc 'replica_set REPLICA_SET_NAME', 'stop a replica_set'
       stop_cmd_for :replica_set
 
+      desc 'deployment DEPLOYMENT_NAME', 'stop a deployment'
+      stop_cmd_for :deployment
+
       desc 'service SERVICE_NAME', 'stop a service'
       stop_cmd_for :service
 

@@ -39,6 +39,13 @@ module Matsuri
         end
       end
 
+      desc 'deployment DEPLOYMENT_NAME [IMAGE_TAG]', 'start a deployment'
+      def deployment(name, image_tag = 'latest')
+        with_config do |opt|
+          Matsuri::Registry.deployment(name).new(image_tag: image_tag).start!
+        end
+      end
+
       desc 'service SERVICE_NAME', 'start a service'
       start_cmd_for :service
 
