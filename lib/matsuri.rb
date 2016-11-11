@@ -22,6 +22,7 @@ module Matsuri
 
     # Extensions
     autoload :ReplicaSet,            'matsuri/kubernetes/replica_set'
+    autoload :Deployment,            'matsuri/kubernetes/deployment'
 
     # Persistent Storage
     autoload :PersistentVolume,      'matsuri/kubernetes/persistent_volume'
