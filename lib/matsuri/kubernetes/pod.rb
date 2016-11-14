@@ -30,7 +30,8 @@ module Matsuri
       let(:container)   { fail NotImplementedError, 'Must define let(:container)'}
       let(:volume)      { fail NotImplementedError, 'Must define let(:volume)' }
 
-      let(:primary_image) { fail NotImplementedError, 'Must defne let(:primary_image) for replication controller' }
+      let(:primary_container) { containers.first[:name] }
+      let(:primary_image)     { fail NotImplementedError, 'Must define let(:primary_image) for deployment or replication controller' }
 
       # We want to make sure all limits are defined
       let(:cpu_limit)   { fail NotImplementedError, 'Must define let(:cpu_limit)' }

@@ -56,11 +56,22 @@ module Matsuri
 
       # Define this to point to an existing pod definition. This is the name
       # registered to Matsuri::Registry
-      let(:pod_name) { fail NotImplementedError, 'Must define let(:pod_name)' }
-      let(:pod_def)  { pod(pod_name, image_tag: image_tag, release: release) }
-      let(:primary_image) { pod_def.primary_image }
+      let(:pod_name)          { fail NotImplementedError, 'Must define let(:pod_name)' }
+      let(:pod_def)           { pod(pod_name, image_tag: image_tag, release: release) }
+      let(:primary_image)     { pod_def.primary_image }
+      let(:primary_container) { pod_def.primary_container }
 
       ### Helpers
+      def update!(version: nil)
+        version ||= self.image_tag
+        rollout! versions: { primary_container => "#{primary_image}:#{version}" }
+      end
+
+      def rollout!(versions:)
+        version_changes = versions.map { |(k,v)| "#{k}=#{v}" }.join(' ')
+        kubectl! "--namespace=#{namespace} set image #{resource_type}/#{name} #{version_changes}"
+      end
+
       ### @TODO Factor this out into helpers
       def selected_pods_json
         fail NotImpelemntedError, 'Match Expressions not yet implemented' if Array(match_expressions).any?
