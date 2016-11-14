@@ -47,12 +47,8 @@ module Matsuri
         end
       end
 
-      desc 'scale RC_NAME', 'Scales a replication controller'
-      def scale(name, replicas)
-        with_config do |opt|
-          Matsuri::Registry.rc(name).new.scale!(replicas, opt)
-        end
-      end
+      desc 'scale SUBCOMMAND ...ARGS', 'scale resource'
+      subcommand 'scale', Matsuri::Cmds::Scale
 
       desc 'rollout RC_NAME [TAG]', 'Rolls out a new image for a replication controller'
       def rollout(name, image_tag = nil)

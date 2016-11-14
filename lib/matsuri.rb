@@ -42,6 +42,7 @@ module Matsuri
     autoload :Start,   'matsuri/cmds/start'
     autoload :Reload,  'matsuri/cmds/reload'
     autoload :Restart, 'matsuri/cmds/restart'
+    autoload :Scale,   'matsuri/cmds/scale'
     autoload :Stop,    'matsuri/cmds/stop'
   end
 
