@@ -51,7 +51,7 @@ module Matsuri
       def start!
         puts "Starting #{resource_type}/#{name}".color(:yellow).bright if config.verbose
         puts to_json if config.debug
-        kubectl! "--namespace=#{namespace} create -f -", input: to_json
+        kubectl! "--namespace=#{namespace} create --save-config=true -f -", input: to_json
       end
 
       def stop!
@@ -60,9 +60,8 @@ module Matsuri
       end
 
       def reload!
-        fail NotImplementedError, 'Must implement #reload!'
-        puts to_json if config.verbose
-        kubectl! "replace -f -", input: to_json
+        puts to_json if config.debug
+        kubectl! "apply -f -", input: to_json
       end
 
       def restart!

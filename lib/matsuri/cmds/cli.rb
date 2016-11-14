@@ -20,14 +20,11 @@ module Matsuri
 
       desc 'start SUBCOMMAND ...ARGS', 'start resource'
       subcommand 'start', Matsuri::Cmds::Start
+      map create: :start
 
-      #desc 'reload SUBCOMMAND ...ARGS', 'reload resource'
-      #subcommand 'reload', Matsuri::Cmds::Reload
-      desc 'reload', 'Not Implementd'
-      def reload
-        puts "Reload not implemented yet"
-        exit (1)
-      end
+      desc 'reload SUBCOMMAND ...ARGS', 'reload resource'
+      subcommand 'reload', Matsuri::Cmds::Reload
+      map apply: :reload
 
       desc 'rebuild', 'Not Implementd'
       def rebuild
@@ -40,6 +37,7 @@ module Matsuri
 
       desc 'stop SUBCOMMAND ...ARGS', 'stop resource'
       subcommand 'stop', Matsuri::Cmds::Stop
+      map delete: :stop
 
       desc 'converge APP_NAME', 'Idempotently converges an app and all dependencies'
       option :restart, type: :boolean, default: false
