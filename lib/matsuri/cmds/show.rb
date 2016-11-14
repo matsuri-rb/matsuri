@@ -8,9 +8,15 @@ module Matsuri
 
       class_option :json, aliases: :j, type: :boolean, default: false
 
-      def self.show_cmd_for(resource_name)
-        define_method(resource_name) do |name|
-          show_resource { Matsuri::Registry.send(resource_name, name).new }
+      def self.show_cmd_for(resource_name, image_tag: false)
+        unless image_tag
+          define_method(resource_name) do |name|
+            show_resource { Matsuri::Registry.send(resource_name, name).new }
+          end
+        else
+          define_method(resource_name) do |name, image_tag = 'latest'|
+            show_resource { Matsuri::Registry.send(resource_name, name).new(image_tag: image_tag) }
+          end
         end
       end
 
@@ -35,21 +41,17 @@ module Matsuri
         end
       end
 
-      desc 'pod POD_NAME [IMAGE_TAG]', 'show manifest for pod'
-      def pod(name, image_tag='latest')
-        show_resource { Matsuri::Registry.pod(name).new(image_tag: image_tag) }
-      end
+      desc 'pod POD_NAME', 'show manifest for pod'
+      show_cmd_for :pod, image_tag: true
 
-      desc 'rc RC_NAME [IMAGE_TAG]', 'show manifest for replication controller'
-      def rc(name, image_tag = 'latest')
-        show_resource { Matsuri::Registry.rc(name).new(image_tag: image_tag) }
-      end
+      desc 'rc RC_NAME', 'show manifest for rc'
+      show_cmd_for :rc, image_tag: true
 
       desc 'replica_set REPLICA_SET_NAME', 'show manifest for replica_set'
-      show_cmd_for :replica_set
+      show_cmd_for :replica_set, image_tag: true
 
       desc 'deployment DEPLOYMENT_NAME', 'show manifest for deployment'
-      show_cmd_for :deployment
+      show_cmd_for :deployment, image_tag: true
 
       desc 'service SERVICE_NAME', 'show manifest for service'
       show_cmd_for :services
