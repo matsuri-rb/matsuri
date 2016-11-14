@@ -86,6 +86,15 @@ module Matsuri
         end
       end
 
+      desc 'sh! APP_NAME', 'Shells into an app container as root'
+      option :pod,  aliases: :p, type: :string
+      def sh!(name, *args)
+        with_config do |opt|
+          opt[:root] = true
+          Matsuri::Registry.app(name).new.sh!(opt, args)
+        end
+      end
+
       desc 'console APP_NAME', 'Gets to the console of an app'
       option :root, type: :boolean, default: false
       option :user, type: :string
