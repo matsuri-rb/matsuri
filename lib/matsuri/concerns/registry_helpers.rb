@@ -35,6 +35,10 @@ module Matsuri
           Matsuri::Registry.replica_set(name).new(opt)
         end
 
+        def deployment(name, opt={})
+          Matsuri::Registry.deployment(name).new(opt)
+        end
+
         def service(name, opt={})
           Matsuri::Registry.service(name).new(opt)
         end

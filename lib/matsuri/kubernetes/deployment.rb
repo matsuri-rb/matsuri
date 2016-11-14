@@ -61,6 +61,7 @@ module Matsuri
       let(:primary_image) { pod_def.primary_image }
 
       ### Helpers
+      ### @TODO Factor this out into helpers
       def selected_pods_json
         fail NotImpelemntedError, 'Match Expressions not yet implemented' if Array(match_expressions).any?
         sel = match_labels.to_a.map { |(k,v)| "#{k}=#{v}" }.join(',')
