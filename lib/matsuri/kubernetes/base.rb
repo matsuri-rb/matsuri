@@ -60,6 +60,7 @@ module Matsuri
       end
 
       def apply!
+        puts "Applying (create or update) #{resource_type}/#{name}".color(:yellow).bright if config.verbose
         puts to_json if config.debug
         kubectl! "apply --record=true -f -", input: to_json
       end
@@ -80,19 +81,28 @@ module Matsuri
       end
 
       def converge!(opts = {})
-        puts "Converging #{resource_type}/#{name}".color(:yellow) if config.verbose
-        puts "Rebuild not implemented. Restarting instead.".color(:red).bright if opts[:rebuild]
+        converge_by_apply!(opts)
+      end
+
+      def converge_by_apply!(opts)
+        puts "Converging #{resource_type}/#{name} via apply".color(:yellow) if config.verbose
+        puts "Rebuild not implemented. Applying instead.".color(:red).bright if opts[:rebuild]
+        apply!
+      end
+
+      def converge_by_recreate!(opts = {})
+        puts "Converging #{resource_type}/#{name} via recreate".color(:yellow) if config.verbose
+        puts "Rebuild not implemented. Recreating instead.".color(:red).bright if opts[:rebuild]
 
         if opts[:restart] || opts[:rebuild]
-          if started?
+          if created?
             recreate!
           else
             create!
           end
         else
-          create! unless started?
+          create! unless created?
         end
-
       end
 
       # Helper functions
@@ -101,7 +111,7 @@ module Matsuri
         Map.new(JSON.parse(cmd.stdout))
       end
 
-      def started?
+      def created?
         cmd = kubectl "--namespace=#{namespace} get #{resource_type}/#{name}", echo_level: :debug, no_stdout: true
         return cmd.status.success? unless config.verbose
 
@@ -110,7 +120,7 @@ module Matsuri
                  else
                    "not started"
                  end
-        puts "#{resource_type}/#{name} #{status}".color(:yellow)
+        Matsuri.log :info, "#{resource_type}/#{name} #{status}".color(:yellow)
         cmd.status.success?
       end
 

@@ -39,6 +39,13 @@ module Matsuri
       let(:cpu_request) { cpu_limit }
       let(:mem_request) { cpu_limit }
 
+      # Pods are practically useless with using apply. When we converge, we want
+      # to recreate instead. Pods unamaged by rc, rs, or deployment are more useful
+      # in dev mode than anywhere else
+      def converge!(opts = {})
+        converge_by_recreate!(opts)
+      end
+
       # Helper methods
       def up?
         cmd = kubectl "--namespace=#{namespace} get #{resource_type}/#{name} -o json", echo_level: :debug, no_stdout: true

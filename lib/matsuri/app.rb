@@ -13,6 +13,10 @@ module Matsuri
 
     class_attribute :build_order, :failure_hooks
 
+    # When we pass image_tag to converge command, propogate this
+    # down the convergance tree.
+    let(:image_tag) { options[:image_tag] }
+
     # Defines a list of deps, used to  to idempotently converge Kubernetes
     # resources. Generally, you will add a an app as a dep for resources you are
     # sharing with other apps, while directly referencing Kubernetes resources
@@ -46,6 +50,13 @@ module Matsuri
     # including all dependencies
     def build!
       fail NotImplementedError, 'Must implement #build!'
+    end
+
+    # Override this. This commands defines how to display the status
+    # Maybe we can find some useful, standardized way of displaying
+    # status.
+    def status!
+      fail NotImplementedError, 'Must implement #status!'
     end
 
     # Override this. This command defines how all the app depenencies
@@ -85,7 +96,7 @@ module Matsuri
           call_on_failure(type, name) || Matsuri.log(:fatal, "Cannot find required file #{name}")
         end
 
-        resource = dep(type, name).new
+        resource = dep(type, name).new(image_tag: image_tag)
         if type == :app && !opts[:reboot]
           puts "Shallow converging app #{name}".color(:red).bright if config.verbose
           resource.converge!

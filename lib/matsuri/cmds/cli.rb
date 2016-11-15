@@ -46,9 +46,9 @@ module Matsuri
       subcommand 'delete', Matsuri::Cmds::Delete
       map stop: :delete
 
-      desc 'converge APP_NAME', 'Idempotently converges an app and all dependencies'
+      desc 'converge APP_NAME [IMAGE_TAG]', 'Idempotently converges an app and all dependencies'
       option :restart, type: :boolean, default: false
-      def converge(name, image_tag = 'latest')
+      def converge(name, image_tag = nil)
         with_config do |opt|
           Matsuri::Registry.app(name).new(image_tag: image_tag).converge!(opt)
         end
