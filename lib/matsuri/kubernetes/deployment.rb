@@ -65,7 +65,7 @@ module Matsuri
 
       ### Helpers
       def update!(version: nil)
-        version ||= current_image_tag || self.image_tag
+        version ||= self.image_tag
         rollout! versions: { primary_container => "#{primary_image}:#{version}" }
       end
 
@@ -90,7 +90,7 @@ module Matsuri
       end
 
       def current_image_tag
-        current_image.split(/:/)[1]
+        current_image.split(/:/).last
       end
 
       def selected_pods_json
