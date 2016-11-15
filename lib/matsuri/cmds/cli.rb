@@ -9,7 +9,7 @@ module Matsuri
       class_option :debug,   aliases: :D, type: :boolean
       class_option :environment, aliases: :e, type: :string, default: ENV['MATSURI_ENVIRONMENT']
 
-      desc "k8s SUBCOMMAND ...ARGS", "manage Kubernetes"
+      desc "k8s SUBCOMMAND ...ARGS", "manage Kubernetes [deprecated]"
       #subcommand 'k8s', Matsuri::Cmds::K8s
       def k8s
         puts "k8s is going away. Use minikube or nanokube"
@@ -24,13 +24,13 @@ module Matsuri
       subcommand 'status', Matsuri::Cmds::Status
       map top: :status
 
-      desc 'create SUBCOMMAND ...ARGS', 'create resource'
+      desc 'create SUBCOMMAND ...ARGS', 'create resource (kubectl create)'
       subcommand 'create', Matsuri::Cmds::Create
       map start: :create
 
-      desc 'reload SUBCOMMAND ...ARGS', 'reload resource'
-      subcommand 'reload', Matsuri::Cmds::Reload
-      map apply: :reload
+      desc 'apply SUBCOMMAND ...ARGS', 'create or update resource (kubectl apply)'
+      subcommand 'apply', Matsuri::Cmds::Apply
+      map reload: :apply
 
       desc 'rebuild', 'Not Implementd'
       def rebuild

@@ -40,7 +40,7 @@ module Matsuri
     autoload :Show,    'matsuri/cmds/show'
     autoload :Status,  'matsuri/cmds/status'
     autoload :Create,  'matsuri/cmds/create'
-    autoload :Reload,  'matsuri/cmds/reload'
+    autoload :Apply,   'matsuri/cmds/apply'
     autoload :Restart, 'matsuri/cmds/restart'
     autoload :Scale,   'matsuri/cmds/scale'
     autoload :Stop,    'matsuri/cmds/stop'

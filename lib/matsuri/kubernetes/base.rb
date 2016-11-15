@@ -59,7 +59,7 @@ module Matsuri
         kubectl! "--namespace=#{namespace} delete #{resource_type}/#{name}"
       end
 
-      def reload!
+      def apply!
         puts to_json if config.debug
         kubectl! "apply --record=true -f -", input: to_json
       end
