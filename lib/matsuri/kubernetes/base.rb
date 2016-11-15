@@ -54,8 +54,8 @@ module Matsuri
         kubectl! "--namespace=#{namespace} create --save-config=true --record=true -f -", input: to_json
       end
 
-      def stop!
-        puts "Stopping #{resource_type}/#{name}".color(:yellow).bright if config.verbose
+      def delete!
+        puts "Deleting #{resource_type}/#{name}".color(:yellow).bright if config.verbose
         kubectl! "--namespace=#{namespace} delete #{resource_type}/#{name}"
       end
 
@@ -65,7 +65,7 @@ module Matsuri
       end
 
       def restart!
-        stop!
+        delete!
         create!
       end
 

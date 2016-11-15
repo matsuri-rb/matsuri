@@ -41,9 +41,9 @@ module Matsuri
       desc 'restart SUBCOMMAND ...ARGS', 'restart resource'
       subcommand 'restart', Matsuri::Cmds::Restart
 
-      desc 'stop SUBCOMMAND ...ARGS', 'stop resource'
-      subcommand 'stop', Matsuri::Cmds::Stop
-      map delete: :stop
+      desc 'delete SUBCOMMAND ...ARGS', 'delete resource'
+      subcommand 'delete', Matsuri::Cmds::Delete
+      map stop: :delete
 
       desc 'converge APP_NAME', 'Idempotently converges an app and all dependencies'
       option :restart, type: :boolean, default: false

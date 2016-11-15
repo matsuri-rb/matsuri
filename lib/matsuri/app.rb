@@ -55,19 +55,19 @@ module Matsuri
     end
 
     # Override this. This command defines how all app dependencies are stopped
-    def stop!
+    def delete!
       self.class.build_order.each do |(type, name)|
         if type == :app
           puts "Skipping app #{name}"
           next
         end
 
-        dep(type, name).new.stop!
+        dep(type, name).new.delete!
       end
     end
 
     def restart!
-      stop!
+      delete!
       create!
     end
 

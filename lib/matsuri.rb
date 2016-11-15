@@ -40,10 +40,10 @@ module Matsuri
     autoload :Show,    'matsuri/cmds/show'
     autoload :Status,  'matsuri/cmds/status'
     autoload :Create,  'matsuri/cmds/create'
+    autoload :Delete,  'matsuri/cmds/delete'
     autoload :Apply,   'matsuri/cmds/apply'
     autoload :Restart, 'matsuri/cmds/restart'
     autoload :Scale,   'matsuri/cmds/scale'
-    autoload :Stop,    'matsuri/cmds/stop'
   end
 
   module Tasks
