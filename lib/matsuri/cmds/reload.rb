@@ -1,3 +1,5 @@
+require 'active_support/core_ext/object/try'
+
 module Matsuri
   module Cmds
     class Reload < Thor
@@ -9,8 +11,12 @@ module Matsuri
             reload_resource { Matsuri::Registry.send(resource_name, name).new }
           end
         else
-          define_method(resource_name) do |name, image_tag = 'latest'|
-            reload_resource { Matsuri::Registry.send(resource_name, name).new(image_tag: image_tag) }
+          define_method(resource_name) do |name, image_tag = nil|
+            reload_resource do
+              image_tag ||= Matsuri::Registry.send(resource_name, name).new.try(:current_image)
+              image_tag ||= 'latest'
+              Matsuri::Registry.send(resource_name, name).new(image_tag: image_tag)
+            end
           end
         end
       end

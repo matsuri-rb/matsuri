@@ -65,7 +65,7 @@ module Matsuri
 
       ### Helpers
       def update!(version: nil)
-        version ||= self.image_tag
+        version ||= current_image_tag || self.image_tag
         rollout! versions: { primary_container => "#{primary_image}:#{version}" }
       end
 
@@ -79,6 +79,20 @@ module Matsuri
       end
 
       ### @TODO Factor this out into helpers
+
+      # @TODO This assumes the first container is the primary container
+      def current_image
+        manifest = current_manifest
+        return nil unless manifest
+        containers = manifest.get(:spec, :template, :spec, :containers)
+        return nil unless containers.any?
+        containers[0].get(:image)
+      end
+
+      def current_image_tag
+        current_image.split(/:/)[1]
+      end
+
       def selected_pods_json
         fail NotImpelemntedError, 'Match Expressions not yet implemented' if Array(match_expressions).any?
         sel = match_labels.to_a.map { |(k,v)| "#{k}=#{v}" }.join(',')
