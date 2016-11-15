@@ -1,6 +1,8 @@
 module Matsuri
   module Kubernetes
     class Deployment < Matsuri::Kubernetes::Base
+      include Matsuri::Concerns::Scalable
+
       let(:api_version) { 'extensions/v1beta1' } # http://kubernetes.io/docs/api-reference/extensions/v1beta1/definitions/#_v1beta1_deployment
       let(:kind)        { 'Deployment' }         # http://kubernetes.io/docs/user-guide/deployments/
 
