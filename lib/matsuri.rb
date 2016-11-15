@@ -39,7 +39,7 @@ module Matsuri
     autoload :K8s,     'matsuri/cmds/k8s'
     autoload :Show,    'matsuri/cmds/show'
     autoload :Status,  'matsuri/cmds/status'
-    autoload :Start,   'matsuri/cmds/start'
+    autoload :Create,  'matsuri/cmds/create'
     autoload :Reload,  'matsuri/cmds/reload'
     autoload :Restart, 'matsuri/cmds/restart'
     autoload :Scale,   'matsuri/cmds/scale'

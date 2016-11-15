@@ -50,7 +50,7 @@ module Matsuri
 
     # Override this. This command defines how all the app depenencies
     # are started, such as services, endpoints, replication controllers, etc.
-    def start!
+    def create!
       converge! # Most of the time, we want to converge
     end
 
@@ -68,7 +68,7 @@ module Matsuri
 
     def restart!
       stop!
-      start!
+      create!
     end
 
     def rebuild!

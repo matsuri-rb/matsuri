@@ -62,7 +62,7 @@ module Matsuri
         # Create a next controller, overriding image tag, name, and replicas
         # Start replicas with 1 and move from there.
         rc_next = rc(name, name: next_rc, release: next_rel, image_tag: image_tag, replicas: 1)
-        #rc_next.start!
+        #rc_next.create!
 
         Matsuri.log(:debug) { rc_next.pretty_print }
         kubectl! "--namespace=#{namespace} rolling-update #{current_rc} #{next_rc} -f -", input: rc_next.to_json

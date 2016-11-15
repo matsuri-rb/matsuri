@@ -24,9 +24,9 @@ module Matsuri
       subcommand 'status', Matsuri::Cmds::Status
       map top: :status
 
-      desc 'start SUBCOMMAND ...ARGS', 'start resource'
-      subcommand 'start', Matsuri::Cmds::Start
-      map create: :start
+      desc 'create SUBCOMMAND ...ARGS', 'create resource'
+      subcommand 'create', Matsuri::Cmds::Create
+      map start: :create
 
       desc 'reload SUBCOMMAND ...ARGS', 'reload resource'
       subcommand 'reload', Matsuri::Cmds::Reload

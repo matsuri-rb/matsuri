@@ -48,8 +48,8 @@ module Matsuri
         fail NotImplementedError, 'Must implement #build!'
       end
 
-      def start!
-        puts "Starting #{resource_type}/#{name}".color(:yellow).bright if config.verbose
+      def create!
+        puts "Creating #{resource_type}/#{name}".color(:yellow).bright if config.verbose
         puts to_json if config.debug
         kubectl! "--namespace=#{namespace} create --save-config=true --record=true -f -", input: to_json
       end
@@ -66,7 +66,7 @@ module Matsuri
 
       def restart!
         stop!
-        start!
+        create!
       end
 
       def status!
@@ -87,10 +87,10 @@ module Matsuri
           if started?
             restart!
           else
-            start!
+            create!
           end
         else
-          start! unless started?
+          create! unless started?
         end
 
       end
