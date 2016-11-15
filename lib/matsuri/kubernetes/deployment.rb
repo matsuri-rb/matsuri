@@ -74,6 +74,10 @@ module Matsuri
         kubectl! "--namespace=#{namespace} set image #{resource_type}/#{name} #{version_changes}"
       end
 
+      def watch_rollout!
+        kubectl! "--namespace=#{namespace} rollout status #{resource_type}/#{name}"
+      end
+
       ### @TODO Factor this out into helpers
       def selected_pods_json
         fail NotImpelemntedError, 'Match Expressions not yet implemented' if Array(match_expressions).any?
