@@ -64,7 +64,7 @@ module Matsuri
         kubectl! "apply --record=true -f -", input: to_json
       end
 
-      def restart!
+      def recreate!
         delete!
         create!
       end
@@ -85,7 +85,7 @@ module Matsuri
 
         if opts[:restart] || opts[:rebuild]
           if started?
-            restart!
+            recreate!
           else
             create!
           end

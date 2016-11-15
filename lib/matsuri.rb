@@ -35,15 +35,15 @@ module Matsuri
   end
 
   module Cmds
-    autoload :Cli,     'matsuri/cmds/cli'
-    autoload :K8s,     'matsuri/cmds/k8s'
-    autoload :Show,    'matsuri/cmds/show'
-    autoload :Status,  'matsuri/cmds/status'
-    autoload :Create,  'matsuri/cmds/create'
-    autoload :Delete,  'matsuri/cmds/delete'
-    autoload :Apply,   'matsuri/cmds/apply'
-    autoload :Restart, 'matsuri/cmds/restart'
-    autoload :Scale,   'matsuri/cmds/scale'
+    autoload :Cli,      'matsuri/cmds/cli'
+    autoload :K8s,      'matsuri/cmds/k8s'
+    autoload :Show,     'matsuri/cmds/show'
+    autoload :Status,   'matsuri/cmds/status'
+    autoload :Create,   'matsuri/cmds/create'
+    autoload :Delete,   'matsuri/cmds/delete'
+    autoload :Apply,    'matsuri/cmds/apply'
+    autoload :Recreate, 'matsuri/cmds/recreate'
+    autoload :Scale,    'matsuri/cmds/scale'
   end
 
   module Tasks

@@ -66,14 +66,14 @@ module Matsuri
       end
     end
 
-    def restart!
+    def recreate!
       delete!
       create!
     end
 
     def rebuild!
       build!
-      restart!
+      recreate!
     end
 
     def converge!(opts = {})

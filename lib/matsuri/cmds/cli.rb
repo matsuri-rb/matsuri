@@ -38,8 +38,9 @@ module Matsuri
         exit (1)
       end
 
-      desc 'restart SUBCOMMAND ...ARGS', 'restart resource'
-      subcommand 'restart', Matsuri::Cmds::Restart
+      desc 'recreate SUBCOMMAND ...ARGS', 'recreate resource'
+      subcommand 'recreate', Matsuri::Cmds::Recreate
+      map restart: :recreate
 
       desc 'delete SUBCOMMAND ...ARGS', 'delete resource'
       subcommand 'delete', Matsuri::Cmds::Delete
