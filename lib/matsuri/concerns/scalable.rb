@@ -3,7 +3,7 @@ module Matsuri
     module Scalable
       def scale!(replicas, opt={})
         Matsuri.log :info, "Scaling #{resource_type}/#{name} to #{replicas}".color(:yellow).bright
-        kubectl! "--namespace=#{namespace} scale --replicas=#{replicas} #{resource_type}/#{name}"
+        kubectl! "--namespace=#{namespace} scale --replicas=#{replicas} --record=true #{resource_type}/#{name}"
       end
     end
   end
