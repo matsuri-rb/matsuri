@@ -108,6 +108,7 @@ module Matsuri
       # Helper functions
       def current_manifest
         cmd = kubectl "--namespace=#{namespace} get #{resource_type}/#{name} -o json", echo_level: :debug, no_stdout: true
+        return nil unless cmd.status.success?
         Map.new(JSON.parse(cmd.stdout))
       end
 

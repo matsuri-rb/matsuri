@@ -90,7 +90,8 @@ module Matsuri
       end
 
       def current_image_tag
-        current_image.split(/:/).last
+        image = current_image or return nil
+        image.split(/:/).last
       end
 
       def selected_pods_json
