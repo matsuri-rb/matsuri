@@ -5,9 +5,19 @@ module Matsuri
 
       class_option :'no-deps', type: :boolean, default: false
 
-      def self.create_cmd_for(resource_name)
-        define_method(resource_name) do |name|
-          create_resource { Matsuri::Registry.send(resource_name, name).new }
+      def self.create_cmd_for(resource_name, image_tag: false)
+        unless image_tag
+          define_method(resource_name) do |name|
+            create_resource { Matsuri::Registry.send(resource_name, name).new }
+          end
+        else
+          define_method(resource_name) do |name, image_tag = nil|
+            create_resource do
+              image_tag ||= Matsuri::Registry.send(resource_name, name).new.try(:current_image_tag)
+              image_tag ||= 'latest'
+              Matsuri::Registry.send(resource_name, name).new(image_tag: image_tag)
+            end
+          end
         end
       end
 
@@ -19,34 +29,18 @@ module Matsuri
       end
 
       desc 'pod POD_NAME [IMAGE_TAG]', 'create a pod'
-      def pod(name, image_tag = 'latest')
-        with_config do |opt|
-          Matsuri::Registry.pod(name).new(image_tag: image_tag).create!
-        end
-      end
+      create_cmd_for :pod, image_tag: true
 
       desc 'rc RC_NAME [IMAGE_TAG]', 'create a replication controller'
-      def rc(name, image_tag = 'latest')
-        with_config do |opt|
-          Matsuri::Registry.rc(name).new(image_tag: image_tag).create!
-        end
-      end
+      create_cmd_for :rc, image_tag: true
 
       desc 'replica-set RS_NAME [IMAGE_TAG]', 'create a replica set'
-      def replica_set(name, image_tag = 'latest')
-        with_config do |opt|
-          Matsuri::Registry.replica_set(name).new(image_tag: image_tag).create!
-        end
-      end
+      create_cmd_for :replica_set, image_tag: true
       map replicaset: :replica_set
       map rs: :replica_set
 
       desc 'deployment DEPLOYMENT_NAME [IMAGE_TAG]', 'create a deployment'
-      def deployment(name, image_tag = 'latest')
-        with_config do |opt|
-          Matsuri::Registry.deployment(name).new(image_tag: image_tag).create!
-        end
-      end
+      create_cmd_for :deployment, image_tag: true
       map deploy: :deployment
 
       desc 'service SERVICE_NAME', 'create a service'
