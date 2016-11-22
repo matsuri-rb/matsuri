@@ -1,6 +1,7 @@
 module Matsuri
   module Kubernetes
     class ReplicaSet < Matsuri::Kubernetes::Base
+      include Matsuri::Concerns::PodTemplate
       include Matsuri::Concerns::Scalable
 
       let(:api_version) { 'extensions/v1beta1' } # http://kubernetes.io/docs/api-reference/extensions/v1beta1/definitions/#_v1beta1_replicaset
@@ -32,30 +33,6 @@ module Matsuri
       let(:match_labels)      { fail NotImplementedError, 'Must define let(:match_labels)' }
 
       let(:match_expressions) { [] }
-
-      # By default, point the template to an existing pod definition
-      # Overide let(:pod_name)
-      let(:template) { { metadata: { labels: pod_labels, annotations: pod_def.final_annotations }, spec: pod_def.spec } }
-
-      # Define this to point to an existing pod definition. This is the name
-      # registered to Matsuri::Registry
-      let(:pod_name)        { fail NotImplementedError, 'Must define let(:pod_name)' }
-      let(:pod_def)         { pod(pod_name, image_tag: image_tag, release: release) }
-      let(:primary_image)   { pod_def.primary_image }
-      let(:pod_labels)      { pod_def.final_labels }
-      let(:pod_annotations) { pod_def.final_annotations }
-
-      ### Helpers
-      def selected_pods_json
-        fail NotImpelemntedError, 'Match Expressions not yet implemented' if Array(match_expressions).any?
-        sel = match_labels.to_a.map { |(k,v)| "#{k}=#{v}" }.join(',')
-        cmd = kubectl "get pods -l #{sel} -o json", echo_level: :debug, no_stdout: true
-        JSON.parse(cmd.stdout)
-      end
-
-      def selected_pods
-        selected_pods_json['items']
-      end
 
       class << self
         def load_path

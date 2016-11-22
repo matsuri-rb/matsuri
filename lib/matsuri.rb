@@ -56,6 +56,7 @@ module Matsuri
     autoload :Awaiting,        'matsuri/concerns/awaiting'
     autoload :RegistryHelpers, 'matsuri/concerns/registry_helpers'
     autoload :Scalable,        'matsuri/concerns/scalable'
+    autoload :PodTemplate,     'matsuri/concerns/pod_template'
   end
 
   def self.define(*args, &blk)
