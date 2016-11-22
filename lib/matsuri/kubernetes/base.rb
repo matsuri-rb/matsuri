@@ -13,6 +13,15 @@ module Matsuri
       include Matsuri::ShellOut
       include Matsuri::Concerns::RegistryHelpers
 
+      # Namespace resolution
+      let(:namespace)             { namespace_from_option || default_namespace }
+
+      # Override default namespace instead of namespace in order to override namespace
+      # from the command line
+      let(:default_namespace)     { namespace_from_config || 'default' }
+      let(:namespace_from_option) { options[:namespace] }
+      let(:namespace_from_config) { Matsuri::Platform.send(Matsuri::Config.environment).namespace }
+
       # Kubernetes manifest
       let(:manifest) do
         {
@@ -29,7 +38,6 @@ module Matsuri
       let(:default_annotations) { { } }
       let(:final_labels)        { default_labels.merge(labels) }
       let(:final_annotations)   { default_annotations.merge(annotations) }
-      let(:namespace)           { 'default' }
       let(:resource_type)       { kind.to_s.downcase }
       let(:labels)              { { } }
       let(:annotations)         { { } }

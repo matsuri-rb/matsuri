@@ -30,6 +30,12 @@ module Matsuri
       end
     end
 
+    # Here for class method to get default namespace
+    # This is overriden by Matsuri::Kubernetes::Base when used in K8S resources
+    def namespace
+      Matsuri::Platform.send(Matsuri::Config.environment).namespace || 'default'
+    end
+
     def shell_out(_cmd, options = {})
       echo_level = options.delete(:echo_level) || :info
       no_stdout = options.delete(:no_stdout)
