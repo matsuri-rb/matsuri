@@ -59,7 +59,7 @@ module Matsuri
 
     # This is so that it is easier to write app commands
     def kubectl_cmd(_cmd)
-      "kubectl --context=#{kube_context} #{_cmd}"
+      "kubectl --context=#{kube_context} --namespace=#{namespace} #{_cmd}"
     end
 
     def kubectl(_cmd, options = {})

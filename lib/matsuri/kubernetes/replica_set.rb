@@ -47,7 +47,7 @@ module Matsuri
       def selected_pods_json
         fail NotImpelemntedError, 'Match Expressions not yet implemented' if Array(match_expressions).any?
         sel = match_labels.to_a.map { |(k,v)| "#{k}=#{v}" }.join(',')
-        cmd = kubectl "--namespace=#{namespace} get pods -l #{sel} -o json", echo_level: :debug, no_stdout: true
+        cmd = kubectl "get pods -l #{sel} -o json", echo_level: :debug, no_stdout: true
         JSON.parse(cmd.stdout)
       end
 

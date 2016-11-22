@@ -51,12 +51,12 @@ module Matsuri
       def create!
         puts "Creating #{resource_type}/#{name}".color(:yellow).bright if config.verbose
         puts to_json if config.debug
-        kubectl! "--namespace=#{namespace} create --save-config=true --record=true -f -", input: to_json
+        kubectl! "create --save-config=true --record=true -f -", input: to_json
       end
 
       def delete!
         puts "Deleting #{resource_type}/#{name}".color(:yellow).bright if config.verbose
-        kubectl! "--namespace=#{namespace} delete #{resource_type}/#{name}"
+        kubectl! "delete #{resource_type}/#{name}"
       end
 
       def apply!
@@ -77,7 +77,7 @@ module Matsuri
       def annotate!(hash = {})
         json = JSON.generate( { metadata: { annotations: hash } } )
         Matsuri.log :info, "Annotating #{resource_type}/#{name} with #{hash.inspect}"
-        kubectl! "patch --namespace=#{namespace} patch #{resource_type} #{name} -p '#{json}'"
+        kubectl! "patch #{resource_type} #{name} -p '#{json}'"
       end
 
       def converge!(opts = {})
@@ -107,13 +107,13 @@ module Matsuri
 
       # Helper functions
       def current_manifest
-        cmd = kubectl "--namespace=#{namespace} get #{resource_type}/#{name} -o json", echo_level: :debug, no_stdout: true
+        cmd = kubectl "get #{resource_type}/#{name} -o json", echo_level: :debug, no_stdout: true
         return nil unless cmd.status.success?
         Map.new(JSON.parse(cmd.stdout))
       end
 
       def created?
-        cmd = kubectl "--namespace=#{namespace} get #{resource_type}/#{name}", echo_level: :debug, no_stdout: true
+        cmd = kubectl "get #{resource_type}/#{name}", echo_level: :debug, no_stdout: true
         return cmd.status.success? unless config.verbose
 
         status = if cmd.status.success?

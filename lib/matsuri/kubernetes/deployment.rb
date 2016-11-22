@@ -71,11 +71,11 @@ module Matsuri
 
       def rollout!(versions:)
         version_changes = versions.map { |(k,v)| "#{k}=#{v}" }.join(' ')
-        kubectl! "--namespace=#{namespace} set image #{resource_type}/#{name} #{version_changes} --record=true"
+        kubectl! "set image #{resource_type}/#{name} #{version_changes} --record=true"
       end
 
       def watch_rollout!
-        kubectl! "--namespace=#{namespace} rollout status #{resource_type}/#{name}"
+        kubectl! "rollout status #{resource_type}/#{name}"
       end
 
       ### @TODO Factor this out into helpers
@@ -97,7 +97,7 @@ module Matsuri
       def selected_pods_json
         fail NotImpelemntedError, 'Match Expressions not yet implemented' if Array(match_expressions).any?
         sel = match_labels.to_a.map { |(k,v)| "#{k}=#{v}" }.join(',')
-        cmd = kubectl "--namespace=#{namespace} get pods -l #{sel} -o json", echo_level: :debug, no_stdout: true
+        cmd = kubectl "get pods -l #{sel} -o json", echo_level: :debug, no_stdout: true
         JSON.parse(cmd.stdout)
       end
 

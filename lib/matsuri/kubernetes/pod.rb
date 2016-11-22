@@ -48,7 +48,7 @@ module Matsuri
 
       # Helper methods
       def up?
-        cmd = kubectl "--namespace=#{namespace} get #{resource_type}/#{name} -o json", echo_level: :debug, no_stdout: true
+        cmd = kubectl "get #{resource_type}/#{name} -o json", echo_level: :debug, no_stdout: true
         Matsuri.log :fatal, "Unable to get status for #{resource_type}/#{name}" unless cmd.status.success?
         pod_json = JSON.parse(cmd.stdout)
         Matsuri.log :debug, pod_json['status']

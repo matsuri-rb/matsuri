@@ -45,7 +45,7 @@ module Matsuri
         current_rc = current_rc_name
 
         Matsuri.log :info, "Scaling #{resource_type}/#{current_rc} to #{replicas}".color(:yellow).bright
-        kubectl! "--namespace=#{namespace} scale --replicas=#{replicas} rc #{current_rc}"
+        kubectl! "scale --replicas=#{replicas} rc #{current_rc}"
       end
 
       def rollout!(image_tag, opt={})
@@ -65,17 +65,17 @@ module Matsuri
         #rc_next.create!
 
         Matsuri.log(:debug) { rc_next.pretty_print }
-        kubectl! "--namespace=#{namespace} rolling-update #{current_rc} #{next_rc} -f -", input: rc_next.to_json
+        kubectl! "rolling-update #{current_rc} #{next_rc} -f -", input: rc_next.to_json
       end
 
       def current_rc_name
-        cmd = kubectl "--namespace=#{namespace} get #{resource_type}/#{name}", echo_level: :debug, no_stdout: true
+        cmd = kubectl "get #{resource_type}/#{name}", echo_level: :debug, no_stdout: true
         return name if cmd.status.success?
 
         # Fallback to using selector
         Matsuri.log :info, "Unable to find #{name}. Searching for rc with label matsuri-name=#{name}"
 
-        cmd = kubectl "--namespace=#{namespace} get #{resource_type} --selector='matsuri-name=#{name}' -o json", echo_level: :debug, no_stdout: true
+        cmd = kubectl "get #{resource_type} --selector='matsuri-name=#{name}' -o json", echo_level: :debug, no_stdout: true
         Matsuri.log :fatal, "Unable to find a replication controller with label matsuri-name=#{name}" unless cmd.status.success?
         resp = parse_json(cmd)
 
@@ -89,7 +89,7 @@ module Matsuri
       end
 
       def current_image_tag(rc_name)
-        cmd = kubectl "--namespace=#{namespace} get #{resource_type}/#{rc_name} -o json", echo_level: :debug, no_stdout: true
+        cmd = kubectl "get #{resource_type}/#{rc_name} -o json", echo_level: :debug, no_stdout: true
         Matsuri.log :fatal, "Unable to find #{resource_type}/#{rc_name}" unless cmd.status.success?
         resp = parse_json(cmd)
 
