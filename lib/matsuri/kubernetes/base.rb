@@ -34,13 +34,15 @@ module Matsuri
 
       let(:final_metadata)      { default_metadata.merge(metadata) }
       let(:default_metadata)    { { name: name, namespace: namespace, labels: final_labels, annotations: final_annotations } }
-      let(:default_labels)      { { 'matsuri-name' => name } } # Needed for autodetecting 'current' for rolling-updates
+      # Needed for autodetecting 'current' for rolling-updates. However, this is obsolete with Deployments
+      let(:default_labels)      { { 'matsuri-name' => name, 'matsuri-env' => matsuri_env, 'namespace' => namespace } }
       let(:default_annotations) { { } }
       let(:final_labels)        { default_labels.merge(labels) }
       let(:final_annotations)   { default_annotations.merge(annotations) }
       let(:resource_type)       { kind.to_s.downcase }
       let(:labels)              { { } }
       let(:annotations)         { { } }
+      let(:matsuri_env)         { Matsuri.environment }
 
       # Optional parameters
       let(:release)     { (options[:release] || '0').to_s }
