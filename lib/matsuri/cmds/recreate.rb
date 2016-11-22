@@ -29,9 +29,12 @@ module Matsuri
 
       desc 'replica-set REPLICA_SET_NAME [IMAGE TAG]', 'recreate a replica set'
       recreate_cmd_for :replica_set, image_tag: true
+      map replicaset: :replica_set
+      map rs: :replica_set
 
       desc 'deployment DEPLOYMENT_NAME [IMAGE TAG]', 'recreate a deployment'
       recreate_cmd_for :deployment, image_tag: true
+      map deploy: :deployment
 
       desc 'service SERVICE_NAME', 'recreate a service'
       recreate_cmd_for :service

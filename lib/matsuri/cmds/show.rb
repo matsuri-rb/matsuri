@@ -49,9 +49,12 @@ module Matsuri
 
       desc 'replica_set REPLICA_SET_NAME', 'show manifest for replica_set'
       show_cmd_for :replica_set, image_tag: true
+      map replicaset: :replica_set
+      map rs: :replica_set
 
       desc 'deployment DEPLOYMENT_NAME', 'show manifest for deployment'
       show_cmd_for :deployment, image_tag: true
+      map deploy: :deployment
 
       desc 'service SERVICE_NAME', 'show manifest for service'
       show_cmd_for :services

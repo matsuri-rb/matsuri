@@ -24,9 +24,12 @@ module Matsuri
 
       desc 'replica_set REPLICA_SET_NAME', 'delete a replica_set'
       delete_cmd_for :replica_set
+      map replicaset: :replica_set
+      map rs: :replica_set
 
       desc 'deployment DEPLOYMENT_NAME', 'delete a deployment'
       delete_cmd_for :deployment
+      map deploy: :deployment
 
       desc 'service SERVICE_NAME', 'delete a service'
       delete_cmd_for :service

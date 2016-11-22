@@ -14,9 +14,12 @@ module Matsuri
 
       desc 'replica-set RS_NAME REPLICAS', 'scale a replica set'
       scale_cmd_for :replica_set
+      map replicaset: :replica_set
+      map rs: :replica_set
 
       desc 'deployment DEPLOYMENT_NAME REPLICAS', 'scale a deployment'
       scale_cmd_for :deployment
+      map deploy: :deployment
 
       private
 

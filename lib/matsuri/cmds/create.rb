@@ -38,6 +38,8 @@ module Matsuri
           Matsuri::Registry.replica_set(name).new(image_tag: image_tag).create!
         end
       end
+      map replicaset: :replica_set
+      map rs: :replica_set
 
       desc 'deployment DEPLOYMENT_NAME [IMAGE_TAG]', 'create a deployment'
       def deployment(name, image_tag = 'latest')
@@ -45,6 +47,7 @@ module Matsuri
           Matsuri::Registry.deployment(name).new(image_tag: image_tag).create!
         end
       end
+      map deploy: :deployment
 
       desc 'service SERVICE_NAME', 'create a service'
       create_cmd_for :service

@@ -29,9 +29,12 @@ module Matsuri
 
       desc 'replica-set REPLICA-SET_NAME', 'apply changes to a replica-set'
       apply_cmd_for :replica_set, image_tag: true
+      map replicaset: :replica_set
+      map rs: :replica_set
 
       desc 'deployment DEPLOYMENT_NAME', 'apply changes to a deployment'
       apply_cmd_for :deployment, image_tag: true
+      map deploy: :deployment
 
       desc 'service SERVICE_NAME', 'apply changes to a service'
       apply_cmd_for :service, image_tag: true
