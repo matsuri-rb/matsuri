@@ -1,6 +1,7 @@
 module Matsuri
   module Kubernetes
     class Deployment < Matsuri::Kubernetes::Base
+      include Matsuri::Concerns::PodTemplate
       include Matsuri::Concerns::Scalable
 
       let(:api_version) { 'extensions/v1beta1' } # http://kubernetes.io/docs/api-reference/extensions/v1beta1/definitions/#_v1beta1_deployment
@@ -36,10 +37,6 @@ module Matsuri
 
       let(:match_expressions) { [] }
 
-      # By default, point the template to an existing pod definition
-      # Overide let(:pod_name)
-      let(:template) { { metadata: { labels: pod_def.labels, annotations: pod_def.annotations }, spec: pod_def.spec } }
-
       # Deployment Strategy. Defaults to Rolling Update. Recreate is the other one.
       let(:strategy) { { type: 'RollingUpdate', rollingUpdate: rolling_update } }
       let(:rolling_update) { { maxUnavailable: max_unavailable, maxSurge: max_surge } }
@@ -55,13 +52,6 @@ module Matsuri
       # The number of old ReplicaSets to retain to allow rollback. This is a pointer to
       # distinguish between explicit zero and not specified.
       let(:revision_history_limit) { nil }
-
-      # Define this to point to an existing pod definition. This is the name
-      # registered to Matsuri::Registry
-      let(:pod_name)          { fail NotImplementedError, 'Must define let(:pod_name)' }
-      let(:pod_def)           { pod(pod_name, image_tag: image_tag, release: release) }
-      let(:primary_image)     { pod_def.primary_image }
-      let(:primary_container) { pod_def.primary_container }
 
       ### Helpers
       def update!(version: nil)
@@ -92,17 +82,6 @@ module Matsuri
       def current_image_tag
         image = current_image or return nil
         image.split(/:/).last
-      end
-
-      def selected_pods_json
-        fail NotImpelemntedError, 'Match Expressions not yet implemented' if Array(match_expressions).any?
-        sel = match_labels.to_a.map { |(k,v)| "#{k}=#{v}" }.join(',')
-        cmd = kubectl "get pods -l #{sel} -o json", echo_level: :debug, no_stdout: true
-        JSON.parse(cmd.stdout)
-      end
-
-      def selected_pods
-        selected_pods_json['items']
       end
 
       class << self

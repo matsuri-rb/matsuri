@@ -2,6 +2,8 @@
 module Matsuri
   module Kubernetes
     class ReplicationController < Matsuri::Kubernetes::Base
+      include Matsuri::Concerns::PodTemplate
+
       let(:kind) { 'ReplicationController' }
 
       # Overridables
@@ -24,16 +26,6 @@ module Matsuri
       # Explicitly define replicas
       let(:replicas) { fail NotImplementedError, 'Must define let(:replicas)' }
       let(:selector) { fail NotImplementedError, 'Must define let(:selector)' }
-
-      # By default, point the template to an existing pod definition
-      # Overide let(:pod_name)
-      let(:template) { { metadata: { labels: pod_def.labels, annotations: pod_def.annotations }, spec: pod_def.spec } }
-
-      # Define this to point to an existing pod definition. This is the name
-      # registered to Matsuri::Registry
-      let(:pod_name) { fail NotImplementedError, 'Must define let(:pod_name)' }
-      let(:pod_def)  { pod(pod_name, image_tag: image_tag, release: release) }
-      let(:primary_image) { pod_def.primary_image }
 
       def status!
         current_rc = current_rc_name
