@@ -36,7 +36,7 @@ module Matsuri
 
   module Cmds
     autoload :Cli,      'matsuri/cmds/cli'
-    autoload :K8s,      'matsuri/cmds/k8s'
+    autoload :Kubectl,  'matsuri/cmds/kubectl'
     autoload :Show,     'matsuri/cmds/show'
     autoload :Status,   'matsuri/cmds/status'
     autoload :Create,   'matsuri/cmds/create'
@@ -47,9 +47,9 @@ module Matsuri
   end
 
   module Tasks
-    autoload :Kubernetes, 'matsuri/tasks/kubernetes'
-    autoload :Docker,     'matsuri/tasks/docker'
-    autoload :Pod,        'matsuri/tasks/pod'
+    autoload :Kubectl, 'matsuri/tasks/kubectl'
+    autoload :Docker,  'matsuri/tasks/docker'
+    autoload :Pod,     'matsuri/tasks/pod'
   end
 
   module Concerns

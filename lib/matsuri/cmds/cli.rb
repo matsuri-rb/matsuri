@@ -9,12 +9,8 @@ module Matsuri
       class_option :debug,   aliases: :D, type: :boolean
       class_option :environment, aliases: :e, type: :string, default: ENV['MATSURI_ENVIRONMENT']
 
-      desc "k8s SUBCOMMAND ...ARGS", "manage Kubernetes [deprecated]"
-      #subcommand 'k8s', Matsuri::Cmds::K8s
-      def k8s
-        puts "k8s is going away. Use minikube or nanokube"
-        exit(1)
-      end
+      desc "kubectl SUBCOMMAND ...ARGS", "manage kubectl configs"
+      subcommand 'kubectl', Matsuri::Cmds::Kubectl
 
       desc 'show SUBCOMMAND ...ARGS', 'show resource'
       subcommand 'show', Matsuri::Cmds::Show
