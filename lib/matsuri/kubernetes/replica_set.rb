@@ -35,13 +35,15 @@ module Matsuri
 
       # By default, point the template to an existing pod definition
       # Overide let(:pod_name)
-      let(:template) { { metadata: { labels: pod_def.labels, annotations: pod_def.annotations }, spec: pod_def.spec } }
+      let(:template) { { metadata: { labels: pod_labels, annotations: pod_def.final_annotations }, spec: pod_def.spec } }
 
       # Define this to point to an existing pod definition. This is the name
       # registered to Matsuri::Registry
-      let(:pod_name) { fail NotImplementedError, 'Must define let(:pod_name)' }
-      let(:pod_def)  { pod(pod_name, image_tag: image_tag, release: release) }
-      let(:primary_image) { pod_def.primary_image }
+      let(:pod_name)        { fail NotImplementedError, 'Must define let(:pod_name)' }
+      let(:pod_def)         { pod(pod_name, image_tag: image_tag, release: release) }
+      let(:primary_image)   { pod_def.primary_image }
+      let(:pod_labels)      { pod_def.final_labels }
+      let(:pod_annotations) { pod_def.final_annotations }
 
       ### Helpers
       def selected_pods_json
