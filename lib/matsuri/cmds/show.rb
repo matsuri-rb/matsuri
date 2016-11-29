@@ -57,7 +57,7 @@ module Matsuri
       map deploy: :deployment
 
       desc 'service SERVICE_NAME', 'show manifest for service'
-      show_cmd_for :services
+      show_cmd_for :service
 
       desc 'endpoints ENDPOINT_NAME', 'show manifest for endpoints'
       show_cmd_for :endpoints
