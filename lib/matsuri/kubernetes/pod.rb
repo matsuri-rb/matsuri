@@ -1,3 +1,4 @@
+require 'active_support/core_ext/hash/compact'
 require 'json'
 
 module Matsuri
@@ -8,11 +9,13 @@ module Matsuri
       # Overridables
       let(:spec) do
         {
+          hostname:   hostname,
+          subdomain:  subdomain,
           containers: containers,
           volumes:    volumes,
           imagePullSecrets: image_pull_secrets,
           nodeSelector: node_selector
-        }
+        }.compact
       end
 
       # Get image tag from the command line
@@ -21,6 +24,8 @@ module Matsuri
       let(:containers)         { [container] }
       let(:volumes)            { [volume] }
       let(:image_pull_secrets) { [] }
+      let(:hostname)           { nil } # http://kubernetes.io/docs/admin/dns/
+      let(:subdomain)          { nil }
       let(:resources)          { { requests: resource_requests, limits: resource_limits } }
       let(:resource_requests)  { { cpu: cpu_request, memory: mem_request } }
       let(:resource_limits)    { { cpu: cpu_limit,   memory: mem_limit  } }
