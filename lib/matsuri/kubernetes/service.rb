@@ -34,6 +34,18 @@ module Matsuri
         return _port
       end
 
+      ### @TODO Refactor to Selectable concern
+      ### Helpers
+      def selected_pods_json
+        sel = selector.to_a.map { |(k,v)| "#{k}=#{v}" }.join(',')
+        cmd = kubectl "get pods -l #{sel} -o json", echo_level: :debug, no_stdout: true
+        JSON.parse(cmd.stdout)
+      end
+
+      def selected_pods
+        selected_pods_json['items']
+      end
+
       class << self
         def load_path
           Matsuri::Config.services_path
