@@ -16,6 +16,9 @@ module Matsuri
       subcommand 'show', Matsuri::Cmds::Show
       map describe: :show
 
+      desc 'diff SUBCOMMAND ...ARGS', 'diff resource (show what would be applied)  '
+      subcommand 'diff', Matsuri::Cmds::Diff
+
       desc 'status SUBCOMMAND ...ARGS', 'resource status'
       subcommand 'status', Matsuri::Cmds::Status
       map top: :status

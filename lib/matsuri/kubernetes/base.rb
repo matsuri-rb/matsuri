@@ -1,7 +1,9 @@
 require 'rlet'
 require 'json'
 require 'yaml'
+require 'hashdiff'
 require 'active_support/core_ext/hash/keys'
+require 'active_support/core_ext/hash/except'
 require 'rainbow/ext/string'
 require 'rlet/lazy_options'
 
@@ -115,11 +117,29 @@ module Matsuri
         end
       end
 
+      def diff!
+        diff.each do |line|
+          color = case line[0]
+                  when '-' then :red
+                  when '+' then :green
+                  when '~' then :white
+                  end
+          puts line.join(' ').color(color).bright
+        end
+      end
+
       # Helper functions
-      def current_manifest
+      def current_manifest(raw: false)
         cmd = kubectl "get #{resource_type}/#{name} -o json", echo_level: :debug, no_stdout: true
         return nil unless cmd.status.success?
-        Map.new(JSON.parse(cmd.stdout))
+        r = JSON.parse(cmd.stdout)
+        raw ? r : Map.new(r)
+      end
+
+      def diff
+        m = current_manifest(raw: true)
+        Matsuri.log :fatal, "Cannot fetch current manifest for #{resource_type}/#{name}" unless m
+        HashDiff.diff m.except('status', 'metadata'), JSON.parse(to_json)
       end
 
       def created?

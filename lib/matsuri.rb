@@ -38,6 +38,7 @@ module Matsuri
     autoload :Cli,      'matsuri/cmds/cli'
     autoload :Kubectl,  'matsuri/cmds/kubectl'
     autoload :Show,     'matsuri/cmds/show'
+    autoload :Diff,     'matsuri/cmds/diff'
     autoload :Status,   'matsuri/cmds/status'
     autoload :Create,   'matsuri/cmds/create'
     autoload :Delete,   'matsuri/cmds/delete'
