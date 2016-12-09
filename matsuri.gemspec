@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'mixlib-config'
   spec.add_dependency 'rlet', '~> 0.7.0'
   spec.add_dependency 'map'
+  spec.add_dependency 'hashdiff'
   spec.add_dependency 'activesupport', '~> 4.2.3'
   spec.add_dependency 'rainbow'
 
