@@ -80,7 +80,11 @@ module Matsuri
 
       # Ruby 2.0+ uses ordered hashes
       def expand_env(hash)
-        hash.map { |k,v| { name: k, value: v.to_s } }.sort { |a,b| a[:name] <=> b[:name] }
+        hash.map { |k,v| { name: k, value: v.to_s } }
+      end
+
+      def sorted_env(hash)
+        expand_env(hash).sort { |a,b| a[:name] <=> b[:name] }
       end
 
       def port(num, protocol: 'TCP', name: nil)
