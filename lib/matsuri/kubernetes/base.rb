@@ -150,7 +150,7 @@ module Matsuri
           color = case line[0]
                   when '-' then :red
                   when '+' then :green
-                  when '~' then :white
+                  when '~' then :yellow
                   end
           puts line.join(' ').color(color).bright
         end
