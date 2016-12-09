@@ -84,6 +84,20 @@ module Matsuri
         image.split(/:/).last
       end
 
+      def diff!(opt = {})
+        deltas = opt[:primary_container] ? primary_container_diff : diff
+        print_diff(deltas)
+      end
+
+      def primary_container_diff
+        current = current_manifest(raw: true)
+        Matsuri.log :fatal, "Cannot fetch current manifest for #{resource_type}/#{name}" unless current
+
+        desired = JSON.parse(to_json)
+
+        HashDiff.diff current['spec']['template']['spec']['containers'][0], desired['spec']['template']['spec']['containers'][0]
+      end
+
       class << self
         def load_path
           Matsuri::Config.deployments_path

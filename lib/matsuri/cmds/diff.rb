@@ -6,7 +6,7 @@ module Matsuri
     class Diff < Thor
       include Matsuri::Cmd
 
-      class_option :json, aliases: :j, type: :boolean, default: false
+      class_option :primary_container, aliases: :p, type: :boolean, default: false
 
       def self.diff_cmd_for(resource_name, image_tag: false)
         unless image_tag
@@ -58,7 +58,7 @@ module Matsuri
       def diff_resource
         with_config do |opt|
           resource = yield opt
-          resource.diff!
+          resource.diff!(opt)
         end
       end
     end

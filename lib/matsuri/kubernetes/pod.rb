@@ -80,7 +80,7 @@ module Matsuri
 
       # Ruby 2.0+ uses ordered hashes
       def expand_env(hash)
-        hash.map { |k,v| { name: k, value: v.to_s } }
+        hash.map { |k,v| { name: k, value: v.to_s } }.sort { |a,b| a[:name] <=> b[:name] }
       end
 
       def port(num, protocol: 'TCP', name: nil)
@@ -107,6 +107,22 @@ module Matsuri
 
       def gce_volume(name, pd_name:, fs_type: 'ext4')
         { name: name, gcePersistentDisk: { pdName: pd_name, fsType: fs_type } }
+      end
+
+      # Helpers
+
+      def diff!(opt = {})
+        deltas = opt[:primary_container] ? primary_container_diff : diff
+        print_diff(deltas)
+      end
+
+      def containers_diff
+        current = current_manifest(raw: true)
+        Matsuri.log :fatal, "Cannot fetch current manifest for #{resource_type}/#{name}" unless current
+
+        desired = JSON.parse(to_json)
+
+        HashDiff.diff current['spec']['containers'][0], desired['spec']['containers'][0]
       end
 
       class << self

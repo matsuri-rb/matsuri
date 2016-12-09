@@ -1,9 +1,12 @@
 require 'rlet'
 require 'json'
 require 'yaml'
+
 require 'hashdiff'
 require 'active_support/core_ext/hash/keys'
 require 'active_support/core_ext/hash/except'
+require 'active_support/core_ext/hash/slice'
+
 require 'rainbow/ext/string'
 require 'rlet/lazy_options'
 
@@ -117,15 +120,8 @@ module Matsuri
         end
       end
 
-      def diff!
-        diff.each do |line|
-          color = case line[0]
-                  when '-' then :red
-                  when '+' then :green
-                  when '~' then :white
-                  end
-          puts line.join(' ').color(color).bright
-        end
+      def diff!(_opt = {})
+        print_diff(diff)
       end
 
       # Helper functions
@@ -137,9 +133,27 @@ module Matsuri
       end
 
       def diff
-        m = current_manifest(raw: true)
-        Matsuri.log :fatal, "Cannot fetch current manifest for #{resource_type}/#{name}" unless m
-        HashDiff.diff m.except('status', 'metadata'), JSON.parse(to_json)
+        current = current_manifest(raw: true)
+        Matsuri.log :fatal, "Cannot fetch current manifest for #{resource_type}/#{name}" unless current
+
+        desired = JSON.parse(to_json)
+
+        # Filter what is being compared
+        current.delete('status')
+        current['metadata'] = current['metadata'].slice('name', 'labels', 'namespace') if current['metadata']
+
+        HashDiff.diff current, desired
+      end
+
+      def print_diff(deltas)
+        deltas.each do |line|
+          color = case line[0]
+                  when '-' then :red
+                  when '+' then :green
+                  when '~' then :white
+                  end
+          puts line.join(' ').color(color).bright
+        end
       end
 
       def created?
