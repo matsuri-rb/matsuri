@@ -27,8 +27,8 @@ module Matsuri
       let(:hostname)           { nil } # http://kubernetes.io/docs/admin/dns/
       let(:subdomain)          { nil }
       let(:resources)          { { requests: resource_requests, limits: resource_limits } }
-      let(:resource_requests)  { { cpu: cpu_request, memory: mem_request } }
-      let(:resource_limits)    { { cpu: cpu_limit,   memory: mem_limit  } }
+      let(:resource_requests)  { { cpu: cpu_request, memory: mem_request }.compact }
+      let(:resource_limits)    { { cpu: cpu_limit,   memory: mem_limit  }.compact }
 
       let(:node_selector)      { { } }
 
