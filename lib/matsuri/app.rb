@@ -11,7 +11,11 @@ module Matsuri
     include Matsuri::Concerns::RegistryHelpers
     include Matsuri::Concerns::Awaiting
 
-    class_attribute :build_order, :failure_hooks
+    class_attribute :build_order
+
+    # When we pass image_tag to converge command, propogate this
+    # down the convergance tree.
+    let(:image_tag) { options[:image_tag] }
 
     # Defines a list of deps, used to  to idempotently converge Kubernetes
     # resources. Generally, you will add a an app as a dep for resources you are
@@ -25,16 +29,17 @@ module Matsuri
     # needs :rc,      'rails-app-worker'
     # needs :rc,      'rails-app'
     # needs :service, 'rails-app'
+    #
+    # Hooks:
+    #   check_only: when set to true, do not create or apply resource. Only check for it's presence
+    #   on_failure: a symbol of a method to call when check fails.
+    #
+    # @TODO Consider making this lazy-loaded. We don't need to generate this elaborate data structure
+    # unless we are converging. (But it might not really make things that much slower).
     class << self
-      def needs(type, name, on_failure: nil)
+      def needs(type, name, on_failure: nil, check_only: false)
         self.build_order ||= []
-        self.build_order << [type.to_sym, name.to_s]
-        on_failure(type, name, on_failure) if on_failure
-      end
-
-      def on_failure(type, name, hook_name)
-        self.failure_hooks ||= Map.new
-        self.failure_hooks.set(type, name, hook_name)
+        self.build_order << [type.to_sym, name.to_s, { on_failure: on_failure, check_only: check_only }]
       end
 
       def config_file(path)
@@ -48,45 +53,56 @@ module Matsuri
       fail NotImplementedError, 'Must implement #build!'
     end
 
+    # Override this. This commands defines how to display the status
+    # Maybe we can find some useful, standardized way of displaying
+    # status.
+    def status!
+      fail NotImplementedError, 'Must implement #status!'
+    end
+
     # Override this. This command defines how all the app depenencies
     # are started, such as services, endpoints, replication controllers, etc.
-    def start!
+    def create!
       converge! # Most of the time, we want to converge
     end
 
     # Override this. This command defines how all app dependencies are stopped
-    def stop!
+    def delete!
       self.class.build_order.each do |(type, name)|
         if type == :app
           puts "Skipping app #{name}"
           next
         end
 
-        dep(type, name).new.stop!
+        dep(type, name).new.delete!
       end
     end
 
-    def restart!
-      stop!
-      start!
+    def recreate!
+      delete!
+      create!
     end
 
     def rebuild!
       build!
-      restart!
+      recreate!
     end
 
     def converge!(opts = {})
       puts "Converging #{name}".color(:red).bright if config.verbose
-      self.class.build_order.each do |(type, name)|
+      self.class.build_order.each do |(type, name, options)|
         if type == :file
           Matsuri.log :info, "Checking for required file #{name}"
           next if File.file?(name)
-          call_on_failure(type, name) || Matsuri.log(:fatal, "Cannot find required file #{name}")
+          send(options[:on_failure], type, name) || Matsuri.log(:fatal, "Cannot find required file #{name}")
         end
 
-        resource = dep(type, name).new
-        if type == :app && !opts[:reboot]
+        resource = dep(type, name).new(image_tag: image_tag)
+        # @TODO if-elsif-end ladder code smell, refactor
+        if options[:check_only]
+          next if resource.created?
+          send(options[:on_failure], type, name) || Matsuri.log(:fatal, "#{type}/#{name} not found on cluster")
+        elsif type == :app && !opts[:reboot]
           puts "Shallow converging app #{name}".color(:red).bright if config.verbose
           resource.converge!
         else
@@ -128,6 +144,16 @@ module Matsuri
 
     def app(name, opt={})
       Matsuri::Registry.app(name).new(opt)
+    end
+
+    class << self
+      def load_path
+        Matsuri::Config.apps_path
+      end
+
+      def definition_module_name
+        'Apps'
+      end
     end
   end
 end

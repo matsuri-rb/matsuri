@@ -59,6 +59,25 @@ module Matsuri
         Hash[hash.map { |k,v| [k, base64(v) ] }]
       end
 
+      ### Overrides
+
+      # Secrets are not generally something passed around in developer copies
+      # These are things set up by the cluster administrator, so we can assume
+      # if it is present on the server, we can skip it. As such, better to use
+      # recreate than apply for secrets.
+      def converge!(opts = {})
+        converge_by_recreate!(opts)
+      end
+
+      class << self
+        def load_path
+          Matsuri::Config.secrets_path
+        end
+
+        def definition_module_name
+          'Secrets'
+        end
+      end
     end
   end
 end

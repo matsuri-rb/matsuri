@@ -3,6 +3,8 @@ require 'rainbow/ext/string'
 
 module Matsuri
   module ShellOut
+    module_function
+
     SHELLOUT_DEFAULTS = { cwd: ENV['PWD'] }
 
     # Override
@@ -14,8 +16,24 @@ module Matsuri
       Matsuri::Config.debug
     end
 
-    def kube_environment
-      Matsuri::Config.environment
+    # Overridable
+    # By default, the environment name is used. However, if you are using
+    # something like GCP, it is easier to set this in config/platform.rb
+    # and pull it from there. To override this, use let() or just define
+    # a method. For example, put this in a Staging mixin:
+    # let(:kube_context) { platform.staging.kube_context }
+    def kube_context
+      if Matsuri::Config.map_env_to_kube_context
+        Matsuri::Platform.send(Matsuri::Config.environment).kube_context
+      else
+        Matsuri::Config.environment
+      end
+    end
+
+    # Here for class method to get default namespace
+    # This is overriden by Matsuri::Kubernetes::Base when used in K8S resources
+    def namespace
+      Matsuri::Platform.send(Matsuri::Config.environment).namespace || 'default'
     end
 
     def shell_out(_cmd, options = {})
@@ -33,13 +51,21 @@ module Matsuri
     def shell_out!(_cmd, options = {})
       cmd = shell_out(_cmd, options)
       return cmd if cmd.status.success?
-      $stderr.print "ERROR: #{cmd.exitstatus}\nSTDOUT:\n#{cmd.stdout}\n\nSTDERR:\n#{cmd.stderr}\n".red.bright
+      $stderr.print "ERROR: #{cmd.exitstatus}\nSTDOUT:\n#{cmd.stdout}\n\nSTDERR:\n#{cmd.stderr}\n".color(:red).bright
       exit 1
+    end
+
+    # Log and exec a command. Useful for things such as
+    # attaching to a remote shell or console on the K8S cluster
+    def log_and_exec(_cmd, options = {})
+      echo_level = options.delete(:echo_level) || :info
+      Matsuri.log echo_level, "$ #{_cmd}".color(:green)
+      exec _cmd
     end
 
     # This is so that it is easier to write app commands
     def kubectl_cmd(_cmd)
-      "kubectl --context=#{kube_environment} #{_cmd}"
+      "kubectl --context=#{kube_context} --namespace=#{namespace} #{_cmd}"
     end
 
     def kubectl(_cmd, options = {})

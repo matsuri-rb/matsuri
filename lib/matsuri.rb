@@ -12,11 +12,22 @@ module Matsuri
 
   module Kubernetes
     autoload :Base,                  'matsuri/kubernetes/base'
+
+    # Core
     autoload :Pod,                   'matsuri/kubernetes/pod'
     autoload :ReplicationController, 'matsuri/kubernetes/replication_controller'
     autoload :Service,               'matsuri/kubernetes/service'
     autoload :Endpoints,             'matsuri/kubernetes/endpoints'
     autoload :Secret,                'matsuri/kubernetes/secret'
+
+    # Extensions
+    autoload :ReplicaSet,            'matsuri/kubernetes/replica_set'
+    autoload :Deployment,            'matsuri/kubernetes/deployment'
+
+    # Persistent Storage
+    autoload :PersistentVolume,      'matsuri/kubernetes/persistent_volume'
+    autoload :PersistentVolumeClaim, 'matsuri/kubernetes/persistent_volume_claim'
+    autoload :StorageClass,          'matsuri/kubernetes/storage_class'
   end
 
   module AddOns
@@ -24,25 +35,29 @@ module Matsuri
   end
 
   module Cmds
-    autoload :Cli,     'matsuri/cmds/cli'
-    autoload :K8s,     'matsuri/cmds/k8s'
-    autoload :Show,    'matsuri/cmds/show'
-    autoload :Status,  'matsuri/cmds/status'
-    autoload :Start,   'matsuri/cmds/start'
-    autoload :Reload,  'matsuri/cmds/reload'
-    autoload :Restart, 'matsuri/cmds/restart'
-    autoload :Stop,    'matsuri/cmds/stop'
+    autoload :Cli,      'matsuri/cmds/cli'
+    autoload :Kubectl,  'matsuri/cmds/kubectl'
+    autoload :Show,     'matsuri/cmds/show'
+    autoload :Diff,     'matsuri/cmds/diff'
+    autoload :Status,   'matsuri/cmds/status'
+    autoload :Create,   'matsuri/cmds/create'
+    autoload :Delete,   'matsuri/cmds/delete'
+    autoload :Apply,    'matsuri/cmds/apply'
+    autoload :Recreate, 'matsuri/cmds/recreate'
+    autoload :Scale,    'matsuri/cmds/scale'
   end
 
   module Tasks
-    autoload :Kubernetes, 'matsuri/tasks/kubernetes'
-    autoload :Docker,     'matsuri/tasks/docker'
-    autoload :Pod,        'matsuri/tasks/pod'
+    autoload :Kubectl, 'matsuri/tasks/kubectl'
+    autoload :Docker,  'matsuri/tasks/docker'
+    autoload :Pod,     'matsuri/tasks/pod'
   end
 
   module Concerns
     autoload :Awaiting,        'matsuri/concerns/awaiting'
     autoload :RegistryHelpers, 'matsuri/concerns/registry_helpers'
+    autoload :Scalable,        'matsuri/concerns/scalable'
+    autoload :PodTemplate,     'matsuri/concerns/pod_template'
   end
 
   def self.define(*args, &blk)

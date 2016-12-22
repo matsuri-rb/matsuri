@@ -1,3 +1,4 @@
+require 'active_support/core_ext/hash/compact'
 require 'json'
 
 module Matsuri
@@ -8,11 +9,13 @@ module Matsuri
       # Overridables
       let(:spec) do
         {
+          hostname:   hostname,
+          subdomain:  subdomain,
           containers: containers,
           volumes:    volumes,
           imagePullSecrets: image_pull_secrets,
           nodeSelector: node_selector
-        }
+        }.compact
       end
 
       # Get image tag from the command line
@@ -21,16 +24,19 @@ module Matsuri
       let(:containers)         { [container] }
       let(:volumes)            { [volume] }
       let(:image_pull_secrets) { [] }
+      let(:hostname)           { nil } # http://kubernetes.io/docs/admin/dns/
+      let(:subdomain)          { nil }
       let(:resources)          { { requests: resource_requests, limits: resource_limits } }
-      let(:resource_requests)  { { cpu: cpu_request, memory: mem_request } }
-      let(:resource_limits)    { { cpu: cpu_limit,   memory: mem_limit  } }
+      let(:resource_requests)  { { cpu: cpu_request, memory: mem_request }.compact }
+      let(:resource_limits)    { { cpu: cpu_limit,   memory: mem_limit  }.compact }
 
       let(:node_selector)      { { } }
 
       let(:container)   { fail NotImplementedError, 'Must define let(:container)'}
       let(:volume)      { fail NotImplementedError, 'Must define let(:volume)' }
 
-      let(:primary_image) { fail NotImplementedError, 'Must defne let(:primary_image) for replication controller' }
+      let(:primary_container) { containers.first[:name] }
+      let(:primary_image)     { fail NotImplementedError, 'Must define let(:primary_image) for deployment or replication controller' }
 
       # We want to make sure all limits are defined
       let(:cpu_limit)   { fail NotImplementedError, 'Must define let(:cpu_limit)' }
@@ -38,9 +44,16 @@ module Matsuri
       let(:cpu_request) { cpu_limit }
       let(:mem_request) { cpu_limit }
 
+      # Pods are practically useless with using apply. When we converge, we want
+      # to recreate instead. Pods unamaged by rc, rs, or deployment are more useful
+      # in dev mode than anywhere else
+      def converge!(opts = {})
+        converge_by_recreate!(opts)
+      end
+
       # Helper methods
       def up?
-        cmd = kubectl "--namespace=#{namespace} get #{resource_type}/#{name} -o json", echo_level: :debug, no_stdout: true
+        cmd = kubectl "get #{resource_type}/#{name} -o json", echo_level: :debug, no_stdout: true
         Matsuri.log :fatal, "Unable to get status for #{resource_type}/#{name}" unless cmd.status.success?
         pod_json = JSON.parse(cmd.stdout)
         Matsuri.log :debug, pod_json['status']
@@ -67,7 +80,11 @@ module Matsuri
 
       # Ruby 2.0+ uses ordered hashes
       def expand_env(hash)
-        hash.map { |k,v| { name: k, value: v } }
+        hash.map { |k,v| { name: k, value: v.to_s } }
+      end
+
+      def sorted_env(hash)
+        expand_env(hash).sort { |a,b| a[:name] <=> b[:name] }
       end
 
       def port(num, protocol: 'TCP', name: nil)
@@ -90,6 +107,36 @@ module Matsuri
 
       def secret_volume(name, secret_name:)
         { name: name, secret: { secretName: secret_name } }
+      end
+
+      def gce_volume(name, pd_name:, fs_type: 'ext4')
+        { name: name, gcePersistentDisk: { pdName: pd_name, fsType: fs_type } }
+      end
+
+      # Helpers
+
+      def diff!(opt = {})
+        deltas = opt[:primary_container] ? primary_container_diff : diff
+        print_diff(deltas)
+      end
+
+      def containers_diff
+        current = current_manifest(raw: true)
+        Matsuri.log :fatal, "Cannot fetch current manifest for #{resource_type}/#{name}" unless current
+
+        desired = JSON.parse(to_json)
+
+        HashDiff.diff current['spec']['containers'][0], desired['spec']['containers'][0]
+      end
+
+      class << self
+        def load_path
+          Matsuri::Config.pods_path
+        end
+
+        def definition_module_name
+          'Pods'
+        end
       end
     end
   end

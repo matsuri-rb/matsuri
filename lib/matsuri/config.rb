@@ -16,6 +16,18 @@ module Matsuri
     default :debug, false
     default :environment, 'dev'
 
+    # If set to true, then Matsuri env names will be
+    # mapped to kube_context via Matsuri::Platform.
+    # By default, Matsuri assumes that the name of the environment
+    # is the name of the kubectl context. However, if you are using
+    # this with GKE, it is easier to let gcloud handle setting up
+    # authentication, in which case we want to map environment names
+    # to kubectl context
+    # Example: staging -> Matsuri::Platform.staging.kube_context
+    # With "staging", you must define Magsuri::Platform.staging.kube_context
+    # to pull the correct kube context.
+    default :map_env_to_kube_context, false
+
     # Container Image Versions
     default :etcd_version,      nil # 2.0.12
     default :hyperkube_version, nil # v1.0.1
@@ -39,19 +51,24 @@ module Matsuri
     default(:config_secrets_path)   { File.join config_path, 'secrets' } # Actual secrets themselves, should not be versioned
     default(:platform_load_paths)   { [ File.join(config_path, 'platform.rb'), File.join(base_path, '.platform.rb') ] }
 
-    default(:cache_path)     { File.join base_path, '.cache' }
-    default(:build_path)     { File.join base_path, 'build' }
-    default(:docker_path)    { File.join base_path, 'docker' }
-    default(:src_path)       { File.join base_path, 'src' }
-    default(:lib_path)       { File.join base_path, 'lib' }
-    default(:platform_path)  { File.join base_path, 'platform' }
-    default(:images_path)    { File.join platform_path, 'images' }
-    default(:pods_path)      { File.join platform_path, 'pods' }
-    default(:rcs_path)       { File.join platform_path, 'replication_controllers' }
-    default(:services_path)  { File.join platform_path, 'services' }
-    default(:endpoints_path) { File.join platform_path, 'endpoints' }
-    default(:apps_path)      { File.join platform_path, 'apps' }
-    default(:secrets_path)   { File.join platform_path, 'secrets' } # Kubernetes Secret definition, not the actual secrets
+    default(:cache_path)                    { File.join base_path, '.cache' }
+    default(:build_path)                    { File.join base_path, 'build' }
+    default(:docker_path)                   { File.join base_path, 'docker' }
+    default(:src_path)                      { File.join base_path, 'src' }
+    default(:lib_path)                      { File.join base_path, 'lib' }
+    default(:platform_path)                 { File.join base_path, 'platform' }
+    default(:images_path)                   { File.join platform_path, 'images' }
+    default(:pods_path)                     { File.join platform_path, 'pods' }
+    default(:rcs_path)                      { File.join platform_path, 'replication_controllers' }
+    default(:replica_sets_path)             { File.join platform_path, 'replica_sets' }
+    default(:deployments_path)              { File.join platform_path, 'deployments' }
+    default(:persistent_volumes_path)       { File.join platform_path, 'persistent_volumes' }
+    default(:persistent_volume_claims_path) { File.join platform_path, 'persistent_volume_claims' }
+    default(:storage_classes_path)          { File.join platform_path, 'storage_classes' }
+    default(:services_path)                 { File.join platform_path, 'services' }
+    default(:endpoints_path)                { File.join platform_path, 'endpoints' }
+    default(:apps_path)                     { File.join platform_path, 'apps' }
+    default(:secrets_path)                  { File.join platform_path, 'secrets' } # Kubernetes Secret definition, not the actual secrets
 
     default :manifests_path, '/etc/kubernetes/manifests'
 

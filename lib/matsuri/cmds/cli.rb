@@ -9,25 +9,27 @@ module Matsuri
       class_option :debug,   aliases: :D, type: :boolean
       class_option :environment, aliases: :e, type: :string, default: ENV['MATSURI_ENVIRONMENT']
 
-      desc "k8s SUBCOMMAND ...ARGS", "manage Kubernetes"
-      subcommand 'k8s', Matsuri::Cmds::K8s
+      desc "kubectl SUBCOMMAND ...ARGS", "manage kubectl configs"
+      subcommand 'kubectl', Matsuri::Cmds::Kubectl
 
       desc 'show SUBCOMMAND ...ARGS', 'show resource'
       subcommand 'show', Matsuri::Cmds::Show
+      map describe: :show
 
-      desc 'show SUBCOMMAND ...ARGS', 'resource status'
+      desc 'diff SUBCOMMAND ...ARGS', 'diff resource (show what would be applied)  '
+      subcommand 'diff', Matsuri::Cmds::Diff
+
+      desc 'status SUBCOMMAND ...ARGS', 'resource status'
       subcommand 'status', Matsuri::Cmds::Status
+      map top: :status
 
-      desc 'start SUBCOMMAND ...ARGS', 'start resource'
-      subcommand 'start', Matsuri::Cmds::Start
+      desc 'create SUBCOMMAND ...ARGS', 'create resource (kubectl create)'
+      subcommand 'create', Matsuri::Cmds::Create
+      map start: :create
 
-      #desc 'reload SUBCOMMAND ...ARGS', 'reload resource'
-      #subcommand 'reload', Matsuri::Cmds::Reload
-      desc 'reload', 'Not Implementd'
-      def reload
-        puts "Reload not implemented yet"
-        exit (1)
-      end
+      desc 'apply SUBCOMMAND ...ARGS', 'create or update resource (kubectl apply)'
+      subcommand 'apply', Matsuri::Cmds::Apply
+      map reload: :apply
 
       desc 'rebuild', 'Not Implementd'
       def rebuild
@@ -35,26 +37,24 @@ module Matsuri
         exit (1)
       end
 
-      desc 'restart SUBCOMMAND ...ARGS', 'restart resource'
-      subcommand 'restart', Matsuri::Cmds::Restart
+      desc 'recreate SUBCOMMAND ...ARGS', 'recreate resource'
+      subcommand 'recreate', Matsuri::Cmds::Recreate
+      map restart: :recreate
 
-      desc 'stop SUBCOMMAND ...ARGS', 'stop resource'
-      subcommand 'stop', Matsuri::Cmds::Stop
+      desc 'delete SUBCOMMAND ...ARGS', 'delete resource'
+      subcommand 'delete', Matsuri::Cmds::Delete
+      map stop: :delete
 
-      desc 'converge APP_NAME', 'Idempotently converges an app and all dependencies'
+      desc 'converge APP_NAME [IMAGE_TAG]', 'Idempotently converges an app and all dependencies'
       option :restart, type: :boolean, default: false
-      def converge(name, image_tag = 'latest')
+      def converge(name, image_tag = nil)
         with_config do |opt|
           Matsuri::Registry.app(name).new(image_tag: image_tag).converge!(opt)
         end
       end
 
-      desc 'scale RC_NAME', 'Scales a replication controller'
-      def scale(name, replicas)
-        with_config do |opt|
-          Matsuri::Registry.rc(name).new.scale!(replicas, opt)
-        end
-      end
+      desc 'scale SUBCOMMAND ...ARGS', 'scale resource'
+      subcommand 'scale', Matsuri::Cmds::Scale
 
       desc 'rollout RC_NAME [TAG]', 'Rolls out a new image for a replication controller'
       def rollout(name, image_tag = nil)
@@ -84,6 +84,15 @@ module Matsuri
       option :pod,  aliases: :p, type: :string
       def sh(name, *args)
         with_config do |opt|
+          Matsuri::Registry.app(name).new.sh!(opt, args)
+        end
+      end
+
+      desc 'sh! APP_NAME', 'Shells into an app container as root'
+      option :pod,  aliases: :p, type: :string
+      def sh!(name, *args)
+        with_config do |opt|
+          opt[:root] = true
           Matsuri::Registry.app(name).new.sh!(opt, args)
         end
       end

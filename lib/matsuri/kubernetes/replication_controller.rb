@@ -2,6 +2,8 @@
 module Matsuri
   module Kubernetes
     class ReplicationController < Matsuri::Kubernetes::Base
+      include Matsuri::Concerns::PodTemplate
+
       let(:kind) { 'ReplicationController' }
 
       # Overridables
@@ -25,16 +27,6 @@ module Matsuri
       let(:replicas) { fail NotImplementedError, 'Must define let(:replicas)' }
       let(:selector) { fail NotImplementedError, 'Must define let(:selector)' }
 
-      # By default, point the template to an existing pod definition
-      # Overide let(:pod_name)
-      let(:template) { { metadata: { labels: pod_def.labels, annotations: pod_def.annotations }, spec: pod_def.spec } }
-
-      # Define this to point to an existing pod definition. This is the name
-      # registered to Matsuri::Registry
-      let(:pod_name) { fail NotImplementedError, 'Must define let(:pod_name)' }
-      let(:pod_def)  { pod(pod_name, image_tag: image_tag, release: release) }
-      let(:primary_image) { pod_def.primary_image }
-
       def status!
         current_rc = current_rc_name
         puts "Current rc name: #{current_rc}"
@@ -45,7 +37,7 @@ module Matsuri
         current_rc = current_rc_name
 
         Matsuri.log :info, "Scaling #{resource_type}/#{current_rc} to #{replicas}".color(:yellow).bright
-        kubectl! "--namespace=#{namespace} scale --replicas=#{replicas} rc #{current_rc}"
+        kubectl! "scale --replicas=#{replicas} rc #{current_rc}"
       end
 
       def rollout!(image_tag, opt={})
@@ -62,20 +54,20 @@ module Matsuri
         # Create a next controller, overriding image tag, name, and replicas
         # Start replicas with 1 and move from there.
         rc_next = rc(name, name: next_rc, release: next_rel, image_tag: image_tag, replicas: 1)
-        #rc_next.start!
+        #rc_next.create!
 
         Matsuri.log(:debug) { rc_next.pretty_print }
-        kubectl! "--namespace=#{namespace} rolling-update #{current_rc} #{next_rc} -f -", input: rc_next.to_json
+        kubectl! "rolling-update #{current_rc} #{next_rc} -f -", input: rc_next.to_json
       end
 
       def current_rc_name
-        cmd = kubectl "--namespace=#{namespace} get #{resource_type}/#{name}", echo_level: :debug, no_stdout: true
+        cmd = kubectl "get #{resource_type}/#{name}", echo_level: :debug, no_stdout: true
         return name if cmd.status.success?
 
         # Fallback to using selector
         Matsuri.log :info, "Unable to find #{name}. Searching for rc with label matsuri-name=#{name}"
 
-        cmd = kubectl "--namespace=#{namespace} get #{resource_type} --selector='matsuri-name=#{name}' -o json", echo_level: :debug, no_stdout: true
+        cmd = kubectl "get #{resource_type} --selector='matsuri-name=#{name}' -o json", echo_level: :debug, no_stdout: true
         Matsuri.log :fatal, "Unable to find a replication controller with label matsuri-name=#{name}" unless cmd.status.success?
         resp = parse_json(cmd)
 
@@ -89,7 +81,7 @@ module Matsuri
       end
 
       def current_image_tag(rc_name)
-        cmd = kubectl "--namespace=#{namespace} get #{resource_type}/#{rc_name} -o json", echo_level: :debug, no_stdout: true
+        cmd = kubectl "get #{resource_type}/#{rc_name} -o json", echo_level: :debug, no_stdout: true
         Matsuri.log :fatal, "Unable to find #{resource_type}/#{rc_name}" unless cmd.status.success?
         resp = parse_json(cmd)
 
@@ -120,6 +112,15 @@ module Matsuri
         k8s_name =~ /-r(\d+)$/ ? ($1).to_i : 0
       end
 
+      class << self
+        def load_path
+          Matsuri::Config.rcs_path
+        end
+
+        def definition_module_name
+          'ReplicationControllers'
+        end
+      end
     end
   end
 end

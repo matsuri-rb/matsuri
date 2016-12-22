@@ -1,3 +1,5 @@
+require 'active_support/core_ext/hash/compact'
+
 module Matsuri
   module Kubernetes
     class Service < Matsuri::Kubernetes::Base
@@ -6,16 +8,18 @@ module Matsuri
       # Overridables
       let(:spec) do
         {
-          ports: ports,
-          selector: selector,
-          type: service_type
-        }
+          ports:     ports,
+          selector:  selector,
+          type:      service_type,
+          clusterIP: cluster_ip
+        }.compact
       end
 
       let(:ports)        { [port(port_num)] }
       let(:port_num)     { fail NotImplementedError, 'Must define let(:port_num)' }
       let(:selector)     { fail NotImplementedError, 'Must define let(:selector)' }
       let(:service_type) { 'ClusterIP' }
+      let(:cluster_ip)   { nil }
 
       # Helpers
       # Optional:
@@ -30,6 +34,27 @@ module Matsuri
         return _port
       end
 
+      ### @TODO Refactor to Selectable concern
+      ### Helpers
+      def selected_pods_json
+        sel = selector.to_a.map { |(k,v)| "#{k}=#{v}" }.join(',')
+        cmd = kubectl "get pods -l #{sel} -o json", echo_level: :debug, no_stdout: true
+        JSON.parse(cmd.stdout)
+      end
+
+      def selected_pods
+        selected_pods_json['items']
+      end
+
+      class << self
+        def load_path
+          Matsuri::Config.services_path
+        end
+
+        def definition_module_name
+          'Services'
+        end
+      end
     end
   end
 end

@@ -8,6 +8,18 @@ module Matsuri
 
       class_option :json, aliases: :j, type: :boolean, default: false
 
+      def self.show_cmd_for(resource_name, image_tag: false)
+        unless image_tag
+          define_method(resource_name) do |name|
+            show_resource { Matsuri::Registry.send(resource_name, name).new }
+          end
+        else
+          define_method(resource_name) do |name, image_tag = 'latest'|
+            show_resource { Matsuri::Registry.send(resource_name, name).new(image_tag: image_tag) }
+          end
+        end
+      end
+
       desc 'config', 'displays config'
       def config
         with_config do |opt|
@@ -29,66 +41,51 @@ module Matsuri
         end
       end
 
-      desc 'pod POD_NAME [IMAGE_TAG]', 'show manifest for pod'
-      def pod(name, image_tag='latest')
-        with_config do |_|
-          pod = Matsuri::Registry.pod(name).new(image_tag: image_tag)
-          if options[:json]
-            puts pod.pretty_print
-          else
-            puts pod.to_yaml
-          end
-        end
-      end
+      desc 'pod POD_NAME', 'show manifest for pod'
+      show_cmd_for :pod, image_tag: true
 
-      desc 'rc RC_NAME [IMAGE_TAG]', 'show manifest for replication controller'
-      def rc(name, image_tag = 'latest')
-        with_config do |_|
-          rc = Matsuri::Registry.rc(name).new(image_tag: image_tag)
-          if options[:json]
-            puts rc.pretty_print
-          else
-            puts rc.to_yaml
-          end
-        end
-      end
+      desc 'rc RC_NAME', 'show manifest for rc'
+      show_cmd_for :rc, image_tag: true
+
+      desc 'replica_set REPLICA_SET_NAME', 'show manifest for replica_set'
+      show_cmd_for :replica_set, image_tag: true
+      map replicaset: :replica_set
+      map rs: :replica_set
+
+      desc 'deployment DEPLOYMENT_NAME', 'show manifest for deployment'
+      show_cmd_for :deployment, image_tag: true
+      map deploy: :deployment
 
       desc 'service SERVICE_NAME', 'show manifest for service'
-      def service(name)
-        with_config do |_|
-          service = Matsuri::Registry.service(name).new
-          if options[:json]
-            puts service.pretty_print
-          else
-            puts service.to_yaml
-          end
-        end
-      end
+      show_cmd_for :service
 
       desc 'endpoints ENDPOINT_NAME', 'show manifest for endpoints'
-      def endpoints(name)
-        with_config do |_|
-          endpoints = Matsuri::Registry.endpoints(name).new
-          if options[:json]
-            puts endpoints.pretty_print
-          else
-            puts endpoints.to_yaml
-          end
-        end
-      end
+      show_cmd_for :endpoints
 
       desc 'secret SECRET_NAME', 'show a secret'
-      def secret(name)
+      show_cmd_for :secret
+
+      desc 'pv PV_NAME', 'show manifest for persistent volume'
+      show_cmd_for :pv
+
+      desc 'pvc PVC_NAME', 'show manifest for persistent volume claim'
+      show_cmd_for :pvc
+
+      desc 'storage_class STORAGE_CLASS_NAME', 'show manifest for storage class'
+      show_cmd_for :storage_class
+
+      private
+
+      def show_resource
         with_config do |opt|
-          secret = Matsuri::Registry.secret(name).new
+          resource = yield opt
           if options[:json]
-            puts secret.pretty_print
+            puts resource.pretty_print
           else
-            puts secret.to_yaml
+            puts resource.to_yaml
           end
         end
       end
-
     end
   end
 end

@@ -40,6 +40,15 @@ module Matsuri
         return _port
       end
 
+      class << self
+        def load_path
+          Matsuri::Config.endpoints_path
+        end
+
+        def definition_module_name
+          'Endpoints'
+        end
+      end
     end
   end
 end
