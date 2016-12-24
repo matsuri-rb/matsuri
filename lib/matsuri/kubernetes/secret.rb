@@ -24,7 +24,7 @@ module Matsuri
       let(:secret_value) { secret_from_path(full_secret_path) }
       let(:secret_path)  { fail NotImplementedError, 'Must define let(:secret_path)' }
 
-      let(:full_secret_path) { secret_file(path) }
+      let(:full_secret_path) { secret_file(secret_path) }
 
       # Override let(:data) with yaml_data if the secret file is
       # in yaml form
