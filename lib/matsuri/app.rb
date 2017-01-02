@@ -94,7 +94,8 @@ module Matsuri
         if type == :file
           Matsuri.log :info, "Checking for required file #{name}"
           next if File.file?(name)
-          send(options[:on_failure], type, name) || Matsuri.log(:fatal, "Cannot find required file #{name}")
+          Matsuri.log(:fatal, "Cannot find required file #{name}") unless options[:on_failure]
+          send(options[:on_failure], type, name)
         end
 
         resource = dep(type, name).new(image_tag: image_tag)
