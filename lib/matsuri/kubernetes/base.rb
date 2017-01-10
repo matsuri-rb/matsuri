@@ -83,7 +83,7 @@ module Matsuri
 
       def recreate!
         delete!
-        awaiting!(interval: 0.5) { !created? }
+        awaiting!("resource deletion", interval: 0.5) { !created? }
         create!
       end
 
