@@ -29,7 +29,6 @@ module Matsuri
 
       desc 'apply SUBCOMMAND ...ARGS', 'create or update resource (kubectl apply)'
       subcommand 'apply', Matsuri::Cmds::Apply
-      map reload: :apply
 
       desc 'rebuild', 'Not Implementd'
       def rebuild
@@ -50,6 +49,13 @@ module Matsuri
       def converge(name, image_tag = nil)
         with_config do |opt|
           Matsuri::Registry.app(name).new(image_tag: image_tag).converge!(opt)
+        end
+      end
+
+      desc 'reload APP_NAME', 'Reloads an app without recreating underlying pods'
+      def reload(name, image_tag = nil)
+        with_config do |opt|
+          Matsuri::Registry.app(name).new(image_tag: image_tag).reload!(opt)
         end
       end
 

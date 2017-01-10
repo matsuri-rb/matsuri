@@ -118,6 +118,10 @@ module Matsuri
     end
 
     # Hooks
+    def reload!(version, opt={})
+      Matsuri.log :fatal, "I don't know how to reload #{name}. Define me at in the app config."
+    end
+
     def update!(version, opt={})
       Matsuri.log :fatal, "I don't know how to update #{name}. Define me at in the app config."
     end
