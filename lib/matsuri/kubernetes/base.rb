@@ -17,6 +17,7 @@ module Matsuri
       include RLet::LazyOptions
       include Matsuri::ShellOut
       include Matsuri::Concerns::RegistryHelpers
+      include Matsuri::Concerns::Awaiting
 
       # Namespace resolution
       let(:namespace)             { namespace_from_option || default_namespace }
@@ -82,6 +83,7 @@ module Matsuri
 
       def recreate!
         delete!
+        awaiting!(interval: 0.5) { !created? }
         create!
       end
 
