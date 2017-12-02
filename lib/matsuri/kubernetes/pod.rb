@@ -14,7 +14,9 @@ module Matsuri
           containers: containers,
           volumes:    volumes,
           imagePullSecrets: image_pull_secrets,
-          nodeSelector: node_selector
+          nodeSelector: node_selector,
+          affinity: affinity,
+          tolerations: tolerations
         }.compact
       end
 
@@ -24,6 +26,11 @@ module Matsuri
       let(:containers)         { [container] }
       let(:volumes)            { [volume] }
       let(:image_pull_secrets) { [] }
+      let(:tolerations)        { [toleration].compact }
+      let(:toleration)         { nil }
+      let(:nod_affinity)       { nil }
+      let(:pod_affinity)       { nil }
+      let(:pod_anti_affinity)  { nil }
       let(:hostname)           { nil } # http://kubernetes.io/docs/admin/dns/
       let(:subdomain)          { nil }
       let(:resources)          { { requests: resource_requests, limits: resource_limits } }
@@ -111,6 +118,20 @@ module Matsuri
 
       def gce_volume(name, pd_name:, fs_type: 'ext4')
         { name: name, gcePersistentDisk: { pdName: pd_name, fsType: fs_type } }
+      end
+
+      def match_expression(key:, operator:, values: nil)
+        { key: key, operator: operator, values: values }.compact
+      end
+
+      def tolerate(key:, value: nil, operator: 'Equal', effect:, toleration_seconds: nil)
+        {
+          key:               key,
+          value:             value,
+          effect:            effect,
+          operator:          operator,
+          tolerationSeconds: toleration_seconds
+        }.compact
       end
 
       # Helpers
