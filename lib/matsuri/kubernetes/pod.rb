@@ -124,7 +124,7 @@ module Matsuri
         { key: key, operator: operator, values: values }.compact
       end
 
-      def tolerate(key:, value: nil, operator: 'Equal', effect:, toleration_seconds: nil)
+      def tolerate(key: nil, value: nil, operator: 'Equal', effect: nil, toleration_seconds: nil)
         {
           key:               key,
           value:             value,
