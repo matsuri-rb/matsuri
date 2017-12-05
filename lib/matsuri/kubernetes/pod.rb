@@ -28,6 +28,7 @@ module Matsuri
       let(:image_pull_secrets) { [] }
       let(:tolerations)        { [toleration].compact }
       let(:toleration)         { nil }
+      let(:affinity)           { nil }
       let(:nod_affinity)       { nil }
       let(:pod_affinity)       { nil }
       let(:pod_anti_affinity)  { nil }
