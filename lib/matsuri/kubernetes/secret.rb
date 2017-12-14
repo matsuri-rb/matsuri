@@ -53,7 +53,7 @@ module Matsuri
       # secrets from elsewhere, such as from Hashicorp Vault
       # or from an encrypted AWS S3 bucket item
       def base64(secret)
-        Base64.encode64(secret)
+        Base64.encode64(secret).split("\n").join # Strip all newlines
       end
 
       # Helper to transform the values of a hash to base64
