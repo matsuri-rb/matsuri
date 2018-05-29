@@ -48,6 +48,7 @@ module Matsuri
 
     # Platform paths
     default(:config_path)           { File.join base_path, 'config' }
+    default(:initializer_path)      { File.join config_path, 'initializer.rb' }
     default(:config_secrets_path)   { File.join config_path, 'secrets' } # Actual secrets themselves, should not be versioned
     default(:platform_load_paths)   { [ File.join(config_path, 'platform.rb'), File.join(base_path, '.platform.rb') ] }
 

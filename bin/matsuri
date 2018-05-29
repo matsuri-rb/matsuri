@@ -5,11 +5,7 @@ $:.unshift File.join(BASE_PATH, 'lib')
 
 SHELLOUT_DEFAULTS = { cwd: BASE_PATH }
 
-# Flush stdout to keep Jenkins updated
-STDOUT.sync = true
-
 require 'matsuri'
-require 'thor'
-require 'json'
 
+Matsuri::Initializer.call
 Matsuri::Cmds::Cli.start(ARGV)
