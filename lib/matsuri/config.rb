@@ -52,10 +52,11 @@ module Matsuri
     default(:shellout_defaults) { { cwd: shellout_cwd } }
 
     # Platform paths
-    default(:config_path)           { File.join base_path, 'config' }
-    default(:initializer_path)      { File.join config_path, 'initializer.rb' }
-    default(:config_secrets_path)   { File.join config_path, 'secrets' } # Actual secrets themselves, should not be versioned
-    default(:platform_load_paths)   { [ File.join(config_path, 'platform.rb'), File.join(base_path, '.platform.rb') ] }
+    default(:config_path)         { File.join base_path, 'config' }
+    default(:repo_defaults_path)  { File.join config_path, 'matsuri.rb' }
+    default(:initializer_path)    { File.join config_path, 'initializer.rb' }
+    default(:config_secrets_path) { File.join config_path, 'secrets' } # Actual secrets themselves, should not be versioned
+    default(:platform_load_paths) { [ File.join(config_path, 'platform.rb'), File.join(base_path, '.platform.rb') ] }
 
     default(:cache_path)                    { File.join base_path, '.cache' }
     default(:build_path)                    { File.join base_path, 'build' }
@@ -83,9 +84,13 @@ module Matsuri
       /darwin/ =~ RUBY_PLATFORM
     end
 
-    def self.load_configuration(options = {})
-      config_file = options[:config]
+    def self.load_configuration(config_file)
       Matsuri::Config.from_file(config_file) if File.file?(config_file)
+    end
+
+    def self.apply_configuration(options = {})
+      config_file = options[:config]
+      # Matsuri::Config.from_file(config_file) if File.file?(config_file)
       Matsuri::Config.verbose     = options[:verbose]     if options[:verbose]
       Matsuri::Config.debug       = options[:debug]       if options[:debug]
       Matsuri::Config.environment = options[:environment] if options[:environment]

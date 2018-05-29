@@ -4,7 +4,8 @@ module Matsuri
     class Cli < Thor
       include Matsuri::Cmd
 
-      class_option :config,  aliases: :c, type: :string, default: File.join(ENV['PWD'], 'config', 'matsuri.rb')
+      # Don't want to write code to _not_ load in the config, so not going to do it here
+      #class_option :config,  aliases: :c, type: :string, default: File.join(Matsuri::Config.base_path, 'config', 'matsuri.rb')
       class_option :verbose, aliases: :v, type: :boolean
       class_option :debug,   aliases: :D, type: :boolean
 

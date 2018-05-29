@@ -28,6 +28,9 @@ module Matsuri
 
       # Expose matsuri environment to custom initializer
       Matsuri::Config.environment = mat_env
+      Matsuri::Config.load_configuration(Matsuri::Config.repo_defaults_path)
+      Matsuri::Platform.load_configuration(Matsuri::Config.platform_load_paths)
+
       require Matsuri::Config.initializer_path if File.file?(Matsuri::Config.initializer_path)
       Matsuri::Cmds::Cli.start(final_args)
     end
