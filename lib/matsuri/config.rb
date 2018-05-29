@@ -12,7 +12,7 @@ module Matsuri
     config_strict_mode true  # will see how annoying this is
 
     # Base path of the platform repo, defaults to PWD
-    default(:base_path)   { ENV['BUNDLE_GEMFILE'].present? ? File.dirname(ENV['BUNDLE_GEMFILE']) : ENV['PWD'] }
+    default(:base_path)   { Fail 'Matsuri.base_path must be set. This is usually set by the initializer' }
     default :verbose,     false
     default :debug,       false
     default(:environment) { fail 'Matsuri.environment must be set. This is usually set by the initializer' }
