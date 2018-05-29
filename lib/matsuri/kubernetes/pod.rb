@@ -4,7 +4,8 @@ require 'json'
 module Matsuri
   module Kubernetes
     class Pod < Matsuri::Kubernetes::Base
-      let(:kind) { 'Pod' }
+      let(:api_version) { 'v1' }
+      let(:kind)        { 'Pod' }
 
       # Overridables
       let(:spec) do

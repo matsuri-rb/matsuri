@@ -3,7 +3,8 @@ require "base64"
 module Matsuri
   module Kubernetes
     class Secret < Matsuri::Kubernetes::Base
-      let(:kind) { 'Secret' }
+      let(:api_version) { 'v1' }    # K8S 1.10
+      let(:kind)        { 'Secret' }
 
       # Overridables
       let(:manifest) do

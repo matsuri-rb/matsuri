@@ -4,6 +4,7 @@ module Matsuri
   module Kubernetes
     # Kubernetes Persistent Volume
     class PersistentVolume < Matsuri::Kubernetes::Base
+      let(:api_version)         { 'v1' }
       let(:kind)                { 'PersistentVolume' }
       let(:default_annotations) { { 'volume.beta.kubernetes.io/storage-class' => storage_class } } # http://kubernetes.io/docs/user-guide/persistent-volumes/
 

@@ -4,8 +4,8 @@ module Matsuri
       include Matsuri::Concerns::PodTemplate
       include Matsuri::Concerns::Scalable
 
-      let(:api_version) { 'extensions/v1beta1' } # http://kubernetes.io/docs/api-reference/extensions/v1beta1/definitions/#_v1beta1_replicaset
-      let(:kind)        { 'ReplicaSet' }         # http://kubernetes.io/docs/user-guide/replicasets/
+      let(:api_version) { 'apps/v1' }    # K8S 1.10
+      let(:kind)        { 'ReplicaSet' } # http://kubernetes.io/docs/user-guide/replicasets/
 
       # Overridables
 
