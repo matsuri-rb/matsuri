@@ -1,11 +1,8 @@
 #!/usr/bin/env ruby
 
-BASE_PATH=File.expand_path(File.join(File.dirname(__FILE__), '..'))
-$:.unshift File.join(BASE_PATH, 'lib')
-
-SHELLOUT_DEFAULTS = { cwd: BASE_PATH }
+#BASE_PATH=File.expand_path(File.join(File.dirname(__FILE__), '..'))
+#$:.unshift File.join(BASE_PATH, 'lib')
 
 require 'matsuri'
 
-Matsuri::Initializer.call
-Matsuri::Cmds::Cli.start(ARGV)
+Matsuri::Initializer.start($PROGRAM_NAME, ARGV)

@@ -1,6 +1,7 @@
 
 require 'mixlib/config'
 require 'pathname'
+require 'active_support/core_ext/object/blank'
 
 module Matsuri
   # Matsuri-specific configuration. These are things you probably
@@ -11,10 +12,10 @@ module Matsuri
     config_strict_mode true  # will see how annoying this is
 
     # Base path of the platform repo, defaults to PWD
-    default :base_path, ENV['PWD']
-    default :verbose, false
-    default :debug, false
-    default :environment, 'dev'
+    default(:base_path)   { ENV['BUNDLE_GEMFILE'].present? ? File.dirname(ENV['BUNDLE_GEMFILE']) : ENV['PWD'] }
+    default :verbose,     false
+    default :debug,       false
+    default(:environment) { fail 'Matsuri.environment must be set. This is usually set by the initializer' }
 
     # If set to true, then Matsuri env names will be
     # mapped to kube_context via Matsuri::Platform.
@@ -45,6 +46,10 @@ module Matsuri
     default :master_url,       'http://127.0.0.1:8080'
     default :cluster_dns,      '10.0.0.10'
     default :cluster_domain,   'dev.local'
+
+    # Shellout defaults
+    default(:shellout_cwd)      { base_path }
+    default(:shellout_defaults) { { cwd: shellout_cwd } }
 
     # Platform paths
     default(:config_path)           { File.join base_path, 'config' }

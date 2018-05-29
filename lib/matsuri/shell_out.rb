@@ -5,8 +5,6 @@ module Matsuri
   module ShellOut
     module_function
 
-    SHELLOUT_DEFAULTS = { cwd: ENV['PWD'] }
-
     # Override
     def verbose
       Matsuri::Config.verbose
@@ -14,6 +12,10 @@ module Matsuri
 
     def debug
       Matsuri::Config.debug
+    end
+
+    def shellout_defaults
+      Matsuri::Config.shellout_defaults
     end
 
     # Overridable
@@ -41,7 +43,7 @@ module Matsuri
       no_stdout = options.delete(:no_stdout)
 
       Matsuri.log echo_level, "$ #{_cmd}".color(:green)
-      options = SHELLOUT_DEFAULTS.merge(timeout: 3600).merge(options)
+      options = shellout_defaults.merge(timeout: 3600).merge(options)
       cmd = Mixlib::ShellOut.new(_cmd, options)
       cmd.live_stream = STDOUT unless no_stdout && !debug
       cmd.run_command

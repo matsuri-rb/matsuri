@@ -7,7 +7,6 @@ module Matsuri
       class_option :config,  aliases: :c, type: :string, default: File.join(ENV['PWD'], 'config', 'matsuri.rb')
       class_option :verbose, aliases: :v, type: :boolean
       class_option :debug,   aliases: :D, type: :boolean
-      class_option :environment, aliases: :e, type: :string, default: ENV['MATSURI_ENVIRONMENT']
 
       desc "kubectl SUBCOMMAND ...ARGS", "manage kubectl configs"
       subcommand 'kubectl', Matsuri::Cmds::Kubectl
