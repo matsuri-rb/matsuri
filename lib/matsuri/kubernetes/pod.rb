@@ -164,13 +164,13 @@ module Matsuri
         { preferredDuringSchedulingIgnoredDuringExecution: weighted_affinity_terms }
       end
 
-      alias_method :preferred_affinity, :preferred_during_scheduling_ignored_during_execution
+      alias_method :preferred_during_scheduling, :preferred_during_scheduling_ignored_during_execution
 
       def required_during_scheduling_ignored_during_execution(*affinity_terms)
         { requiredDuringSchedulingIgnoredDuringExecution: affinity_terms }
       end
 
-      alias_method :required_affinity, :preferred_during_scheduling_ignored_during_execution
+      alias_method :required_during_scheduling, :preferred_during_scheduling_ignored_during_execution
 
       # Helpers
 
