@@ -1,6 +1,8 @@
 require 'active_support/core_ext/hash/compact'
 require 'json'
 
+# rubocop:disable Lint/MissingCopEnableDirective
+# rubocop:disable Style/Alias
 module Matsuri
   module Kubernetes
     class Pod < Matsuri::Kubernetes::Base
@@ -29,11 +31,11 @@ module Matsuri
       let(:image_pull_secrets) { [] }
       let(:tolerations)        { [toleration].compact }
       let(:toleration)         { nil }
-      let(:affinity)           { nil }
-      let(:nod_affinity)       { nil }
-      let(:pod_affinity)       { nil }
-      let(:pod_anti_affinity)  { nil }
-      let(:hostname)           { nil } # http://kubernetes.io/docs/admin/dns/
+      let(:affinity)           { { nodeAffinity: node_affinity, podAffinity: podAffinity, podAntiAffinity: podAntiAffinity }.compact }
+      let(:node_affinity)      { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#nodeaffinity-v1-core
+      let(:pod_affinity)       { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#podaffinity-v1-core
+      let(:pod_anti_affinity)  { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#podantiaffinity-v1-core
+      let(:hostname)           { nil } # https://kubernetes.io/docs/admin/dns/
       let(:subdomain)          { nil }
       let(:resources)          { { requests: resource_requests, limits: resource_limits } }
       let(:resource_requests)  { { cpu: cpu_request, memory: mem_request }.compact }
@@ -135,6 +137,40 @@ module Matsuri
           tolerationSeconds: toleration_seconds
         }.compact
       end
+
+      # Helper to generate pod affinity term
+      # Defaults to node name for topology key, and empty namespaces
+      def pod_affinity_term(match_label: nil, match_expression: nil, namespaces: [], topology_key: 'kubernetes.io/hostname')
+        {
+          matchLabel:      match_label,
+          matchExpression: match_expression,
+          namespaces:      namespaces,
+          topologyKey:     topology_key
+        }.comapct
+      end
+
+      alias_method :affinity_term, :pod_affinity_term
+
+      def weighted_pod_affinity_term(weight: 100, match_label: nil, match_expression: nil, namespaces: [], topology_key: 'kubernetes.io/hostname')
+        {
+          weight: weight,
+          podAffinityTerm: pod_affinity_term(match_label: match_label, match_expression: match_expression, namespaces: namespaces, topology_key: topology_key)
+        }
+      end
+
+      alias_method :weighted_affinity_term, :weighted_pod_affinity_term
+
+      def preferred_during_scheduling_ignored_during_execution(*weighted_affinity_terms)
+        { preferredDuringSchedulingIgnoredDuringExecution: weighted_affinity_terms }
+      end
+
+      alias_method :preferred_affinity, :preferred_during_scheduling_ignored_during_execution
+
+      def required_during_scheduling_ignored_during_execution(*affinity_terms)
+        { requiredDuringSchedulingIgnoredDuringExecution: affinity_terms }
+      end
+
+      alias_method :required_affinity, :preferred_during_scheduling_ignored_during_execution
 
       # Helpers
 
