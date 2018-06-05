@@ -29,6 +29,8 @@ module Matsuri
       let(:replicas)          { fail NotImplementedError, 'Must define let(:replicas)' }
       let(:match_labels)      { fail NotImplementedError, 'Must define let(:match_labels)' }
 
+      let(:revision_history_limit) { nil }
+
       # Deployment Strategy. Defaults to Rolling Update. Recreate is the other one.
       let(:pod_management_strategy) { fail NotImplementedError, 'Must define let(:pod_management_strategy) as OrderedReady or Parallel' }
       let(:strategy)                { fail NotImplementedError, 'Must define let(:strategy). See: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies' }
@@ -37,7 +39,7 @@ module Matsuri
       let(:rolling_update)          { { partition: partition } }
       let(:partition)               { 0 }
 
-      let(:volume_claim_tempaltes)  { [] }
+      let(:volume_claim_templates)  { [] }
 
       let(:match_expressions) { [] }
 
