@@ -170,7 +170,7 @@ module Matsuri
         { requiredDuringSchedulingIgnoredDuringExecution: affinity_terms }
       end
 
-      alias_method :required_during_scheduling, :preferred_during_scheduling_ignored_during_execution
+      alias_method :required_during_scheduling, :required_during_scheduling_ignored_during_execution
 
       # Helpers
 
