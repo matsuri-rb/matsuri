@@ -32,6 +32,10 @@ module Matsuri
       map replicaset: :replica_set
       map rs: :replica_set
 
+      desc 'stateful_set STATEFUL_SET_NAME', 'recreate a stateful_set'
+      recreate_cmd_for :stateful_set, image_tag: true
+      map sts: :stateful_set
+
       desc 'deployment DEPLOYMENT_NAME [IMAGE TAG]', 'recreate a deployment'
       recreate_cmd_for :deployment, image_tag: true
       map deploy: :deployment

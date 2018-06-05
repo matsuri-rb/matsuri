@@ -38,6 +38,10 @@ module Matsuri
         }
       end
 
+      # Some resources only allow certain fields to be applied. Override this
+      # to restrict it.
+      let(:applied_manifest) { manifest }
+
       let(:final_metadata)      { default_metadata.merge(metadata) }
       let(:default_metadata)    { { name: name, namespace: namespace, labels: final_labels, annotations: final_annotations } }
       # Needed for autodetecting 'current' for rolling-updates. However, this is obsolete with Deployments
@@ -78,7 +82,7 @@ module Matsuri
       def apply!
         puts "Applying (create or update) #{resource_type}/#{name}".color(:yellow).bright if config.verbose
         puts to_json if config.debug
-        kubectl! "apply --record=true -f -", input: to_json
+        kubectl! "apply --record=true -f -", input: applied_to_json
       end
 
       def recreate!
@@ -179,6 +183,15 @@ module Matsuri
       def to_yaml
         manifest.deep_stringify_keys.to_yaml
       end
+
+      def applied_to_json
+        applied_manifest.to_json
+      end
+
+      def applied_to_json
+        applied_manifest.deep_stringify_keys.to_yaml
+      end
+
 
       def pretty_print
         JSON.pretty_generate(manifest)

@@ -27,6 +27,10 @@ module Matsuri
       map replicaset: :replica_set
       map rs: :replica_set
 
+      desc 'stateful_set STATEFUL_SET_NAME', 'delete stateful_set'
+      delete_cmd_for :stateful_set
+      map sts: :stateful_set
+
       desc 'deployment DEPLOYMENT_NAME', 'delete a deployment'
       delete_cmd_for :deployment
       map deploy: :deployment

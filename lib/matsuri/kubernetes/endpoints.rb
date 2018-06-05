@@ -1,7 +1,8 @@
 module Matsuri
   module Kubernetes
     class Endpoints < Matsuri::Kubernetes::Base
-      let(:kind) { 'Endpoints' }
+      let(:api_version) { 'v1' }    # K8S 1.10
+      let(:kind)        { 'Endpoints' }
       let(:manifest) do
         {
           apiVersion:  api_version,

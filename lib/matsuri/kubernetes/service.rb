@@ -3,7 +3,8 @@ require 'active_support/core_ext/hash/compact'
 module Matsuri
   module Kubernetes
     class Service < Matsuri::Kubernetes::Base
-      let(:kind) { 'Service' }
+      let(:api_version) { 'v1' }    # K8S 1.10
+      let(:kind)        { 'Service' }
 
       # Overridables
       let(:spec) do

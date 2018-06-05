@@ -52,6 +52,10 @@ module Matsuri
       map replicaset: :replica_set
       map rs: :replica_set
 
+      desc 'stateful_set STATEFUL_SET_NAME', 'show manifest for stateful_set'
+      show_cmd_for :stateful_set, image_tag: true
+      map sts: :stateful_set
+
       desc 'deployment DEPLOYMENT_NAME', 'show manifest for deployment'
       show_cmd_for :deployment, image_tag: true
       map deploy: :deployment
