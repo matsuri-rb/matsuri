@@ -30,12 +30,13 @@ module Matsuri
       let(:maybe_param_replicas) { options[:relicas] || replicas }
       let(:image_tag)            { options[:image_tag] || 'latest' }
 
-      let(:selector) { { matchLabels: match_labels, matchExpressions: match_expressions } }
+      let(:selector) { { matchLabels: match_labels, matchExpressions: match_expressions }.compact }
       let(:service_name) { fail NotImplementedError, 'Must define let(:service_name). Will define "pod-specific-string.serviceName.default.svc.cluster.local"' }
 
       # Explicitly define replicas
       let(:replicas)          { fail NotImplementedError, 'Must define let(:replicas)' }
       let(:match_labels)      { fail NotImplementedError, 'Must define let(:match_labels)' }
+      let(:match_expressions) { nil} # Default this to nil so it drops off unless defined
 
       let(:revision_history_limit) { nil }
 
@@ -47,9 +48,7 @@ module Matsuri
       let(:rolling_update)          { { partition: partition } }
       let(:partition)               { 0 }
 
-      let(:volume_claim_templates)  { [] }
-
-      let(:match_expressions) { [] }
+      let(:volume_claim_templates)  { nil } # Make sure this is nil, otherwise stateful set cannot be updated with apply
 
       class << self
         def load_path
