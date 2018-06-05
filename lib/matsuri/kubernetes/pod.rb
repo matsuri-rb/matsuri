@@ -1,4 +1,5 @@
 require 'active_support/core_ext/hash/compact'
+require 'active_support/core_ext/object/blank'
 require 'json'
 
 # rubocop:disable Lint/MissingCopEnableDirective
@@ -124,6 +125,13 @@ module Matsuri
         { name: name, gcePersistentDisk: { pdName: pd_name, fsType: fs_type } }
       end
 
+      def label_selector(match_labels: nil, match_expressions: nil)
+        {
+          matchLabels:      match_labels,
+          matchExpressions: match_expressions.present? ? Array(match_expressions) : nil
+        }
+      end
+
       def match_expression(key:, operator:, values: nil)
         { key: key, operator: operator, values: values }.compact
       end
@@ -140,21 +148,20 @@ module Matsuri
 
       # Helper to generate pod affinity term
       # Defaults to node name for topology key, and empty namespaces
-      def pod_affinity_term(match_label: nil, match_expression: nil, namespaces: [], topology_key: 'kubernetes.io/hostname')
+      def pod_affinity_term(match_labels: nil, match_expressions: nil, namespaces: [], topology_key: 'kubernetes.io/hostname')
         {
-          matchLabel:      match_label,
-          matchExpression: match_expression,
-          namespaces:      namespaces,
-          topologyKey:     topology_key
+          labelSelector: label_selector(match_labels: match_labels, match_expressions: match_expressions),
+          namespaces:    namespaces,
+          topologyKey:   topology_key
         }.compact
       end
 
       alias_method :affinity_term, :pod_affinity_term
 
-      def weighted_pod_affinity_term(weight: 100, match_label: nil, match_expression: nil, namespaces: [], topology_key: 'kubernetes.io/hostname')
+      def weighted_pod_affinity_term(weight: 100, match_labels: nil, match_expressions: nil, namespaces: [], topology_key: 'kubernetes.io/hostname')
         {
           weight: weight,
-          podAffinityTerm: pod_affinity_term(match_label: match_label, match_expression: match_expression, namespaces: namespaces, topology_key: topology_key)
+          podAffinityTerm: pod_affinity_term(match_labels: match_labels, match_expressions: match_expressions, namespaces: namespaces, topology_key: topology_key)
         }
       end
 
