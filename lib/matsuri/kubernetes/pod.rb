@@ -31,7 +31,7 @@ module Matsuri
       let(:image_pull_secrets) { [] }
       let(:tolerations)        { [toleration].compact }
       let(:toleration)         { nil }
-      let(:affinity)           { { nodeAffinity: node_affinity, podAffinity: podAffinity, podAntiAffinity: podAntiAffinity }.compact }
+      let(:affinity)           { { nodeAffinity: node_affinity, podAffinity: pod_affinity, podAntiAffinity: pod_anti_affinity }.compact }
       let(:node_affinity)      { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#nodeaffinity-v1-core
       let(:pod_affinity)       { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#podaffinity-v1-core
       let(:pod_anti_affinity)  { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#podantiaffinity-v1-core
@@ -146,7 +146,7 @@ module Matsuri
           matchExpression: match_expression,
           namespaces:      namespaces,
           topologyKey:     topology_key
-        }.comapct
+        }.compact
       end
 
       alias_method :affinity_term, :pod_affinity_term
