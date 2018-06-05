@@ -17,6 +17,10 @@ module Matsuri
       map replicaset: :replica_set
       map rs: :replica_set
 
+      desc 'stateful_set STATEFUL_SET_NAME', 'scale a stateful_set'
+      scale_cmd_for :stateful_set
+      map sts: :stateful_set
+
       desc 'deployment DEPLOYMENT_NAME REPLICAS', 'scale a deployment'
       scale_cmd_for :deployment
       map deploy: :deployment
