@@ -11,12 +11,12 @@ module Matsuri
 
       let(:spec) do
         {
-          replicas: replicas,
-          selector: selector,
-          template: template,
-          serviceName: service_name,
-          podManagementPolicy: pod_management_policy,
-          strategy: strategy,
+          replicas:             replicas,
+          selector:             selector,
+          template:             template,
+          serviceName:          service_name,
+          podManagementPolicy:  pod_management_policy,
+          updateStrategy:       update_strategy,
           revisionHistoryLimit: revision_history_limit,
           volumeClaimTemplates: volume_claim_templates
         }.compact
@@ -41,7 +41,7 @@ module Matsuri
 
       # Deployment Strategy. Defaults to Rolling Update. Recreate is the other one.
       let(:pod_management_policy)   { fail NotImplementedError, 'Must define let(:pod_management_policy) as OrderedReady or Parallel' }
-      let(:strategy)                { fail NotImplementedError, 'Must define let(:strategy). See: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies' }
+      let(:update_strategy)         { fail NotImplementedError, 'Must define let(:update_strategy). See: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies' }
       let(:on_delete_strategy)      { { type: 'OnDelete' } }
       let(:rolling_update_strategy) { { type: 'RollingUpdate', rollingUpdate: rolling_update } }
       let(:rolling_update)          { { partition: partition } }
