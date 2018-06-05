@@ -21,8 +21,9 @@ module Matsuri
     autoload :Endpoints,             'matsuri/kubernetes/endpoints'
     autoload :Secret,                'matsuri/kubernetes/secret'
 
-    # Extensions
+    # Apps
     autoload :ReplicaSet,            'matsuri/kubernetes/replica_set'
+    autoload :StatefulSet,           'matsuri/kubernetes/stateful_set'
     autoload :Deployment,            'matsuri/kubernetes/deployment'
 
     # Persistent Storage
