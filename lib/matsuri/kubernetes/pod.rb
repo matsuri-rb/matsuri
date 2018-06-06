@@ -70,8 +70,8 @@ module Matsuri
         pod_json = JSON.parse(cmd.stdout)
         Matsuri.log :debug, pod_json['status']
         return false unless pod_json['status']['phase'] == 'Running'
-        return false unless pod_json['status']['conditions'].any?
-        pod_json['status']['conditions'].all? { |c| c['type'] == 'Ready' && c['status'] == 'True' }
+        return false unless pod_json['status']['containerStatuses'].any?
+        pod_json['status']['containerStatuses'].all? { |c| c['ready'] == true }
       end
 
       def config_file(path)
