@@ -188,10 +188,9 @@ module Matsuri
         applied_manifest.to_json
       end
 
-      def applied_to_json
+      def applied_to_yaml
         applied_manifest.deep_stringify_keys.to_yaml
       end
-
 
       def pretty_print
         JSON.pretty_generate(manifest)
