@@ -32,7 +32,13 @@ module Matsuri
       def load_definition(type, name)
         def_path = definition_path(type, name)
 
-        eval(File.read(def_path), TOPLEVEL_BINDING, def_path)
+        # [Hosh] Somehow, TOPLEVEL_BINDING got infected with version and str
+        # local variables. When thinking about it, we probably want to require
+        # instead of evaluating this with the TOPLEVEL_BINDING anyways.
+
+        #eval(File.read(def_path), TOPLEVEL_BINDING, def_path)
+        require def_path
+
         _klass = instance.data.get(type, name)
         return _klass if _klass
 
