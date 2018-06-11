@@ -9,7 +9,10 @@ module Matsuri
       class_option :verbose, aliases: :v, type: :boolean
       class_option :debug,   aliases: :D, type: :boolean
 
-      desc "kubectl SUBCOMMAND ...ARGS", "manage kubectl configs"
+      desc 'generate SUBCOMMAND ...ARGS', 'generate Matsuri scaffolding'
+      subcommand 'generate', Matsuri::Cmds::Generate
+
+      desc 'kubectl SUBCOMMAND ...ARGS', 'manage kubectl configs'
       subcommand 'kubectl', Matsuri::Cmds::Kubectl
 
       desc 'show SUBCOMMAND ...ARGS', 'show resource'

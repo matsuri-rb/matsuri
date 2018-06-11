@@ -47,6 +47,8 @@ module Matsuri
     autoload :Apply,    'matsuri/cmds/apply'
     autoload :Recreate, 'matsuri/cmds/recreate'
     autoload :Scale,    'matsuri/cmds/scale'
+
+    autoload :Generate, 'matsuri/cmds/generate'
   end
 
   module Tasks
