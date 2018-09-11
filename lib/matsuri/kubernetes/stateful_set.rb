@@ -50,6 +50,20 @@ module Matsuri
 
       let(:volume_claim_templates)  { nil } # Make sure this is nil, otherwise stateful set cannot be updated with apply
 
+      ### Helpers
+      def volume_claim_template(name:, storage_class: nil, access_modes: 'ReadWriteOnce', storage_request:)
+        {
+          metadata: { name: name },
+          spec: {
+            accessModes: Array(access_modes),
+            storageClassName: storage_class,
+            resources: {
+              requests: { storage: storage_request }
+            }.compact
+          }
+        }
+      end
+
       class << self
         def load_path
           Matsuri::Config.stateful_sets_path
