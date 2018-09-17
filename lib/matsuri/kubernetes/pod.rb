@@ -92,7 +92,21 @@ module Matsuri
 
       # Ruby 2.0+ uses ordered hashes
       def expand_env(hash)
-        hash.map { |k,v| { name: k, value: v.to_s } }
+        hash.map do |k,v|
+          if v.is_a?(Hash)
+            { name: k, valueFrom: v }
+          else
+            { name: k, value: v.to_s }
+          end
+        end
+      end
+
+      def env_from_secret(name:, key:)
+        { secretKeyRef: { name: name, key: key } }
+      end
+
+      def env_from_config_map(name:, key:)
+        { configMapKeyRef: { name: name, key: key } }
       end
 
       def sorted_env(hash)
