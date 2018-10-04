@@ -20,6 +20,7 @@ module Matsuri
     autoload :Service,               'matsuri/kubernetes/service'
     autoload :Endpoints,             'matsuri/kubernetes/endpoints'
     autoload :Secret,                'matsuri/kubernetes/secret'
+    autoload :ConfigMap,             'matsuri/kubernetes/config_map'
 
     # Apps
     autoload :ReplicaSet,            'matsuri/kubernetes/replica_set'

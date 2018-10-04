@@ -145,6 +145,10 @@ module Matsuri
         fetch_or_load :secret, name
       end
 
+      def config_map(name)
+        fetch_or_load :config_map, name
+      end
+
       def app(name)
         fetch_or_load :app, name
       end
@@ -192,6 +196,7 @@ Matsuri::Registry.register_class 'replication_controller',  class: Matsuri::Kube
 Matsuri::Registry.register_class 'service',                 class: Matsuri::Kubernetes::Service
 Matsuri::Registry.register_class 'endpoint',                class: Matsuri::Kubernetes::Endpoints
 Matsuri::Registry.register_class 'secret',                  class: Matsuri::Kubernetes::Secret
+Matsuri::Registry.register_class 'config_map',              class: Matsuri::Kubernetes::ConfigMap
 Matsuri::Registry.register_class 'replica_set',             class: Matsuri::Kubernetes::ReplicaSet
 Matsuri::Registry.register_class 'stateful_set',            class: Matsuri::Kubernetes::StatefulSet,           aliases: %w(sts)
 Matsuri::Registry.register_class 'deployment',              class: Matsuri::Kubernetes::Deployment

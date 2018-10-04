@@ -52,11 +52,12 @@ module Matsuri
     default(:shellout_defaults) { { cwd: shellout_cwd } }
 
     # Platform paths
-    default(:config_path)         { File.join base_path, 'config' }
-    default(:repo_defaults_path)  { File.join config_path, 'matsuri.rb' }
-    default(:initializer_path)    { File.join config_path, 'initializer.rb' }
-    default(:config_secrets_path) { File.join config_path, 'secrets' } # Actual secrets themselves, should not be versioned
-    default(:platform_load_paths) { [ File.join(config_path, 'platform.rb'), File.join(base_path, '.platform.rb') ] }
+    default(:config_path)          { File.join base_path, 'config' }
+    default(:repo_defaults_path)   { File.join config_path, 'matsuri.rb' }
+    default(:initializer_path)     { File.join config_path, 'initializer.rb' }
+    default(:config_secrets_path)  { File.join config_path, 'secrets' } # Actual secrets themselves, should not be versioned
+    default(:config_overlays_path) { File.join 'etc', 'config-maps' } # Actual config files themselves
+    default(:platform_load_paths)  { [ File.join(config_path, 'platform.rb'), File.join(base_path, '.platform.rb') ] }
 
     default(:cache_path)                    { File.join base_path, '.cache' }
     default(:build_path)                    { File.join base_path, 'build' }
@@ -77,6 +78,7 @@ module Matsuri
     default(:endpoints_path)                { File.join platform_path, 'endpoints' }
     default(:apps_path)                     { File.join platform_path, 'apps' }
     default(:secrets_path)                  { File.join platform_path, 'secrets' } # Kubernetes Secret definition, not the actual secrets
+    default(:config_maps_path)              { File.join platform_path, 'config_maps' } # Kubernetes ConfigMaps definition, not the actual config ovelay
 
     default :manifests_path, '/etc/kubernetes/manifests'
 
