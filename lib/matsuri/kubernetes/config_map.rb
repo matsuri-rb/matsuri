@@ -12,14 +12,11 @@ module Matsuri
           apiVersion: api_version,
           kind:       kind,
           metadata:   final_metadata,
-          type:       secret_type,
           data:       data,
           binaryData: binary_data
         }
       end
 
-      # Looks like Kubernetes 1.0.6 supports only Opaque secrets
-      let(:secret_type)  { 'Opaque' }
       let(:data)         { nil }
       let(:binary_data)  { nil }
 
