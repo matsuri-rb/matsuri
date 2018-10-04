@@ -56,6 +56,11 @@ module Matsuri
       desc 'secret SECRET_NAME', 'upload a secret'
       create_cmd_for :secret
 
+      desc 'config-map CONFIG_MAP_NAME', 'upload a config map'
+      create_cmd_for :config_map
+      map configmap: :config_map
+      map cm: :config_map
+
       desc 'pv PV_NAME', 'create a persistent volume'
       create_cmd_for :pv
 

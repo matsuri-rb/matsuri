@@ -69,7 +69,8 @@ module Matsuri
       desc 'secret SECRET_NAME', 'show a secret'
       show_cmd_for :secret
 
-      desc 'config_map CONFIG_MAP_NAME', 'show a config map'
+      desc 'config-map CONFIG_MAP_NAME', 'show a config map'
+      map configmap: :config_map
       show_cmd_for :config_map
 
       desc 'pv PV_NAME', 'show manifest for persistent volume'

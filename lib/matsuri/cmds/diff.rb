@@ -48,6 +48,10 @@ module Matsuri
       desc 'secret SECRET_NAME', 'diff a secret'
       diff_cmd_for :secret
 
+      desc 'config_map CONFIG_MAP_NAME', 'diff a config map'
+      diff_cmd_for :config_map
+      map cm: :config_map
+
       desc 'pv PV_NAME', 'diff manifest for persistent volume'
       diff_cmd_for :pv
 

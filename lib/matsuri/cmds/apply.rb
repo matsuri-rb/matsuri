@@ -32,7 +32,7 @@ module Matsuri
       map replicaset: :replica_set
       map rs: :replica_set
 
-      desc 'stateful_set STATEFUL_SET_NAME', 'apply changes for stateful_set'
+      desc 'stateful-set STATEFUL_SET_NAME', 'apply changes for stateful_set'
       apply_cmd_for :stateful_set, image_tag: true
       map sts: :stateful_set
 
@@ -44,7 +44,12 @@ module Matsuri
       apply_cmd_for :service, image_tag: true
 
       desc 'secret SECRET_NAME', 'apply changes to a secret'
-      apply_cmd_for :secret, image_tag: true
+      apply_cmd_for :secret
+
+      desc 'config-map CONFIG_MAP_NAME', 'apply changes to a config map'
+      apply_cmd_for :config_map, image_tag: true
+      map configmap: :config_map
+      map cm: :config_map
 
       private
 

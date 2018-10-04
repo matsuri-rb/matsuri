@@ -47,6 +47,11 @@ module Matsuri
       desc 'secret SECRET_NAME', 'delete a secret'
       delete_cmd_for :secret
 
+      desc 'config-map CONFIG_MAP_NAME', 'delete a config map'
+      delete_cmd_for :config_map
+      map configmap: :config_map
+      map cm: :config_map
+
       desc 'pv PV_NAME', 'delete a persistent volume'
       delete_cmd_for :pv
 
