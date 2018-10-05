@@ -135,6 +135,11 @@ module Matsuri
         { name: name, secret: { secretName: secret_name } }
       end
 
+      def config_map_volume(name, config_map_name: nil, items: nil, default_mode: nil)
+        config_map_name ||= name
+        { name: name, configMap: { name: config_map_name, items: items, defaultMode: default_mode }.compact }
+      end
+
       def gce_volume(name, pd_name:, fs_type: 'ext4')
         { name: name, gcePersistentDisk: { pdName: pd_name, fsType: fs_type } }
       end
