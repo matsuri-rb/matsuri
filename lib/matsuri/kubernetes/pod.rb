@@ -109,6 +109,10 @@ module Matsuri
         { configMapKeyRef: { name: name, key: key } }
       end
 
+      def evn_from_field_ref(path:)
+        { fieldRef: { fieldPath: path } }
+      end
+
       def sorted_env(hash)
         expand_env(hash).sort { |a,b| a[:name] <=> b[:name] }
       end
