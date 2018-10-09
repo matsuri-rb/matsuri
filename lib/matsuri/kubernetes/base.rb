@@ -85,6 +85,12 @@ module Matsuri
         kubectl! "apply --record=true -f -", input: applied_to_json
       end
 
+      def replace!
+        puts "Replacing (create or update) #{resource_type}/#{name}".color(:yellow).bright if config.verbose
+        puts to_json if config.debug
+        kubectl! "replace --record=true -f -", input: to_json
+      end
+
       def recreate!
         if created?
           delete!
