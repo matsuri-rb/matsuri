@@ -109,7 +109,7 @@ module Matsuri
         { configMapKeyRef: { name: name, key: key } }
       end
 
-      def evn_from_field_ref(path:)
+      def env_from_field_ref(path:)
         { fieldRef: { fieldPath: path } }
       end
 
