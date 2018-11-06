@@ -41,6 +41,17 @@ module Matsuri
         File.read(path)
       end
 
+      def all_text_from(dir)
+        all_text_from_dir(config_overlays_path(dir))
+      end
+
+      # This will only look at the first-level and will not recursively descend
+      def all_text_from_dir(dir)
+        Dir.glob(File.join(dir, '*')).
+          map { |path| [File.basename(path), text_from_path(path)] }.
+          to_h
+      end
+
       # Helper to load secrets file from default location
       def config_overlays_path(path)
         File.join(Matsuri::Config.config_overlays_path, path)
