@@ -42,13 +42,21 @@ module Matsuri
       end
 
       def all_text_from(dir)
-        all_text_from_dir(config_overlays_path(dir))
+        all_from(dir, &method(:text_from_path))
+      end
+
+      def all_bin_from(dir)
+        all_from(dir, &method(:bin_from_path))
+      end
+
+      def all_from(dir, &block)
+        all_from_dir(config_overlays_path(dir), &block)
       end
 
       # This will only look at the first-level and will not recursively descend
-      def all_text_from_dir(dir)
+      def all_from_dir(dir, &block)
         Dir.glob(File.join(dir, '*')).
-          map { |path| [File.basename(path), text_from_path(path)] }.
+          map { |path| [File.basename(path), yield(path)] }.
           to_h
       end
 
