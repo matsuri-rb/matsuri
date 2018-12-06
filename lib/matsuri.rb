@@ -25,6 +25,7 @@ module Matsuri
     # Apps
     autoload :ReplicaSet,            'matsuri/kubernetes/replica_set'
     autoload :StatefulSet,           'matsuri/kubernetes/stateful_set'
+    autoload :DaemonSet,             'matsuri/kubernetes/daemon_set'
     autoload :Deployment,            'matsuri/kubernetes/deployment'
 
     # Persistent Storage

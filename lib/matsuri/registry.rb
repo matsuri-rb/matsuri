@@ -113,6 +113,10 @@ module Matsuri
         fetch_or_load :stateful_set, name
       end
 
+      def daemon_set(name)
+        fetch_or_load :daemon_set, name
+      end
+
       def deployment(name)
         fetch_or_load :deployment, name
       end
@@ -192,14 +196,15 @@ end
 # TODO: Consider making this dynamically and lazy loaded
 Matsuri::Registry.register_class 'app',                     class: Matsuri::App
 Matsuri::Registry.register_class 'pod',                     class: Matsuri::Kubernetes::Pod
-Matsuri::Registry.register_class 'replication_controller',  class: Matsuri::Kubernetes::ReplicationController, aliases: %w(rc)
+Matsuri::Registry.register_class 'replication_controller',  class: Matsuri::Kubernetes::ReplicationController, aliases: %w[rc]
 Matsuri::Registry.register_class 'service',                 class: Matsuri::Kubernetes::Service
 Matsuri::Registry.register_class 'endpoint',                class: Matsuri::Kubernetes::Endpoints
 Matsuri::Registry.register_class 'secret',                  class: Matsuri::Kubernetes::Secret
 Matsuri::Registry.register_class 'config_map',              class: Matsuri::Kubernetes::ConfigMap
-Matsuri::Registry.register_class 'replica_set',             class: Matsuri::Kubernetes::ReplicaSet
-Matsuri::Registry.register_class 'stateful_set',            class: Matsuri::Kubernetes::StatefulSet,           aliases: %w(sts)
+Matsuri::Registry.register_class 'replica_set',             class: Matsuri::Kubernetes::ReplicaSet,            aliases: %w[rs]
+Matsuri::Registry.register_class 'stateful_set',            class: Matsuri::Kubernetes::StatefulSet,           aliases: %w[sts]
+Matsuri::Registry.register_class 'daemon_set',              class: Matsuri::Kubernetes::DaemonSet,             aliases: %w[ds]
 Matsuri::Registry.register_class 'deployment',              class: Matsuri::Kubernetes::Deployment
-Matsuri::Registry.register_class 'persistent_volume',       class: Matsuri::Kubernetes::PersistentVolume,      aliases: %w(pv)
-Matsuri::Registry.register_class 'persistent_volume_claim', class: Matsuri::Kubernetes::PersistentVolumeClaim, aliases: %w(pvc)
+Matsuri::Registry.register_class 'persistent_volume',       class: Matsuri::Kubernetes::PersistentVolume,      aliases: %w[pv]
+Matsuri::Registry.register_class 'persistent_volume_claim', class: Matsuri::Kubernetes::PersistentVolumeClaim, aliases: %w[pvc]
 Matsuri::Registry.register_class 'storage_class',           class: Matsuri::Kubernetes::StorageClass

@@ -31,6 +31,10 @@ module Matsuri
       delete_cmd_for :stateful_set
       map sts: :stateful_set
 
+      desc 'daemon_set DAEMON_SET_NAME', 'delete daemon_set'
+      delete_cmd_for :daemon_set
+      map ds: :daemon_set
+
       desc 'deployment DEPLOYMENT_NAME', 'delete a deployment'
       delete_cmd_for :deployment
       map deploy: :deployment

@@ -43,6 +43,10 @@ module Matsuri
       create_cmd_for :stateful_set, image_tag: true
       map sts: :stateful_set
 
+      desc 'daemon_set DAEMON_SET_NAME', 'create a daemon_set'
+      create_cmd_for :daemon_set, image_tag: true
+      map ds: :daemon_set
+
       desc 'deployment DEPLOYMENT_NAME [IMAGE_TAG]', 'create a deployment'
       create_cmd_for :deployment, image_tag: true
       map deploy: :deployment

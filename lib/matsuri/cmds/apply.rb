@@ -36,6 +36,10 @@ module Matsuri
       apply_cmd_for :stateful_set, image_tag: true
       map sts: :stateful_set
 
+      desc 'daemon-set DAEMON_SET_NAME', 'apply changes for daemon_set'
+      apply_cmd_for :daemon_set, image_tag: true
+      map ds: :daemon_set
+
       desc 'deployment DEPLOYMENT_NAME', 'apply changes to a deployment'
       apply_cmd_for :deployment, image_tag: true
       map deploy: :deployment
