@@ -1,5 +1,6 @@
 require 'active_support/core_ext/hash/compact'
 require 'active_support/core_ext/object/blank'
+require 'active_support/core_ext/object/try'
 require 'json'
 
 # rubocop:disable Lint/MissingCopEnableDirective
@@ -13,14 +14,42 @@ module Matsuri
       # Overridables
       let(:spec) do
         {
-          hostname:   hostname,
-          subdomain:  subdomain,
-          containers: containers,
-          volumes:    volumes,
+          containers:     containers,
+          initContainers: init_containers,
+          volumes:        volumes,
+
           imagePullSecrets: image_pull_secrets,
-          nodeSelector: node_selector,
-          affinity: affinity,
-          tolerations: tolerations
+
+          # Networking and Host
+          hostname:    hostname,
+          subdomain:   subdomain,
+          dnsConfig:   dns_config,
+          dnsPolicy:   dns_policy,
+          hostAliases: host_aliases,
+          hostIPC:     host_ipc,
+          hostNetwork: host_network,
+
+          # Scheduling
+          nodeName:          node_name,
+          nodeSelector:      node_selector,
+          affinity:          affinity,
+          tolerations:       tolerations,
+          priority:          priority,
+          priorityClassName: priority_class_name,
+          schedulerName:     scheduler_name,
+
+          # Lifecylce
+          readinessGates:                readiness_gates,
+          restartPolicy:                 restart_policy,
+          activeDeadlineSeconds:         active_deadline_seconds,
+          terminationGracePeriodSeconds: termination_grace_period_seconds,
+
+          # Security
+          hostPID:                       host_pid,
+          shareProcessNamespace:         share_process_namespace,
+          securityContext:               pod_security_context,
+          serviceAccountName:            service_account_name,
+          automountServiceAccountToken:  automount_service_account_token
         }.compact
       end
 
@@ -28,33 +57,105 @@ module Matsuri
       let(:image_tag)          { options[:image_tag] || 'latest' }
 
       let(:containers)         { [container] }
+      let(:init_containers)    { nil }
       let(:volumes)            { [volume] }
       let(:image_pull_secrets) { [] }
-      let(:tolerations)        { [toleration].compact }
-      let(:toleration)         { nil }
-      let(:affinity)           { { nodeAffinity: node_affinity, podAffinity: pod_affinity, podAntiAffinity: pod_anti_affinity }.compact }
-      let(:node_affinity)      { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#nodeaffinity-v1-core
-      let(:pod_affinity)       { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#podaffinity-v1-core
-      let(:pod_anti_affinity)  { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#podantiaffinity-v1-core
+
+      # Schedulering
+      let(:node_name)           { nil }
+      let(:node_selector)       { { } }
+      let(:tolerations)         { [toleration].compact }
+      let(:toleration)          { nil }
+      let(:affinity)            { { nodeAffinity: node_affinity, podAffinity: pod_affinity, podAntiAffinity: pod_anti_affinity }.compact }
+      let(:node_affinity)       { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#nodeaffinity-v1-core
+      let(:pod_affinity)        { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#podaffinity-v1-core
+      let(:pod_anti_affinity)   { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#podantiaffinity-v1-core
+      let(:priority)            { nil }
+      let(:priority_class_name) { nil }
+      let(:scheduler_name)      { nil }
+
+      # Networking and Host
       let(:hostname)           { nil } # https://kubernetes.io/docs/admin/dns/
       let(:subdomain)          { nil }
-      let(:resources)          { { requests: resource_requests, limits: resource_limits } }
-      let(:resource_requests)  { { cpu: cpu_request, memory: mem_request }.compact }
-      let(:resource_limits)    { { cpu: cpu_limit,   memory: mem_limit  }.compact }
+      let(:dns_config)         { nil }
+      let(:dns_policy)         { nil }
+      let(:host_aliases)       { nil }
+      let(:host_ipc)           { nil }
+      let(:host_network)       { nil }
 
-      let(:node_selector)      { { } }
+      # Lifecycle
+      let(:readiness_gates)                  { nil }
+      let(:restart_policy)                   { 'Always' }
+      let(:active_deadline_seconds)          { nil }
+      let(:termination_grace_period_seconds) { nil }
 
+      # Security and Execution Context
+      let(:host_pid)                         { nil }
+      let(:share_process_namespace)          { nil }
+      let(:service_account_name)             { nil }
+      let(:automount_service_account_token)  { nil }
+
+      # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#podsecuritycontext-v1-core
+      let(:pod_security_context) do
+        {
+          runAsUser:          pod_run_as_user,
+          runAsGroup:         pod_run_as_group,
+          runAsNonRoot:       pod_run_as_non_root,
+          seLinuxOptions:     pod_se_linux_options,
+          fsGroup:            fs_group,
+          supplementalGroups: supplemental_groups,
+          sysctls:            sysctls
+        }.compact
+      end
+
+      let(:pod_run_as_user)      { nil }
+      let(:pod_run_as_group)     { nil }
+      let(:pod_run_as_non_root)  { nil }
+      let(:pod_se_linux_options) { nil }
+      let(:fs_group)             { nil }
+      let(:supplemental_groups)  { nil }
+      let(:sysctls)              { nil }
+
+      # Default container
       let(:container)   { fail NotImplementedError, 'Must define let(:container)'}
       let(:volume)      { fail NotImplementedError, 'Must define let(:volume)' }
 
       let(:primary_container) { containers.first[:name] }
       let(:primary_image)     { fail NotImplementedError, 'Must define let(:primary_image) for deployment or replication controller' }
 
+      # Resources for default container
+      let(:resources)          { { requests: resource_requests, limits: resource_limits } }
+      let(:resource_requests)  { { cpu: cpu_request, memory: mem_request }.compact }
+      let(:resource_limits)    { { cpu: cpu_limit,   memory: mem_limit  }.compact }
+
       # We want to make sure all limits are defined
       let(:cpu_limit)   { fail NotImplementedError, 'Must define let(:cpu_limit)' }
       let(:mem_limit)   { fail NotImplementedError, 'Must define let(:mem_limit)' }
       let(:cpu_request) { cpu_limit }
       let(:mem_request) { cpu_limit }
+
+      # Default container security context
+      let(:security_context) do
+        {
+          runAsUser:                 run_as_user,
+          runAsGroup:                run_as_group,
+          runAsNonRoot:              run_as_non_root,
+          priviledged:               priviledged,
+          allowPriviledgeEscalation: allow_priviledge_escalation,
+          seLinuxOptions:            se_linux_options,
+          capabilities:              capabilities
+        }.compact
+      end
+
+      let(:run_as_user)                 { nil }
+      let(:run_as_group)                { nil }
+      let(:run_as_non_root)             { nil }
+      let(:priviledged)                 { nil }
+      let(:allow_priviledge_escalation) { nil }
+      let(:se_linux_options)            { nil }
+      let(:capabilities)                { nil }
+
+      ### Helpers
 
       # Pods are practically useless with using apply. When we converge, we want
       # to recreate instead. Pods unamaged by rc, rs, or deployment are more useful
@@ -117,10 +218,14 @@ module Matsuri
         expand_env(hash).sort { |a,b| a[:name] <=> b[:name] }
       end
 
-      def port(num, protocol: 'TCP', name: nil)
-        _port = { containerPort: num, protocol: protocol.to_s }
-        _port[:name] = name.to_s if name
-        return _port
+      def port(num, protocol: 'TCP', name: nil, host_ip: nil, host_port: nil)
+        {
+          name:          name.try(:to_s),
+          containerPort: num,
+          protocol:      protocol.to_s,
+          hostIP:        host_ip,
+          hostPort:      host_port
+        }.compact
       end
 
       def mount(name, path, read_only: false)
