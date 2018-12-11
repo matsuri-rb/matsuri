@@ -10,11 +10,6 @@ module Matsuri
 
         attribute_accessor :name, :namespace
 
-        # @TODO - Break out base into mixins that could be used elsewhere
-        # This way, we're can put this back into Matsuri::DSL::Role
-        # Since these are meant to be driven by the DSL rather than defined
-        # individually like the other K8S resources
-
         let(:api_version) { Matsuri::Config.rbac_api_version }
         let(:kind)        { 'Role' }
 
@@ -27,12 +22,9 @@ module Matsuri
           }
         end
 
-        def initialize(name, options = {}, &block)
-          self.name = name
-          self.namespace = options[:namespace]
-
+        def initialize(options = {}, &block)
           initialize_rbac_rules_dsl
-          initialize_metadata_dsl
+          initialize_metadata_dsl(options)
 
           configure(&block) if block
         end

@@ -6,7 +6,7 @@ module Matsuri
       extend ActiveSupport::Concern
 
       included do
-        attribute_accessor :labels, :annotations
+        attribute_accessor :name, :namespace, :labels, :annotations
 
         let(:metadata)            { { name: name, namespace: namespace, labels: final_labels, annotations: final_annotations } }
 
@@ -17,8 +17,10 @@ module Matsuri
         let(:final_annotations)   { default_annotations.merge(annotations.to_h) }
       end
 
-      def initialize_metadata_dsl
-        self.labels = []
+      def initialize_metadata_dsl(options = {})
+        self.name        = options[:name]
+        self.namespace   = options[:namespace]
+        self.labels      = []
         self.annotations = []
       end
 
