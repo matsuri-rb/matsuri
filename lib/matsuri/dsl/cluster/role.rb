@@ -8,8 +8,6 @@ module Matsuri
         include Matsuri::Concerns::RbacRulesDsl
         include Matsuri::Concerns::MetadataDsl
 
-        attribute_accessor :name, :namespace
-
         let(:api_version) { Matsuri::Config.rbac_api_version }
         let(:kind)        { 'Role' }
 

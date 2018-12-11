@@ -25,6 +25,13 @@ module Matsuri
         def urls(urls, verbs: nil, api_groups: nil)
           rule api_groups: api_groups, urls: urls, verbs: verbs
         end
+
+        # Helper to aggregate cluster role to admin, edit, view, and other similar tags
+        def aggregate_to(*tags)
+          tags.flatten.each do |tag|
+            label "rbac.authorization.k8s.io/aggregate-to-#{tag}", 'true'
+          end
+        end
       end
     end
   end
