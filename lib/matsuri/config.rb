@@ -83,6 +83,9 @@ module Matsuri
 
     default :manifests_path, '/etc/kubernetes/manifests'
 
+    # API Versions
+    default :rbac_api_version, 'rbac.authorization.k8s.io/v1'
+
     # Helpers
     def self.host_osx?
       /darwin/ =~ RUBY_PLATFORM
