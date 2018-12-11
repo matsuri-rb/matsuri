@@ -1,6 +1,4 @@
 require 'rlet'
-require 'json'
-require 'yaml'
 
 require 'hashdiff'
 require 'active_support/core_ext/hash/keys'
