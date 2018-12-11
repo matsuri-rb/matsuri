@@ -62,6 +62,9 @@ module Matsuri
   module Concerns
     autoload :TransformManifest,  'matsuri/concerns/transform_manifest'
 
+    autoload :RbacRulesDsl,       'matsuri/concerns/rback_rules_dsl'
+    autoload :MetadataDsl,        'matsuri/concerns/metadata_dsl'
+
     autoload :Awaiting,           'matsuri/concerns/awaiting'
     autoload :RegistryHelpers,    'matsuri/concerns/registry_helpers'
     autoload :Scalable,           'matsuri/concerns/scalable'
