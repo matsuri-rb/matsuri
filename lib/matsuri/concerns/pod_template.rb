@@ -1,3 +1,5 @@
+require 'json'
+require 'yaml'
 require 'active_support/concern'
 
 module Matsuri

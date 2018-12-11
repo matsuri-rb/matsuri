@@ -16,6 +16,7 @@ module Matsuri
       include Let
       include RLet::LazyOptions
       include Matsuri::ShellOut
+      include Matsuri::Concerns::TransformManifest
       include Matsuri::Concerns::RegistryHelpers
       include Matsuri::Concerns::Awaiting
 
@@ -38,10 +39,6 @@ module Matsuri
         }
       end
 
-      # Some resources only allow certain fields to be applied. Override this
-      # to restrict it.
-      let(:applied_manifest) { manifest }
-
       let(:final_metadata)      { default_metadata.merge(metadata) }
       let(:default_metadata)    { { name: name, namespace: namespace, labels: final_labels, annotations: final_annotations } }
       # Needed for autodetecting 'current' for rolling-updates. However, this is obsolete with Deployments
@@ -58,10 +55,6 @@ module Matsuri
       let(:release)     { (options[:release] || '0').to_s }
 
       # Overridables
-      let(:api_version) { 'v1' }
-      let(:kind)        { fail NotImplementedError, 'Must define let(:kind)' }
-      let(:metadata)    { { } }
-      let(:name)        { fail NotImplementedError, 'Must define let(:name)' }
       let(:spec)        { fail NotImplementedError, 'Must define let(:spec)' }
 
       def build!
@@ -182,27 +175,6 @@ module Matsuri
                  end
         Matsuri.log :info, "#{resource_type}/#{name} #{status}".color(:yellow)
         cmd.status.success?
-      end
-
-      # Transform functions
-      def to_json
-        manifest.to_json
-      end
-
-      def to_yaml
-        manifest.deep_stringify_keys.to_yaml
-      end
-
-      def applied_to_json
-        applied_manifest.to_json
-      end
-
-      def applied_to_yaml
-        applied_manifest.deep_stringify_keys.to_yaml
-      end
-
-      def pretty_print
-        JSON.pretty_generate(manifest)
       end
     end
   end

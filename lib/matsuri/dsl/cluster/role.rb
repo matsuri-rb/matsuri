@@ -4,6 +4,8 @@ module Matsuri
       # Cluster resources here in Matsuri are a bit different as the are meant to
       # be driven by the cluster dsl
       class Role
+        include Matsuri::Concerns::TransformManifest
+
         attribute_accessor :name, :namespace, :labels, :annotations, :rules
 
         # @TODO - Break out base into mixins that could be used elsewhere
