@@ -104,6 +104,22 @@ module Matsuri
         definitions << Matsuri::DSL::Cluster::ClusterRole.new(final_options, &block)
       end
 
+      # Examples
+      #  bind :role, 'failover-operator', namespace: :default do
+      #    subject 'mongodb-operator', kind: :service_account, namespace: :default
+      #    subject 'redis-operator',   kind: :service_account, namespace: :default
+      #  end
+      #
+      # namespace :default do
+      #   bind :role, 'failover-operator', do
+      #     subject 'mongodb-operator', kind: :service_account, namespace: :default
+      #     subject 'redis-operator',   kind: :service_account, namespace: :default
+      #   end
+      # end
+      #
+      # bind :cluster_role, 'traefik-ingress-controller' do
+      #  subject 'traefik-ingress-controller', kind: :service_account, namespace: 'kube-system'
+      # end
       def bind(type, name, options = {}, &block)
         case type
         when :role then bind_role(name, options, &block)
