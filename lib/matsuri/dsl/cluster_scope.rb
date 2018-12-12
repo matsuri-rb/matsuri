@@ -42,7 +42,7 @@ module Matsuri
       def role(name, options = {}, &block)
         final_options = { name: name, namespace: self.namespace }.merge(options)
         definitions << Matsuri::DSL::Cluster::Role.new(final_options).tap do |role|
-          if resources.present? && verbs.present?
+          if options[:resources].present? && options[:verbs].present?
             role.resources(options[:resources], names: options[:resource_names], verbs: options[:verbs], api_groups: options[:api_groups])
           end
 
@@ -54,8 +54,8 @@ module Matsuri
         fail ArgumentError, 'cluster_role cannot be invoked inside a namespaced scope' unless self.namespace.nil?
 
         final_options = { name: name, namespace: self.namespace }.merge(options).merge(namespace: nil)
-        definitions << Matsuri::DSL::Cluster::Role.new(final_options).tap do |role|
-          if resources.present? && verbs.present?
+        definitions << Matsuri::DSL::Cluster::ClusterRole.new(final_options).tap do |role|
+          if options[:resources].present? && options[:verbs].present?
             role.resources(options[:resources], names: options[:resource_names], verbs: options[:verbs], api_groups: options[:api_groups])
           end
 
@@ -64,6 +64,10 @@ module Matsuri
       end
 
       def aggregated_cluster_role(name, options = {}, &block)
+        fail ArgumentError, 'cluster_role cannot be invoked inside a namespaced scope' unless self.namespace.nil?
+
+        final_options = { name: name, namespace: self.namespace }.merge(options).merge(namespace: nil)
+        definitions << Matsuri::DSL::Cluster::ClusterRole.new(final_options, &block)
       end
     end
   end
