@@ -1,3 +1,4 @@
+require 'rlet'
 require 'active_support/core_ext/hash/compact'
 
 module Matsuri
@@ -13,6 +14,7 @@ module Matsuri
       #   - subject api_group defaults to rbac.authorization.kubernetes.io for User and Group
       #   - subject api_group defaults to "" (core) for other kinds (ServiceAccounts)
       class Binding
+        include Let
         include Matsuri::Concerns::TransformManifest
         include Matsuri::Concerns::MetadataDsl
 

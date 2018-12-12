@@ -1,9 +1,12 @@
+require 'rlet'
+
 module Matsuri
   module DSL
     module Cluster
       # Cluster resources here in Matsuri are a bit different as the are meant to
       # be driven by the cluster dsl
       class Role
+        include Let
         include Matsuri::Concerns::TransformManifest
         include Matsuri::Concerns::RbacRulesDsl
         include Matsuri::Concerns::MetadataDsl
