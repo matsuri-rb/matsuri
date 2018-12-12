@@ -38,6 +38,13 @@ module Matsuri
       #   resources :pods, verbs: %w[get watch list]
       #   resources :pods, verbs: %w[get watch list], names: 'toolbox'
       #   resources :deployments, verbs: %w[patch update], names: %w[legalio-web legalio-resque legalio-resque-algolia]
+      #
+      #   # Creates a single RoleBinding with the same name as the Role, in the same namespace
+      #   # All bind_to are aggregated into subjects for that RoleBinding
+      #   bind_to 'deployer', kind: :service_account # namespace defaults to role namespace
+      #   bind_to 'deployer', kind: :service_account, namespace: 'qa0'
+      #   bind_to 'alice@example.com', kind: :user
+      #   bind_to 'sysadmins', kind: :group
       # end
       def role(name, options = {}, &block)
         final_options = { name: name, namespace: self.namespace }.merge(options)
@@ -50,6 +57,18 @@ module Matsuri
         end
       end
 
+      # cluster_role 'traefik-ingress-controller' do
+      #   # labels 'example.com/addon', 'traefik'
+      #   # aggregate_to :admin, :edit
+      #   # urls '/api', verbs: :get
+      #
+      #   resources %w[services endpoints secrets], verbs: %w[get list watch]
+      #   resources :ingresses,                     verbs: %w[get list watch], api_groups: :extensions
+      #
+      #   # Creates a single ClusterRoleBinding with the same name as the ClusterRole
+      #   # All bind_to are aggregated into subjects for that ClusterRoleBinding
+      #   bind_to 'traefik-ingress-controller', kind: :service_account, namespace: 'kube-system'
+      # end
       def cluster_role(name, options = {}, &block)
         fail ArgumentError, 'cluster_role cannot be invoked inside a namespaced scope' unless self.namespace.nil?
 
@@ -63,6 +82,21 @@ module Matsuri
         end
       end
 
+      # Defines a cluster role aggregated from other roles using label selectors
+      # Examples:
+      # aggregated_cluster_role 'platform-admin' do
+      #   # Example using match labels
+      #   match 'example.com/aggregate-to-admin' => 'true',
+      #         'rails-app' => 'frontend'
+      #
+      #   # Example using match expressions
+      #   match 'legal.io/aggregate-to-admin', :in, 'true'
+      #   match 'legal.io/aggregate-to-admin', :in, %w[v1 v2 v3]
+      #   match 'legal.io/aggregate-to-admin', :not_in, 'true'
+      #   match 'legal.io/aggregate-to-admin', :not_in, 'true'
+      #   match 'legal.io/aggregate', :exists
+      #   match 'legal.io/aggregate', :does_not_exist
+      # end
       def aggregated_cluster_role(name, options = {}, &block)
         fail ArgumentError, 'cluster_role cannot be invoked inside a namespaced scope' unless self.namespace.nil?
 
