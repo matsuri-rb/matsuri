@@ -84,8 +84,8 @@ module Matsuri
         ### Helpers
         def map_binding_type_to_kind(type)
           case type
-          when :role         then 'Role'
-          when :cluster_role then 'ClusterRole'
+          when :role, 'Role', 'role'                        then 'Role'
+          when :cluster_role, 'ClusterRole', 'cluster_role' then 'ClusterRole'
           else
             fail ArgumentError, "binding type must be one of :role or :cluster_role, is: #{type.inspect}"
           end

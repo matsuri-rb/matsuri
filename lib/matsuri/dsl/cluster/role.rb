@@ -10,6 +10,7 @@ module Matsuri
         include Matsuri::Concerns::TransformManifest
         include Matsuri::Concerns::RbacRulesDsl
         include Matsuri::Concerns::MetadataDsl
+        include Matsuri::DSL::Concerns::DefaultBinding
 
         let(:api_version) { Matsuri::Config.rbac_api_version }
         let(:kind)        { 'Role' }
