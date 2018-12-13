@@ -82,6 +82,7 @@ module Matsuri
       autoload :Metadata,        'matsuri/dsl/concerns/metadata'
       autoload :RbacRules,       'matsuri/dsl/concerns/rback_rules'
       autoload :DefaultBinding,  'matsuri/dsl/concerns/default_binding'
+      autoload :ManifestSet,     'matsuri/dsl/concerns/manifest_set'
     end
   end
 
