@@ -11,9 +11,15 @@ module Matsuri
         include Matsuri::DSL::Concerns::Metadata
         include Matsuri::DSL::Concerns::RbacRules
         include Matsuri::DSL::Concerns::DefaultBinding
+        include Matsuri::DSL::Concerns::ManifestSet
 
         let(:api_version) { Matsuri::Config.rbac_api_version }
         let(:kind)        { 'Role' }
+
+        ### Manifest Set
+        let(:rbac_manifests) { [manifest, default_binding.manifest].compact }
+
+        ### Manifest
 
         let(:manifest) do
           {

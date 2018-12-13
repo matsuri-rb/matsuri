@@ -17,11 +17,15 @@ module Matsuri
         include Let
         include Matsuri::Concerns::TransformManifest
         include Matsuri::DSL::Concerns::Metadata
+        include Matsuri::DSL::Concerns::ManifestSet
 
         attr_accessor :role_ref, :subjects
 
         ### Parameters
-        let(:binding_type) { options[:type] }
+        let(:binding_type)   { options[:type] }
+
+        ### Manifest Set
+        let(:rbac_manifests) { subjects.any? && manifest } # Return manifest only if there are subjects defined for binding
 
         ### Manifest
         let(:api_version)    { Matsuri::Config.rbac_api_version }

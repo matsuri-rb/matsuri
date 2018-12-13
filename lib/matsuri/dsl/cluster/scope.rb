@@ -9,6 +9,7 @@ module Matsuri
       # entry point for the DSL.
       class Scope
         include Let
+        include Matsuri::DSL::Concerns::ManifestSet
 
         # @TODO see if kubectl reconcile will also handle the general resources
         # If not, we will have to reconcile rbac resources and apply the rest
@@ -21,6 +22,9 @@ module Matsuri
           self.options = options
           instance_eval(&block) if block
         end
+
+        ### Manifest sets
+        let(:rbac_manifests) { definitions.map(&:rbac_manifests).flatten.compact }
 
         ### DSL methods
         def scope(options = {}, &block)

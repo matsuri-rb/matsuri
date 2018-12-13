@@ -1,7 +1,7 @@
 require 'active_support/concern'
 
 module Matsuri
-  module Dsl
+  module DSL
     module Concerns
       module DefaultBinding
         extend ActiveSupport::Concern
