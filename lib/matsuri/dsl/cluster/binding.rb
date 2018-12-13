@@ -16,7 +16,7 @@ module Matsuri
       class Binding
         include Let
         include Matsuri::Concerns::TransformManifest
-        include Matsuri::Concerns::MetadataDsl
+        include Matsuri::DSL::Concerns::Metadata
 
         attr_accessor :role_ref, :subjects
 

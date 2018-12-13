@@ -8,8 +8,8 @@ module Matsuri
       class Role
         include Let
         include Matsuri::Concerns::TransformManifest
-        include Matsuri::Concerns::RbacRulesDsl
-        include Matsuri::Concerns::MetadataDsl
+        include Matsuri::DSL::Concerns::Metadata
+        include Matsuri::DSL::Concerns::RbacRules
         include Matsuri::DSL::Concerns::DefaultBinding
 
         let(:api_version) { Matsuri::Config.rbac_api_version }

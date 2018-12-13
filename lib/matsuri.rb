@@ -62,13 +62,27 @@ module Matsuri
   module Concerns
     autoload :TransformManifest,  'matsuri/concerns/transform_manifest'
 
-    autoload :RbacRulesDsl,       'matsuri/concerns/rback_rules_dsl'
-    autoload :MetadataDsl,        'matsuri/concerns/metadata_dsl'
-
     autoload :Awaiting,           'matsuri/concerns/awaiting'
     autoload :RegistryHelpers,    'matsuri/concerns/registry_helpers'
     autoload :Scalable,           'matsuri/concerns/scalable'
     autoload :PodTemplate,        'matsuri/concerns/pod_template'
+  end
+
+  module DSL
+    autoload :ClusterScope, 'matsuri/dsl/cluster_scope'
+
+    module Cluster
+      autoload :Role,                  'matsuri/dsl/cluster/role'
+      autoload :ClusterRole,           'matsuri/dsl/cluster/cluster_role'
+      autoload :AggregatedClusterRole, 'matsuri/dsl/cluster/aggregated_cluster_role'
+      autoload :Binding,               'matsuri/dsl/cluster/binding'
+    end
+
+    module Concerns
+      autoload :Metadata,        'matsuri/dsl/concerns/metadata'
+      autoload :RbacRules,       'matsuri/dsl/concerns/rback_rules'
+      autoload :DefaultBinding,  'matsuri/dsl/concerns/default_binding'
+    end
   end
 
   def self.define(*args, &blk)
