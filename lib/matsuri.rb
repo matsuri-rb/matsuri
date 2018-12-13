@@ -69,9 +69,9 @@ module Matsuri
   end
 
   module DSL
-    autoload :ClusterScope, 'matsuri/dsl/cluster_scope'
-
     module Cluster
+      autoload :Scope,                 'matsuri/dsl/cluster/scope'
+
       autoload :Role,                  'matsuri/dsl/cluster/role'
       autoload :ClusterRole,           'matsuri/dsl/cluster/cluster_role'
       autoload :AggregatedClusterRole, 'matsuri/dsl/cluster/aggregated_cluster_role'
