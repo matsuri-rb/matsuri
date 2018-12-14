@@ -86,6 +86,13 @@ module Matsuri
       desc 'storage_class STORAGE_CLASS_NAME', 'show manifest for storage class'
       show_cmd_for :storage_class
 
+      desc 'cluster', 'show manifest set for cluster-wide manifests (RBAC, ResourceQuota, NetworkPolicy, etc.)'
+      def cluster
+        with_config do |_|
+          puts Matsuri::Tasks::Cluster.new.rbac_manifests_to_yaml
+        end
+      end
+
       private
 
       def show_resource

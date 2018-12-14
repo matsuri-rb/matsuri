@@ -4,6 +4,8 @@ module Matsuri
   module Tasks
     # Converge cluster
     class Cluster
+      include Matsuri::Task
+
       let(:root_scope)             { Matsuri::DSL::Cluster::Scope.new(namespace: nil) }
 
       let(:all_files)              { global_files + environment_files }
@@ -18,7 +20,6 @@ module Matsuri
       let(:load_all!)              { all_files.each(&method(:load_definition!)) }
 
       def load_definition!(filename)
-        # Evaluate files inside the root scope. Set filename and line number so errors can be reported properly.
         root_scope.import(filename)
       end
     end

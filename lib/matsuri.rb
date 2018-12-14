@@ -57,6 +57,7 @@ module Matsuri
     autoload :Kubectl, 'matsuri/tasks/kubectl'
     autoload :Docker,  'matsuri/tasks/docker'
     autoload :Pod,     'matsuri/tasks/pod'
+    autoload :Cluster, 'matsuri/tasks/cluster'
   end
 
   module Concerns
