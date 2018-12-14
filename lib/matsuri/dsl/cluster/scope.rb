@@ -180,6 +180,37 @@ module Matsuri
 
           definitions << Matsuri::DSL::Cluster::Binding.new(final_options, &block)
         end
+
+        # Examples:
+        # service_account 'traefik-ingress-controller', namespace: 'kube-system'
+        #
+        # service_account 'deployer' do
+        #   image_pull_secret 'gcp-private-regsitry'
+        #
+        #   secret 'gcloud-service-account'
+        #   secret 'aws-access-token'
+        # end
+        #
+        # service_account 'guest' do
+        #   automount_token false
+        # end
+        def service_account(name, options = {}, &block)
+          final_options = { name: name }.merge(options).merge(type: :role, scoped_options: scoped_options)
+          require_namespace!('service_account', final_options)
+
+          definitions << Matsuri::DSL::Cluster::ServiceAccount.new(final_options, &block)
+        end
+
+        private
+
+        def require_namespace!(helper_name, final_options)
+          return if final_options[:namespace].present?
+
+          fail ArgumentError,
+            "#{helper_name} requires namespace to be declared. Either pass namespace as an option or declare it inside " \
+            'a namespace scope.'
+          end
+        end
       end
     end
   end
