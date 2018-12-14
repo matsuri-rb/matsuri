@@ -19,7 +19,7 @@ module Matsuri
 
       def load_definition!(filename)
         # Evaluate files inside the root scope. Set filename and line number so errors can be reported properly.
-        root_scope.instance_eval(File.read(filename), filename, 1)
+        root_scope.import(filename)
       end
     end
   end

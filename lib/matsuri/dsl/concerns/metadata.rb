@@ -12,7 +12,7 @@ module Matsuri
           let(:metadata)            { { name: name, namespace: namespace, labels: final_labels, annotations: final_annotations } }
 
           let(:default_labels)      { { 'matsuri' => 'true' } }
-          let(:default_annotations) { { } }
+          let(:default_annotations) { { 'matsuri/source_file' => options[:source_file] }.compact } # Added for easier debugging
 
           let(:final_labels)        { default_labels.merge(labels.to_h) }
           let(:final_annotations)   { default_annotations.merge(annotations.to_h) }
