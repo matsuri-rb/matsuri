@@ -28,8 +28,8 @@ module Matsuri
           rule api_groups: api_groups, resources: resources, names: names, verbs: verbs
         end
 
-        def normalize_string_array(x)
-          Array(x).map(&:to_s)
+        def normalize_string_array(k, v)
+          [k, Array(v).map(&:to_s)]
         end
       end
     end
