@@ -83,6 +83,8 @@ module Matsuri
         # end
         def role(name, options = {}, &block)
           final_options = { name: name }.merge(options).merge(scoped_options: scoped_options)
+          require_namespace!('role', final_options)
+
           definitions << Matsuri::DSL::Cluster::Role.new(final_options).tap do |role|
             if options[:resources].present? && options[:verbs].present?
               role.resources(options[:resources], names: options[:resource_names], verbs: options[:verbs], api_groups: options[:api_groups])
@@ -105,9 +107,9 @@ module Matsuri
         #   bind_to 'traefik-ingress-controller', kind: :service_account, namespace: 'kube-system'
         # end
         def cluster_role(name, options = {}, &block)
-          fail ArgumentError, 'cluster_role cannot be invoked inside a namespaced scope' unless current_namespace.nil?
-
+          forbid_namespace!('cluster_role', options)
           final_options = { name: name }.merge(options).merge(scoped_options: scoped_options)
+
           definitions << Matsuri::DSL::Cluster::ClusterRole.new(final_options).tap do |role|
             if options[:resources].present? && options[:verbs].present?
               role.resources(options[:resources], names: options[:resource_names], verbs: options[:verbs], api_groups: options[:api_groups])
@@ -133,7 +135,7 @@ module Matsuri
         #   match 'legal.io/aggregate', :does_not_exist
         # end
         def aggregated_cluster_role(name, options = {}, &block)
-          fail ArgumentError, 'cluster_role cannot be invoked inside a namespaced scope' unless current_namespace.nil?
+          forbid_namespace!('aggregated_cluster_role', options)
 
           final_options = { name: name }.merge(options).merge(scoped_options: scoped_options)
           definitions << Matsuri::DSL::Cluster::ClusterRole.new(final_options, &block)
@@ -166,16 +168,13 @@ module Matsuri
 
         def bind_role(name, options = {}, &block)
           final_options = { name: name }.merge(options).merge(type: :role, scoped_options: scoped_options)
-          fail ArgumentError,
-            'bind_role requires namespace to be declared. Either pass namespace as an option or declare it inside ' \
-            'a namespace scope.' unless final_options[:namespace].present?
+          require_namespace!('bind_role', final_options)
 
           definitions << Matsuri::DSL::Cluster::Binding.new(final_options, &block)
         end
 
         def bind_cluster_role(name, options = {}, &block)
-          fail ArgumentError, 'bind_cluster_role cannot be invoked inside a namespaced scope' unless current_namespace.nil?
-          fail ArgumentError, 'bind_cluster_role cannot be invoked with a namespace' unless options[:namespace].nil?
+          forbid_namespace!('bind_cluster_role', options)
           final_options = { name: name }.merge(options).merge(type: :cluster_role, scoped_options: scoped_options)
 
           definitions << Matsuri::DSL::Cluster::Binding.new(final_options, &block)
@@ -207,9 +206,13 @@ module Matsuri
           return if final_options[:namespace].present?
 
           fail ArgumentError,
-            "#{helper_name} requires namespace to be declared. Either pass namespace as an option or declare it inside " \
-            'a namespace scope.'
-          end
+               "#{helper_name} requires namespace to be declared. Either pass namespace as an option or declare it inside " \
+               'a namespace scope.'
+        end
+
+        def forbid_namespace!(helper_name, options)
+          fail ArgumentError, "#{helper_name} cannot be invoked inside a namespaced scope" unless current_namespace.nil?
+          fail ArgumentError, "#{helper_name} cannot be invoked with a namespace"          unless options[:namespace].nil?
         end
       end
     end
