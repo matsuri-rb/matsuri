@@ -81,6 +81,8 @@ module Matsuri
     default(:secrets_path)                  { File.join platform_path, 'secrets' } # Kubernetes Secret definition, not the actual secrets
     default(:config_maps_path)              { File.join platform_path, 'config_maps' } # Kubernetes ConfigMaps definition, not the actual config ovelay
 
+    default(:clusters_path)                 { File.join platform_path, 'clusters' } # For Cluster DSL, managing cluster-wide configuration
+
     default :manifests_path, '/etc/kubernetes/manifests'
 
     # API Versions

@@ -2,7 +2,7 @@ require 'rlet'
 require 'active_support/core_ext/object/blank'
 
 module Matsuri
-  module Dsl
+  module DSL
     module Cluster
       # Non K8S object. This class encapsulates the idea of a scope for the DSL. Currently,
       # the only attribute accepted by the scope is namespace. This is also the
@@ -24,7 +24,7 @@ module Matsuri
         end
 
         ### Manifest sets
-        let(:rbac_manifests) { definitions.map(&:rbac_manifests).flatten.compact }
+        let(:rbac_manifests) { definitions.map(&:rbac_manifests) }
 
         ### DSL methods
         def scope(options = {}, &block)
