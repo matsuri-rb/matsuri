@@ -56,6 +56,7 @@ module Matsuri
       def reconcile!(opt = {})
         puts 'Converging cluster-wide configuration'.color(:yellow) if config.verbose
         reconcile_rbac!(opt)
+        apply_cluster!(opt)
       end
 
       def reconcile_rbac!(_opt)
@@ -63,7 +64,13 @@ module Matsuri
 
         # kubectl_options = opt[:dry_run] ? '--dry-run' : ''
 
-        kubectl! "auth reconcile -f -", input: rbac_manifests_to_json.join("\n")
+        kubectl! 'auth reconcile -f -', input: rbac_manifests_to_json.join("\n")
+      end
+
+      def apply_cluster!(_opt)
+        Matsuri.log :info, 'Applying non-RBAC Cluster Resources'
+
+        kubectl! 'apply -f -', input: cluster_manifests_to_json.join("\n")
       end
     end
   end
