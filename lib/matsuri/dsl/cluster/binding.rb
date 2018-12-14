@@ -51,7 +51,7 @@ module Matsuri
 
         let(:default_role_ref)           { { kind: default_role_ref_kind, name: default_role_ref_name, apiGroup: default_role_ref_api_group } }
         let(:default_role_ref_name)      { name }
-        let(:default_role_ref_api_group) { 'rbac.authorization.kubernetes.io' }
+        let(:default_role_ref_api_group) { 'rbac.authorization.k8s.io' }
         let(:default_role_ref_kind)      { map_binding_type_to_kind(binding_type) }
 
         def initialize(options = {}, &block)
@@ -105,7 +105,7 @@ module Matsuri
 
         def default_subject_api_group(type)
           case type
-          when :user, :group then 'rbac.authorization.kubernetes.io'
+          when :user, :group then 'rbac.authorization.k8s.io'
           when :service_account then ''
           else
             fail ArgumentError, "subject type must be one of :user, :group, :service_account, is: #{type.inspect}"
