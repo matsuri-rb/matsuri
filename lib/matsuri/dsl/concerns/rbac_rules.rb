@@ -24,7 +24,7 @@ module Matsuri
           }.compact.map(&method(:normalize_string_array)).to_h
         end
 
-        def resources(resources, names: nil, verbs: nil, api_groups: nil)
+        def resources(resources, names: nil, verbs: nil, api_groups: '')
           rule api_groups: api_groups, resources: resources, names: names, verbs: verbs
         end
 
