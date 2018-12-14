@@ -1,4 +1,5 @@
 require 'yaml'
+require 'active_support/core_ext/hash/keys'
 
 module Matsuri
   module Tasks
@@ -14,7 +15,7 @@ module Matsuri
       let(:clusters_path)          { Matsuri::Config.clusters_path }
 
       let(:all_rbac_manifests)     { load_all! && root_scope.rbac_manifests.flatten.compact }
-      let(:rbac_manifests_to_yaml) { all_rbac_manifests.map(&:to_yaml) }
+      let(:rbac_manifests_to_yaml) { all_rbac_manifests.map(&:deep_stringify_keys).map(&:to_yaml) }
 
       # Memoized so it only evaluates once
       let(:load_all!)              { all_files.each(&method(:load_definition!)) }
