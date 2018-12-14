@@ -19,7 +19,7 @@ module Matsuri
         include Matsuri::DSL::Concerns::Metadata
         include Matsuri::DSL::Concerns::ManifestSet
 
-        attr_accessor :role_ref, :subjects, :options
+        attr_accessor :role_ref, :subjects
 
         ### Parameters
         let(:binding_type)   { options[:type] }
@@ -34,7 +34,7 @@ module Matsuri
           {
             apiVersion:  api_version,
             kind:        kind,
-            metadata:    final_metadata,
+            metadata:    metadata,
             roleRef:     final_role_ref,
             subjects:    subjects
           }
@@ -42,8 +42,8 @@ module Matsuri
 
         let(:kind) do
           case binding_type
-          when :role         then 'RoleBinding'
-          when :cluster_role then 'ClusterRoleBinding'
+          when :role, 'Role', 'role'                        then 'RoleBinding'
+          when :cluster_role, 'ClusterRole', 'cluster_role' then 'ClusterRoleBinding'
           else
             fail ArgumentError, "binding_type must be one of :role or :cluster_role, is: #{binding_type.inspect}"
           end
@@ -55,10 +55,8 @@ module Matsuri
         let(:default_role_ref_kind)      { map_binding_type_to_kind(binding_type) }
 
         def initialize(options = {}, &block)
-          self.options = options
-          self.subjects = []
-
           initialize_metadata_dsl(options)
+          self.subjects = []
 
           configure(&block) if block
         end

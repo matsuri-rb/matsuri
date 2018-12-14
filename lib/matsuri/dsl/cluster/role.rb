@@ -31,8 +31,8 @@ module Matsuri
         end
 
         def initialize(options = {}, &block)
-          initialize_rbac_rules_dsl
           initialize_metadata_dsl(options)
+          initialize_rbac_rules_dsl
 
           configure(&block) if block
         end
