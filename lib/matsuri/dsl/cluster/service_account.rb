@@ -13,7 +13,7 @@ module Matsuri
 
         attr_accessor :manifest_config
 
-        let(:api_version) { 'core/v1' }
+        let(:api_version) { 'v1' }
         let(:kind)        { 'ServiceAccount' }
 
         ### Manifest Set
