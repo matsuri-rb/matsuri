@@ -88,6 +88,9 @@ module Matsuri
     # API Versions
     default :rbac_api_version, 'rbac.authorization.k8s.io/v1'
 
+    # DSL
+    default :cluster_dsl_version, 'cluster/v1'
+
     # Helpers
     def self.host_osx?
       /darwin/ =~ RUBY_PLATFORM
