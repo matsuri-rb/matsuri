@@ -15,9 +15,10 @@ module Matsuri
 
           let(:default_binding_options) do
             {
-              name:      default_binding_name,
-              namespace: default_binding_namespace,
-              type:      default_binding_type
+              name:           default_binding_name,
+              namespace:      default_binding_namespace,
+              type:           default_binding_type,
+              scoped_options: scoped_options
             }
           end
         end
