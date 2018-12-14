@@ -4,7 +4,7 @@ module Matsuri
       # Cluster resources here in Matsuri are a bit different as the are meant to
       # be driven by the cluster dsl
       class ClusterRole < Matsuri::DSL::Cluster::Role
-        attribute_accessor :aggregation_selectors
+        attr_accessor :aggregation_selectors
 
         let(:kind)        { 'ClusterRole' }
 

@@ -7,7 +7,7 @@ module Matsuri
         extend ActiveSupport::Concern
 
         included do
-          attribute_accessor :rules
+          attr_accessor :rules
         end
 
         def initialize_rbac_rules_dsl

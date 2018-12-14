@@ -7,7 +7,7 @@ module Matsuri
         extend ActiveSupport::Concern
 
         included do
-          attribute_accessor :name, :namespace, :labels, :annotations
+          attr_accessor :name, :namespace, :labels, :annotations
 
           let(:metadata)            { { name: name, namespace: namespace, labels: final_labels, annotations: final_annotations } }
 

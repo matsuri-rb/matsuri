@@ -19,7 +19,7 @@ module Matsuri
         include Matsuri::DSL::Concerns::Metadata
         include Matsuri::DSL::Concerns::ManifestSet
 
-        attr_accessor :role_ref, :subjects
+        attr_accessor :role_ref, :subjects, :options
 
         ### Parameters
         let(:binding_type)   { options[:type] }
@@ -81,7 +81,7 @@ module Matsuri
             name:      name,
             kind:      map_subject_type_to_kind(kind),
             namespace: namespace,
-            api_group: api_group || default_suject_api_group(type)
+            api_group: api_group || default_subject_api_group(kind)
           }.compact
         end
 
