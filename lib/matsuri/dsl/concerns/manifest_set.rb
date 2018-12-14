@@ -10,8 +10,8 @@ module Matsuri
         included do
           # By default, return nil. This will exclude the manifest from being generated
           # To include a manifest, override it with something like let(:rbac_manifest) { manifest }
-          let(:rbac_manifests) { nil }
-          let(:manifests)      { nil }
+          let(:rbac_manifests)    { nil }
+          let(:cluster_manifests) { nil }
         end
       end
     end

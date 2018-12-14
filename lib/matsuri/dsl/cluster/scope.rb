@@ -50,8 +50,9 @@ module Matsuri
         end
 
         ### Manifest sets
-        let(:rbac_manifests) { definitions.map(&descend_tree.(:rbac_manifests)) }
-        let(:descend_tree)   { ->(m) { ->(x) { x.respond_to?(m) ? x.send(m) : x.map(&m) } } }
+        let(:rbac_manifests)    { definitions.map(&descend_tree.(:rbac_manifests)) }
+        let(:cluster_manifests) { definitions.map(&descend_tree.(:cluster_manifests)) }
+        let(:descend_tree)      { ->(m) { ->(x) { x.respond_to?(m) ? x.send(m) : x.map(&m) } } }
 
         ### DSL methods
         def scope(options = {}, &block)

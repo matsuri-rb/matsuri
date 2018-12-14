@@ -17,7 +17,7 @@ module Matsuri
         let(:kind)        { 'ServiceAccount' }
 
         ### Manifest Set
-        let(:manifests) { manifest }
+        let(:cluster_manifests) { manifest }
 
         ### Manifest
 
@@ -25,7 +25,7 @@ module Matsuri
           {
             apiVersion:  api_version,
             kind:        kind,
-            metadata:    final_metadata,
+            metadata:    metadata,
 
             automountServiceAccountToken: manifest_config[:automount_token],
             imagePullSecrets:             manifest_config[:image_pull_secrets],

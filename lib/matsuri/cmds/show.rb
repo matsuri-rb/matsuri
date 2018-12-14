@@ -88,13 +88,7 @@ module Matsuri
 
       desc 'cluster', 'show manifest set for cluster-wide manifests (RBAC, ResourceQuota, NetworkPolicy, etc.)'
       def cluster
-        with_config do |_|
-          if options[:json]
-            puts Matsuri::Tasks::Cluster.new.rbac_manifests_to_pretty_json
-          else
-            puts Matsuri::Tasks::Cluster.new.rbac_manifests_to_yaml
-          end
-        end
+        with_config { |opt| Matsuri::Tasks::Cluster.new.show!(opt) }
       end
 
       private

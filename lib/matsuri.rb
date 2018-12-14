@@ -77,6 +77,8 @@ module Matsuri
       autoload :ClusterRole,           'matsuri/dsl/cluster/cluster_role'
       autoload :AggregatedClusterRole, 'matsuri/dsl/cluster/aggregated_cluster_role'
       autoload :Binding,               'matsuri/dsl/cluster/binding'
+
+      autoload :ServiceAccount,        'matsuri/dsl/cluster/service_account'
     end
 
     module Concerns
