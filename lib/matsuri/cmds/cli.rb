@@ -55,6 +55,13 @@ module Matsuri
         end
       end
 
+      desc 'reconcile', 'Reconcile and converge cluster-wide resources, such as RBAC and NetworkPolicy'
+      def reconcile
+        with_config do |opt|
+          Matsuri::Tasks::Cluster.new.reconcile!(opt)
+        end
+      end
+
       desc 'reload APP_NAME', 'Reloads an app without recreating underlying pods'
       def reload(name, image_tag = nil)
         with_config do |opt|
