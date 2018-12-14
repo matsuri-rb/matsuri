@@ -64,13 +64,13 @@ module Matsuri
 
         # kubectl_options = opt[:dry_run] ? '--dry-run' : ''
 
-        kubectl! 'auth reconcile -f -', input: rbac_manifests_to_json.join("\n")
+        kubectl! 'auth reconcile -f -', input: rbac_manifests_to_json.join("\n"), kube_options: { namespace: nil }
       end
 
       def apply_cluster!(_opt)
         Matsuri.log :info, 'Applying non-RBAC Cluster Resources'
 
-        kubectl! 'apply -f -', input: cluster_manifests_to_json.join("\n")
+        kubectl! 'apply -f -', input: cluster_manifests_to_json.join("\n"), kube_options: { namespace: nil }
       end
     end
   end
