@@ -97,6 +97,10 @@ module Matsuri
         fetch_or_load :service, name
       end
 
+      def ingress(name)
+        fetch_or_load :ingress, name
+      end
+
       def replication_controller(name)
         fetch_or_load :replication_controller, name
       end
@@ -198,6 +202,7 @@ Matsuri::Registry.register_class 'app',                     class: Matsuri::App
 Matsuri::Registry.register_class 'pod',                     class: Matsuri::Kubernetes::Pod
 Matsuri::Registry.register_class 'replication_controller',  class: Matsuri::Kubernetes::ReplicationController, aliases: %w[rc]
 Matsuri::Registry.register_class 'service',                 class: Matsuri::Kubernetes::Service
+Matsuri::Registry.register_class 'ingress',                 class: Matsuri::Kubernetes::Ingress
 Matsuri::Registry.register_class 'endpoint',                class: Matsuri::Kubernetes::Endpoints
 Matsuri::Registry.register_class 'secret',                  class: Matsuri::Kubernetes::Secret
 Matsuri::Registry.register_class 'config_map',              class: Matsuri::Kubernetes::ConfigMap

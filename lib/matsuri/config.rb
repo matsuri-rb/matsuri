@@ -76,6 +76,7 @@ module Matsuri
     default(:persistent_volume_claims_path) { File.join platform_path, 'persistent_volume_claims' }
     default(:storage_classes_path)          { File.join platform_path, 'storage_classes' }
     default(:services_path)                 { File.join platform_path, 'services' }
+    default(:ingresses_path)                { File.join platform_path, 'ingresses' }
     default(:endpoints_path)                { File.join platform_path, 'endpoints' }
     default(:apps_path)                     { File.join platform_path, 'apps' }
     default(:secrets_path)                  { File.join platform_path, 'secrets' } # Kubernetes Secret definition, not the actual secrets

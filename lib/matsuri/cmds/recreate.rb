@@ -47,6 +47,9 @@ module Matsuri
       desc 'service SERVICE_NAME', 'recreate a service'
       recreate_cmd_for :service
 
+      desc 'ingress INGRESS_NAME', 'recreate a ingress'
+      recreate_cmd_for :ingress
+
       desc 'endpoints ENDPOINTS_NAME', 'recreate an endpoint set'
       recreate_cmd_for :endpoints
 

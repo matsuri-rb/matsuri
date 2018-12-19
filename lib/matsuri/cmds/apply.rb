@@ -45,7 +45,10 @@ module Matsuri
       map deploy: :deployment
 
       desc 'service SERVICE_NAME', 'apply changes to a service'
-      apply_cmd_for :service, image_tag: true
+      apply_cmd_for :service
+
+      desc 'ingress INGRESS_NAME', 'apply changes to a ingress'
+      apply_cmd_for :ingress
 
       desc 'secret SECRET_NAME', 'apply changes to a secret'
       apply_cmd_for :secret

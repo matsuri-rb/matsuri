@@ -42,6 +42,9 @@ module Matsuri
       desc 'service SERVICE_NAME', 'diff manifest for service'
       diff_cmd_for :service
 
+      desc 'ingress INGRESS_NAME', 'diff manifest for ingress'
+      diff_cmd_for :ingress
+
       desc 'endpoints ENDPOINT_NAME', 'diff manifest for endpoints'
       diff_cmd_for :endpoints
 

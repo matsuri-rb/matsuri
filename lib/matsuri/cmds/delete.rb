@@ -42,6 +42,9 @@ module Matsuri
       desc 'service SERVICE_NAME', 'delete a service'
       delete_cmd_for :service
 
+      desc 'ingress INGRESS_NAME', 'delete a ingress'
+      delete_cmd_for :ingress
+
       desc 'endpoints ENDPOINTS_NAME', 'delete an endpoint set'
       delete_cmd_for :endpoints
 

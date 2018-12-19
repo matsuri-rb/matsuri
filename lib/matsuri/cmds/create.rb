@@ -54,6 +54,9 @@ module Matsuri
       desc 'service SERVICE_NAME', 'create a service'
       create_cmd_for :service
 
+      desc 'ingress INGRESS_NAME', 'create a ingress'
+      create_cmd_for :ingress
+
       desc 'endpoints ENDPOINTS_NAME', 'create an endpoint set'
       create_cmd_for :endpoints
 

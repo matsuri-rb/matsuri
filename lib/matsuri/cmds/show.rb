@@ -67,6 +67,9 @@ module Matsuri
       desc 'service SERVICE_NAME', 'show manifest for service'
       show_cmd_for :service
 
+      desc 'ingress INGRESS_NAME', 'show manifest for ingress'
+      show_cmd_for :ingress
+
       desc 'endpoints ENDPOINT_NAME', 'show manifest for endpoints'
       show_cmd_for :endpoints
 

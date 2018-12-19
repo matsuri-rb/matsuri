@@ -19,6 +19,7 @@ module Matsuri
     autoload :ReplicationController, 'matsuri/kubernetes/replication_controller'
     autoload :Service,               'matsuri/kubernetes/service'
     autoload :Endpoints,             'matsuri/kubernetes/endpoints'
+    autoload :Ingress,               'matsuri/kubernetes/ingress'
     autoload :Secret,                'matsuri/kubernetes/secret'
     autoload :ConfigMap,             'matsuri/kubernetes/config_map'
 
