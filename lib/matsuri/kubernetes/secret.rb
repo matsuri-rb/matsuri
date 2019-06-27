@@ -3,7 +3,8 @@ require "base64"
 module Matsuri
   module Kubernetes
     class Secret < Matsuri::Kubernetes::Base
-      let(:kind) { 'Secret' }
+      let(:api_version) { 'v1' }    # K8S 1.10
+      let(:kind)        { 'Secret' }
 
       # Overridables
       let(:manifest) do
@@ -53,7 +54,7 @@ module Matsuri
       # secrets from elsewhere, such as from Hashicorp Vault
       # or from an encrypted AWS S3 bucket item
       def base64(secret)
-        Base64.encode64(secret)
+        Base64.encode64(secret).split("\n").join # Strip all newlines
       end
 
       # Helper to transform the values of a hash to base64

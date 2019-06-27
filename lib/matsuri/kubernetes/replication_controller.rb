@@ -4,7 +4,8 @@ module Matsuri
     class ReplicationController < Matsuri::Kubernetes::Base
       include Matsuri::Concerns::PodTemplate
 
-      let(:kind) { 'ReplicationController' }
+      let(:api_version) { 'v1' }    # K8S 1.10
+      let(:kind)        { 'ReplicationController' }
 
       # Overridables
 

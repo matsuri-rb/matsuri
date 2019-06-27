@@ -52,6 +52,14 @@ module Matsuri
       map replicaset: :replica_set
       map rs: :replica_set
 
+      desc 'stateful_set STATEFUL_SET_NAME', 'show manifest for stateful_set'
+      show_cmd_for :stateful_set, image_tag: true
+      map sts: :stateful_set
+
+      desc 'daemon_set DAEMON_SET_NAME', 'show manifest for daemon_set'
+      show_cmd_for :daemon_set, image_tag: true
+      map sts: :daemon_set
+
       desc 'deployment DEPLOYMENT_NAME', 'show manifest for deployment'
       show_cmd_for :deployment, image_tag: true
       map deploy: :deployment
@@ -59,11 +67,18 @@ module Matsuri
       desc 'service SERVICE_NAME', 'show manifest for service'
       show_cmd_for :service
 
+      desc 'ingress INGRESS_NAME', 'show manifest for ingress'
+      show_cmd_for :ingress
+
       desc 'endpoints ENDPOINT_NAME', 'show manifest for endpoints'
       show_cmd_for :endpoints
 
       desc 'secret SECRET_NAME', 'show a secret'
       show_cmd_for :secret
+
+      desc 'config-map CONFIG_MAP_NAME', 'show a config map'
+      map configmap: :config_map
+      show_cmd_for :config_map
 
       desc 'pv PV_NAME', 'show manifest for persistent volume'
       show_cmd_for :pv
@@ -73,6 +88,11 @@ module Matsuri
 
       desc 'storage_class STORAGE_CLASS_NAME', 'show manifest for storage class'
       show_cmd_for :storage_class
+
+      desc 'cluster', 'show manifest set for cluster-wide manifests (RBAC, ResourceQuota, NetworkPolicy, etc.)'
+      def cluster
+        with_config { |opt| Matsuri::Tasks::Cluster.new.show!(opt) }
+      end
 
       private
 

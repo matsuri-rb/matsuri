@@ -39,6 +39,10 @@ module Matsuri
           Matsuri::Registry.deployment(name).new(opt)
         end
 
+        def stateful_set(name, opt={})
+          Matsuri::Registry.stateful_set(name).new(opt)
+        end
+
         def service(name, opt={})
           Matsuri::Registry.service(name).new(opt)
         end

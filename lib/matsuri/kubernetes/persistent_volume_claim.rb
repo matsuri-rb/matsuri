@@ -5,6 +5,7 @@ module Matsuri
     # Kubernetes Persistent Volume Claim
     # http://kubernetes.io/docs/user-guide/persistent-volumes/#persistentvolumeclaims
     class PersistentVolumeClaim < Matsuri::Kubernetes::Base
+      let(:api_version)         { 'v1' }
       let(:kind)                { 'PersistentVolumeClaim' }
       let(:default_annotations) { { 'volume.beta.kubernetes.io/storage-class' => storage_class } } # http://kubernetes.io/docs/user-guide/persistent-volumes/
 

@@ -1,6 +1,4 @@
 require 'rlet'
-require 'json'
-require 'yaml'
 
 require 'hashdiff'
 require 'active_support/core_ext/hash/keys'
@@ -16,7 +14,9 @@ module Matsuri
       include Let
       include RLet::LazyOptions
       include Matsuri::ShellOut
+      include Matsuri::Concerns::TransformManifest
       include Matsuri::Concerns::RegistryHelpers
+      include Matsuri::Concerns::Awaiting
 
       # Namespace resolution
       let(:namespace)             { namespace_from_option || default_namespace }
@@ -53,10 +53,6 @@ module Matsuri
       let(:release)     { (options[:release] || '0').to_s }
 
       # Overridables
-      let(:api_version) { 'v1' }
-      let(:kind)        { fail NotImplementedError, 'Must define let(:kind)' }
-      let(:metadata)    { { } }
-      let(:name)        { fail NotImplementedError, 'Must define let(:name)' }
       let(:spec)        { fail NotImplementedError, 'Must define let(:spec)' }
 
       def build!
@@ -77,11 +73,21 @@ module Matsuri
       def apply!
         puts "Applying (create or update) #{resource_type}/#{name}".color(:yellow).bright if config.verbose
         puts to_json if config.debug
-        kubectl! "apply --record=true -f -", input: to_json
+        kubectl! "apply --record=true -f -", input: applied_to_json
+      end
+
+      def replace!
+        puts "Replacing (create or update) #{resource_type}/#{name}".color(:yellow).bright if config.verbose
+        puts to_json if config.debug
+        kubectl! "replace --record=true -f -", input: to_json
       end
 
       def recreate!
-        delete!
+        if created?
+          delete!
+          awaiting!('resource deletion', interval: 0.5) { !created? }
+        end
+
         create!
       end
 
@@ -167,19 +173,6 @@ module Matsuri
                  end
         Matsuri.log :info, "#{resource_type}/#{name} #{status}".color(:yellow)
         cmd.status.success?
-      end
-
-      # Transform functions
-      def to_json
-        manifest.to_json
-      end
-
-      def to_yaml
-        manifest.deep_stringify_keys.to_yaml
-      end
-
-      def pretty_print
-        JSON.pretty_generate(manifest)
       end
     end
   end

@@ -6,7 +6,7 @@ module Matsuri
     # No official API definition found
     class StorageClass < Matsuri::Kubernetes::Base
       let(:kind)        { 'StorageClass' }
-      let(:api_version) { 'storage.k8s.io/v1beta1' }
+      let(:api_version) { 'storage.k8s.io/v1' }
       let(:provisioner) { fail NotImplementedError, 'Must define let(:provisioner). Example: let(:provisoner) { gce_pd }' }
 
       let(:gce_pd)      { 'kubernetes.io/gce-pd' }

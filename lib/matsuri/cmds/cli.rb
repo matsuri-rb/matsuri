@@ -4,12 +4,15 @@ module Matsuri
     class Cli < Thor
       include Matsuri::Cmd
 
-      class_option :config,  aliases: :c, type: :string, default: File.join(ENV['PWD'], 'config', 'matsuri.rb')
+      # Don't want to write code to _not_ load in the config, so not going to do it here
+      #class_option :config,  aliases: :c, type: :string, default: File.join(Matsuri::Config.base_path, 'config', 'matsuri.rb')
       class_option :verbose, aliases: :v, type: :boolean
       class_option :debug,   aliases: :D, type: :boolean
-      class_option :environment, aliases: :e, type: :string, default: ENV['MATSURI_ENVIRONMENT']
 
-      desc "kubectl SUBCOMMAND ...ARGS", "manage kubectl configs"
+      desc 'generate SUBCOMMAND ...ARGS', 'generate Matsuri scaffolding'
+      subcommand 'generate', Matsuri::Cmds::Generate
+
+      desc 'kubectl SUBCOMMAND ...ARGS', 'manage kubectl configs'
       subcommand 'kubectl', Matsuri::Cmds::Kubectl
 
       desc 'show SUBCOMMAND ...ARGS', 'show resource'
@@ -29,7 +32,6 @@ module Matsuri
 
       desc 'apply SUBCOMMAND ...ARGS', 'create or update resource (kubectl apply)'
       subcommand 'apply', Matsuri::Cmds::Apply
-      map reload: :apply
 
       desc 'rebuild', 'Not Implementd'
       def rebuild
@@ -50,6 +52,20 @@ module Matsuri
       def converge(name, image_tag = nil)
         with_config do |opt|
           Matsuri::Registry.app(name).new(image_tag: image_tag).converge!(opt)
+        end
+      end
+
+      desc 'reconcile', 'Reconcile and converge cluster-wide resources, such as RBAC and NetworkPolicy'
+      def reconcile
+        with_config do |opt|
+          Matsuri::Tasks::Cluster.new.reconcile!(opt)
+        end
+      end
+
+      desc 'reload APP_NAME', 'Reloads an app without recreating underlying pods'
+      def reload(name, image_tag = nil)
+        with_config do |opt|
+          Matsuri::Registry.app(name).new(image_tag: image_tag).reload!(opt)
         end
       end
 

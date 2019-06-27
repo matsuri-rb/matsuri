@@ -27,12 +27,23 @@ module Matsuri
       map replicaset: :replica_set
       map rs: :replica_set
 
+      desc 'stateful_set STATEFUL_SET_NAME', 'delete stateful_set'
+      delete_cmd_for :stateful_set
+      map sts: :stateful_set
+
+      desc 'daemon_set DAEMON_SET_NAME', 'delete daemon_set'
+      delete_cmd_for :daemon_set
+      map ds: :daemon_set
+
       desc 'deployment DEPLOYMENT_NAME', 'delete a deployment'
       delete_cmd_for :deployment
       map deploy: :deployment
 
       desc 'service SERVICE_NAME', 'delete a service'
       delete_cmd_for :service
+
+      desc 'ingress INGRESS_NAME', 'delete a ingress'
+      delete_cmd_for :ingress
 
       desc 'endpoints ENDPOINTS_NAME', 'delete an endpoint set'
       delete_cmd_for :endpoints
@@ -42,6 +53,11 @@ module Matsuri
 
       desc 'secret SECRET_NAME', 'delete a secret'
       delete_cmd_for :secret
+
+      desc 'config-map CONFIG_MAP_NAME', 'delete a config map'
+      delete_cmd_for :config_map
+      map configmap: :config_map
+      map cm: :config_map
 
       desc 'pv PV_NAME', 'delete a persistent volume'
       delete_cmd_for :pv

@@ -1,11 +1,10 @@
 require 'mixlib/shellout'
 require 'rainbow/ext/string'
+require 'active_support/core_ext/hash/compact'
 
 module Matsuri
   module ShellOut
     module_function
-
-    SHELLOUT_DEFAULTS = { cwd: ENV['PWD'] }
 
     # Override
     def verbose
@@ -14,6 +13,10 @@ module Matsuri
 
     def debug
       Matsuri::Config.debug
+    end
+
+    def shellout_defaults
+      Matsuri::Config.shellout_defaults
     end
 
     # Overridable
@@ -41,7 +44,7 @@ module Matsuri
       no_stdout = options.delete(:no_stdout)
 
       Matsuri.log echo_level, "$ #{_cmd}".color(:green)
-      options = SHELLOUT_DEFAULTS.merge(timeout: 3600).merge(options)
+      options = shellout_defaults.merge(timeout: 3600).merge(options)
       cmd = Mixlib::ShellOut.new(_cmd, options)
       cmd.live_stream = STDOUT unless no_stdout && !debug
       cmd.run_command
@@ -64,16 +67,20 @@ module Matsuri
     end
 
     # This is so that it is easier to write app commands
-    def kubectl_cmd(_cmd)
-      "kubectl --context=#{kube_context} --namespace=#{namespace} #{_cmd}"
+    def kubectl_cmd(_cmd, options = {})
+      kube_options = { context: kube_context, namespace: namespace }.merge(options).compact
+      kube_cli_options = kube_options.map { |k,v| "--#{k}=#{v}" }.join(' ')
+      "kubectl #{kube_cli_options} #{_cmd}"
     end
 
     def kubectl(_cmd, options = {})
-      shell_out(kubectl_cmd(_cmd), options)
+      kube_options = options.delete(:kube_options) || {}
+      shell_out(kubectl_cmd(_cmd, kube_options), options)
     end
 
     def kubectl!(_cmd, options = {})
-      shell_out!(kubectl_cmd(_cmd), options)
+      kube_options = options.delete(:kube_options) || {}
+      shell_out!(kubectl_cmd(_cmd, kube_options), options)
     end
 
     def docker(_cmd, options = {})

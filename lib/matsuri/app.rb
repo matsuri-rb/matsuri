@@ -91,11 +91,16 @@ module Matsuri
     def converge!(opts = {})
       puts "Converging #{name}".color(:red).bright if config.verbose
       self.class.build_order.each do |(type, name, options)|
-        if type == :file
+        case type
+        when :file
           Matsuri.log :info, "Checking for required file #{name}"
           next if File.file?(name)
           Matsuri.log(:fatal, "Cannot find required file #{name}") unless options[:on_failure]
-          send(options[:on_failure], type, name)
+          send(options[:on_failure], type, name) if options[:on_failure]
+        when :task
+          Matsuri.log :info, "Executing task #{name}"
+          send(name, opts)
+          next
         end
 
         resource = dep(type, name).new(image_tag: image_tag)
@@ -118,6 +123,10 @@ module Matsuri
     end
 
     # Hooks
+    def reload!(version, opt={})
+      Matsuri.log :fatal, "I don't know how to reload #{name}. Define me at in the app config."
+    end
+
     def update!(version, opt={})
       Matsuri.log :fatal, "I don't know how to update #{name}. Define me at in the app config."
     end

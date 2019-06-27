@@ -32,7 +32,13 @@ module Matsuri
       def load_definition(type, name)
         def_path = definition_path(type, name)
 
-        eval(File.read(def_path), TOPLEVEL_BINDING, def_path)
+        # [Hosh] Somehow, TOPLEVEL_BINDING got infected with version and str
+        # local variables. When thinking about it, we probably want to require
+        # instead of evaluating this with the TOPLEVEL_BINDING anyways.
+
+        #eval(File.read(def_path), TOPLEVEL_BINDING, def_path)
+        require def_path
+
         _klass = instance.data.get(type, name)
         return _klass if _klass
 
@@ -91,6 +97,10 @@ module Matsuri
         fetch_or_load :service, name
       end
 
+      def ingress(name)
+        fetch_or_load :ingress, name
+      end
+
       def replication_controller(name)
         fetch_or_load :replication_controller, name
       end
@@ -101,6 +111,14 @@ module Matsuri
 
       def replica_set(name)
         fetch_or_load :replica_set, name
+      end
+
+      def stateful_set(name)
+        fetch_or_load :stateful_set, name
+      end
+
+      def daemon_set(name)
+        fetch_or_load :daemon_set, name
       end
 
       def deployment(name)
@@ -133,6 +151,10 @@ module Matsuri
 
       def secret(name)
         fetch_or_load :secret, name
+      end
+
+      def config_map(name)
+        fetch_or_load :config_map, name
       end
 
       def app(name)
@@ -178,12 +200,16 @@ end
 # TODO: Consider making this dynamically and lazy loaded
 Matsuri::Registry.register_class 'app',                     class: Matsuri::App
 Matsuri::Registry.register_class 'pod',                     class: Matsuri::Kubernetes::Pod
-Matsuri::Registry.register_class 'replication_controller',  class: Matsuri::Kubernetes::ReplicationController, aliases: %w(rc)
+Matsuri::Registry.register_class 'replication_controller',  class: Matsuri::Kubernetes::ReplicationController, aliases: %w[rc]
 Matsuri::Registry.register_class 'service',                 class: Matsuri::Kubernetes::Service
+Matsuri::Registry.register_class 'ingress',                 class: Matsuri::Kubernetes::Ingress
 Matsuri::Registry.register_class 'endpoint',                class: Matsuri::Kubernetes::Endpoints
 Matsuri::Registry.register_class 'secret',                  class: Matsuri::Kubernetes::Secret
-Matsuri::Registry.register_class 'replica_set',             class: Matsuri::Kubernetes::ReplicaSet
+Matsuri::Registry.register_class 'config_map',              class: Matsuri::Kubernetes::ConfigMap
+Matsuri::Registry.register_class 'replica_set',             class: Matsuri::Kubernetes::ReplicaSet,            aliases: %w[rs]
+Matsuri::Registry.register_class 'stateful_set',            class: Matsuri::Kubernetes::StatefulSet,           aliases: %w[sts]
+Matsuri::Registry.register_class 'daemon_set',              class: Matsuri::Kubernetes::DaemonSet,             aliases: %w[ds]
 Matsuri::Registry.register_class 'deployment',              class: Matsuri::Kubernetes::Deployment
-Matsuri::Registry.register_class 'persistent_volume',       class: Matsuri::Kubernetes::PersistentVolume,      aliases: %w(pv)
-Matsuri::Registry.register_class 'persistent_volume_claim', class: Matsuri::Kubernetes::PersistentVolumeClaim, aliases: %w(pvc)
+Matsuri::Registry.register_class 'persistent_volume',       class: Matsuri::Kubernetes::PersistentVolume,      aliases: %w[pv]
+Matsuri::Registry.register_class 'persistent_volume_claim', class: Matsuri::Kubernetes::PersistentVolumeClaim, aliases: %w[pvc]
 Matsuri::Registry.register_class 'storage_class',           class: Matsuri::Kubernetes::StorageClass

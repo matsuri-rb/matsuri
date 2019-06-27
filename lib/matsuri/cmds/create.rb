@@ -39,6 +39,14 @@ module Matsuri
       map replicaset: :replica_set
       map rs: :replica_set
 
+      desc 'stateful_set STATEFUL_SET_NAME', 'create a stateful_set'
+      create_cmd_for :stateful_set, image_tag: true
+      map sts: :stateful_set
+
+      desc 'daemon_set DAEMON_SET_NAME', 'create a daemon_set'
+      create_cmd_for :daemon_set, image_tag: true
+      map ds: :daemon_set
+
       desc 'deployment DEPLOYMENT_NAME [IMAGE_TAG]', 'create a deployment'
       create_cmd_for :deployment, image_tag: true
       map deploy: :deployment
@@ -46,11 +54,19 @@ module Matsuri
       desc 'service SERVICE_NAME', 'create a service'
       create_cmd_for :service
 
+      desc 'ingress INGRESS_NAME', 'create a ingress'
+      create_cmd_for :ingress
+
       desc 'endpoints ENDPOINTS_NAME', 'create an endpoint set'
       create_cmd_for :endpoints
 
       desc 'secret SECRET_NAME', 'upload a secret'
       create_cmd_for :secret
+
+      desc 'config-map CONFIG_MAP_NAME', 'upload a config map'
+      create_cmd_for :config_map
+      map configmap: :config_map
+      map cm: :config_map
 
       desc 'pv PV_NAME', 'create a persistent volume'
       create_cmd_for :pv

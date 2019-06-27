@@ -32,15 +32,31 @@ module Matsuri
       map replicaset: :replica_set
       map rs: :replica_set
 
+      desc 'stateful-set STATEFUL_SET_NAME', 'apply changes for stateful_set'
+      apply_cmd_for :stateful_set, image_tag: true
+      map sts: :stateful_set
+
+      desc 'daemon-set DAEMON_SET_NAME', 'apply changes for daemon_set'
+      apply_cmd_for :daemon_set, image_tag: true
+      map ds: :daemon_set
+
       desc 'deployment DEPLOYMENT_NAME', 'apply changes to a deployment'
       apply_cmd_for :deployment, image_tag: true
       map deploy: :deployment
 
       desc 'service SERVICE_NAME', 'apply changes to a service'
-      apply_cmd_for :service, image_tag: true
+      apply_cmd_for :service
+
+      desc 'ingress INGRESS_NAME', 'apply changes to a ingress'
+      apply_cmd_for :ingress
 
       desc 'secret SECRET_NAME', 'apply changes to a secret'
-      apply_cmd_for :secret, image_tag: true
+      apply_cmd_for :secret
+
+      desc 'config-map CONFIG_MAP_NAME', 'apply changes to a config map'
+      apply_cmd_for :config_map, image_tag: true
+      map configmap: :config_map
+      map cm: :config_map
 
       private
 

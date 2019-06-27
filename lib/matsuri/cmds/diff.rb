@@ -31,6 +31,10 @@ module Matsuri
       map replicaset: :replica_set
       map rs: :replica_set
 
+      desc 'stateful_set STATEFUL_SET_NAME', 'diff manifest for stateful_set'
+      diff_cmd_for :stateful_set, image_tag: true
+      map sts: :stateful_set
+
       desc 'deployment DEPLOYMENT_NAME', 'diff manifest for deployment'
       diff_cmd_for :deployment, image_tag: true
       map deploy: :deployment
@@ -38,11 +42,19 @@ module Matsuri
       desc 'service SERVICE_NAME', 'diff manifest for service'
       diff_cmd_for :service
 
+      desc 'ingress INGRESS_NAME', 'diff manifest for ingress'
+      diff_cmd_for :ingress
+
       desc 'endpoints ENDPOINT_NAME', 'diff manifest for endpoints'
       diff_cmd_for :endpoints
 
       desc 'secret SECRET_NAME', 'diff a secret'
       diff_cmd_for :secret
+
+      desc 'config_map CONFIG_MAP_NAME', 'diff a config map'
+      diff_cmd_for :config_map
+      map configmap: :config_map
+      map cm: :config_map
 
       desc 'pv PV_NAME', 'diff manifest for persistent volume'
       diff_cmd_for :pv

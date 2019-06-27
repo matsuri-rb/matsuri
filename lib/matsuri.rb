@@ -1,14 +1,15 @@
 require 'active_support/concern'
 
 module Matsuri
-  autoload :Config,   'matsuri/config'
-  autoload :Platform, 'matsuri/platform'
-  autoload :ShellOut, 'matsuri/shell_out'
-  autoload :Registry, 'matsuri/registry'
+  autoload :Initializer, 'matsuri/initializer'
+  autoload :Config,      'matsuri/config'
+  autoload :Platform,    'matsuri/platform'
+  autoload :ShellOut,    'matsuri/shell_out'
+  autoload :Registry,    'matsuri/registry'
 
-  autoload :Task,     'matsuri/task'
-  autoload :Cmd,      'matsuri/cmd'
-  autoload :App,      'matsuri/app'
+  autoload :Task,        'matsuri/task'
+  autoload :Cmd,         'matsuri/cmd'
+  autoload :App,         'matsuri/app'
 
   module Kubernetes
     autoload :Base,                  'matsuri/kubernetes/base'
@@ -18,10 +19,14 @@ module Matsuri
     autoload :ReplicationController, 'matsuri/kubernetes/replication_controller'
     autoload :Service,               'matsuri/kubernetes/service'
     autoload :Endpoints,             'matsuri/kubernetes/endpoints'
+    autoload :Ingress,               'matsuri/kubernetes/ingress'
     autoload :Secret,                'matsuri/kubernetes/secret'
+    autoload :ConfigMap,             'matsuri/kubernetes/config_map'
 
-    # Extensions
+    # Apps
     autoload :ReplicaSet,            'matsuri/kubernetes/replica_set'
+    autoload :StatefulSet,           'matsuri/kubernetes/stateful_set'
+    autoload :DaemonSet,             'matsuri/kubernetes/daemon_set'
     autoload :Deployment,            'matsuri/kubernetes/deployment'
 
     # Persistent Storage
@@ -45,19 +50,44 @@ module Matsuri
     autoload :Apply,    'matsuri/cmds/apply'
     autoload :Recreate, 'matsuri/cmds/recreate'
     autoload :Scale,    'matsuri/cmds/scale'
+
+    autoload :Generate, 'matsuri/cmds/generate'
   end
 
   module Tasks
     autoload :Kubectl, 'matsuri/tasks/kubectl'
     autoload :Docker,  'matsuri/tasks/docker'
     autoload :Pod,     'matsuri/tasks/pod'
+    autoload :Cluster, 'matsuri/tasks/cluster'
   end
 
   module Concerns
-    autoload :Awaiting,        'matsuri/concerns/awaiting'
-    autoload :RegistryHelpers, 'matsuri/concerns/registry_helpers'
-    autoload :Scalable,        'matsuri/concerns/scalable'
-    autoload :PodTemplate,     'matsuri/concerns/pod_template'
+    autoload :TransformManifest,  'matsuri/concerns/transform_manifest'
+
+    autoload :Awaiting,           'matsuri/concerns/awaiting'
+    autoload :RegistryHelpers,    'matsuri/concerns/registry_helpers'
+    autoload :Scalable,           'matsuri/concerns/scalable'
+    autoload :PodTemplate,        'matsuri/concerns/pod_template'
+  end
+
+  module DSL
+    module Cluster
+      autoload :Scope,                 'matsuri/dsl/cluster/scope'
+
+      autoload :Role,                  'matsuri/dsl/cluster/role'
+      autoload :ClusterRole,           'matsuri/dsl/cluster/cluster_role'
+      autoload :AggregatedClusterRole, 'matsuri/dsl/cluster/aggregated_cluster_role'
+      autoload :Binding,               'matsuri/dsl/cluster/binding'
+
+      autoload :ServiceAccount,        'matsuri/dsl/cluster/service_account'
+    end
+
+    module Concerns
+      autoload :Metadata,        'matsuri/dsl/concerns/metadata'
+      autoload :RbacRules,       'matsuri/dsl/concerns/rbac_rules'
+      autoload :DefaultBinding,  'matsuri/dsl/concerns/default_binding'
+      autoload :ManifestSet,     'matsuri/dsl/concerns/manifest_set'
+    end
   end
 
   def self.define(*args, &blk)

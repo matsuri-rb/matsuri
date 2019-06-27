@@ -32,12 +32,23 @@ module Matsuri
       map replicaset: :replica_set
       map rs: :replica_set
 
+      desc 'stateful_set STATEFUL_SET_NAME', 'recreate a stateful_set'
+      recreate_cmd_for :stateful_set, image_tag: true
+      map sts: :stateful_set
+
+      desc 'daemon_set DAEMON_SET_NAME', 'recreate a daemon_set'
+      recreate_cmd_for :daemon_set, image_tag: true
+      map ds: :daemon_set
+
       desc 'deployment DEPLOYMENT_NAME [IMAGE TAG]', 'recreate a deployment'
       recreate_cmd_for :deployment, image_tag: true
       map deploy: :deployment
 
       desc 'service SERVICE_NAME', 'recreate a service'
       recreate_cmd_for :service
+
+      desc 'ingress INGRESS_NAME', 'recreate a ingress'
+      recreate_cmd_for :ingress
 
       desc 'endpoints ENDPOINTS_NAME', 'recreate an endpoint set'
       recreate_cmd_for :endpoints

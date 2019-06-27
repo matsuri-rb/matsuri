@@ -11,8 +11,7 @@ module Matsuri
       def with_config(opts = {})
         _final_options = final_options(opts)
 
-        Matsuri::Config.load_configuration(_final_options)
-        Matsuri::Platform.load_configuration(Matsuri::Config.platform_load_paths)
+        Matsuri::Config.apply_configuration(_final_options)
 
         yield _final_options
       end
