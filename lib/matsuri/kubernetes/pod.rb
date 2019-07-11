@@ -236,12 +236,16 @@ module Matsuri
         { name: name, hostPath: { path: host_path } }
       end
 
-      def empty_dir_volume(name)
-        { name: name, emptyDir: {} }
+      def empty_dir_volume(name, medium: nil)
+        { name: name, emptyDir: { medium: medium }.compact }
       end
 
-      def secret_volume(name, secret_name:)
-        { name: name, secret: { secretName: secret_name } }
+      def tmpfs_volume(name)
+        empty_dir_volume(name, medium: 'Memory')
+      end
+
+      def secret_volume(name, secret_name:, default_mode: nil)
+        { name: name, secret: { secretName: secret_name, defaultMode: default_mode }.compact }
       end
 
       def config_map_volume(name, config_map_name: nil, items: nil, default_mode: nil)
