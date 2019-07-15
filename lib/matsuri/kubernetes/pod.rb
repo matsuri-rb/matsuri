@@ -214,6 +214,10 @@ module Matsuri
         { fieldRef: { fieldPath: path } }
       end
 
+      def env_from_resource(resource:, container: nil, divisor: nil)
+        { resourceFieldRef: { resource: resource, containerName: container, divisor: divisor } }
+      end
+
       def sorted_env(hash)
         expand_env(hash).sort { |a,b| a[:name] <=> b[:name] }
       end
