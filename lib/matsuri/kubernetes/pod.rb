@@ -248,8 +248,12 @@ module Matsuri
         empty_dir_volume(name, medium: 'Memory')
       end
 
-      def secret_volume(name, secret_name:, default_mode: nil)
-        { name: name, secret: { secretName: secret_name, defaultMode: default_mode }.compact }
+      def secret_volume(name, secret_name:, items: nil, default_mode: nil)
+        { name: name, secret: { secretName: secret_name, items: items, defaultMode: default_mode }.compact }
+      end
+
+      def secret_item(key, path, mode: nil)
+        { key: key, path: path, mode: mode }.compact
       end
 
       def config_map_volume(name, config_map_name: nil, items: nil, default_mode: nil)
