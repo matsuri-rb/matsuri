@@ -131,6 +131,15 @@ module Matsuri
       end
 
       # Helper functions
+      # Conditionally returns block or nil
+      # Useful for conditionally adding evironmental variables or list of volumes
+      # Example:
+      #   let(:use_keyfile?) { false }
+      #   let(:volumes)      { [maybe(use_keyfile?) { mongo-keyfile-volume }].compact }
+      def maybe(cond)
+        yield if cond
+      end
+
       def current_manifest(raw: false)
         cmd = kubectl "get #{resource_type}/#{name} -o json", echo_level: :debug, no_stdout: true
         return nil unless cmd.status.success?

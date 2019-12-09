@@ -214,6 +214,10 @@ module Matsuri
         { fieldRef: { fieldPath: path } }
       end
 
+      def env_from_resource(resource:, container: nil, divisor: nil)
+        { resourceFieldRef: { resource: resource, containerName: container, divisor: divisor } }
+      end
+
       def sorted_env(hash)
         expand_env(hash).sort { |a,b| a[:name] <=> b[:name] }
       end
@@ -236,12 +240,20 @@ module Matsuri
         { name: name, hostPath: { path: host_path } }
       end
 
-      def empty_dir_volume(name)
-        { name: name, emptyDir: {} }
+      def empty_dir_volume(name, medium: nil)
+        { name: name, emptyDir: { medium: medium }.compact }
       end
 
-      def secret_volume(name, secret_name:)
-        { name: name, secret: { secretName: secret_name } }
+      def tmpfs_volume(name)
+        empty_dir_volume(name, medium: 'Memory')
+      end
+
+      def secret_volume(name, secret_name:, items: nil, default_mode: nil)
+        { name: name, secret: { secretName: secret_name, items: items, defaultMode: default_mode }.compact }
+      end
+
+      def secret_item(key, path, mode: nil)
+        { key: key, path: path, mode: mode }.compact
       end
 
       def config_map_volume(name, config_map_name: nil, items: nil, default_mode: nil)

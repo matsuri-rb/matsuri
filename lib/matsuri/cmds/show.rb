@@ -58,7 +58,7 @@ module Matsuri
 
       desc 'daemon_set DAEMON_SET_NAME', 'show manifest for daemon_set'
       show_cmd_for :daemon_set, image_tag: true
-      map sts: :daemon_set
+      map ds: :daemon_set
 
       desc 'deployment DEPLOYMENT_NAME', 'show manifest for deployment'
       show_cmd_for :deployment, image_tag: true
