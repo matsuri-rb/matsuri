@@ -25,7 +25,8 @@ module Matsuri
       # from the command line
       let(:default_namespace)     { namespace_from_config || 'default' }
       let(:namespace_from_option) { options[:namespace] }
-      let(:namespace_from_config) { Matsuri::Platform.send(Matsuri::Config.environment).namespace }
+      let(:namespace_from_config) { env_config.namespace }
+      let(:env_config)            { Matsuri::Platform.send(Matsuri.environment) }
 
       # Kubernetes manifest
       let(:manifest) do
