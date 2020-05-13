@@ -25,7 +25,7 @@ module Matsuri
           {
             apiVersion:  api_version,
             kind:        kind,
-            metadata:    final_metadata,
+            metadata:    metadata,
             rules:       rules
           }
         end
