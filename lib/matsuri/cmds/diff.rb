@@ -11,11 +11,11 @@ module Matsuri
       def self.diff_cmd_for(resource_name, image_tag: false)
         unless image_tag
           define_method(resource_name) do |name|
-            diff_resource { Matsuri::Registry.send(resource_name, name).new }
+            diff_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new }
           end
         else
           define_method(resource_name) do |name, image_tag = 'latest'|
-            diff_resource { Matsuri::Registry.send(resource_name, name).new(image_tag: image_tag) }
+            diff_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new(image_tag: image_tag) }
           end
         end
       end

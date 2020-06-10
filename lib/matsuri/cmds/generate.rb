@@ -6,7 +6,7 @@ module Matsuri
 
       def self.generate_cmd_for(resource_name)
         define_method(resource_name) do |name|
-          generate_resource { Matsuri::Registry.send(resource_name, name).new }
+          generate_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new }
         end
       end
 

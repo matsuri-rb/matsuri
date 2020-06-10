@@ -5,7 +5,7 @@ module Matsuri
 
       def self.scale_cmd_for(resource_name)
         define_method(resource_name) do |name, replicas|
-          scale_resource(replicas) { Matsuri::Registry.send(resource_name, name).new }
+          scale_resource(replicas) { Matsuri::Registry.fetch_or_load(resource_name, name).new }
         end
       end
 

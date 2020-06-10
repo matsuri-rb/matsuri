@@ -5,7 +5,7 @@ module Matsuri
 
       def self.delete_cmd_for(resource_name)
         define_method(resource_name) do |name|
-          delete_resource { Matsuri::Registry.send(resource_name, name).new }
+          delete_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new }
         end
       end
 

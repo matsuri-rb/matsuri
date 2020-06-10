@@ -11,11 +11,11 @@ module Matsuri
       def self.show_cmd_for(resource_name, image_tag: false)
         unless image_tag
           define_method(resource_name) do |name|
-            show_resource { Matsuri::Registry.send(resource_name, name).new }
+            show_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new }
           end
         else
           define_method(resource_name) do |name, image_tag = 'latest'|
-            show_resource { Matsuri::Registry.send(resource_name, name).new(image_tag: image_tag) }
+            show_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new(image_tag: image_tag) }
           end
         end
       end

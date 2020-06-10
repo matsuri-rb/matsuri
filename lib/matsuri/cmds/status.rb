@@ -5,7 +5,7 @@ module Matsuri
 
       def self.status_cmd_for(resource_name)
         define_method(resource_name) do |name|
-          status_resource { Matsuri::Registry.send(resource_name, name).new }
+          status_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new }
         end
       end
 
