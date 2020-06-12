@@ -49,6 +49,26 @@ module Matsuri
           definitions << self.class.from_filename(filename, scoped_options)
         end
 
+        # Load and evaluate from a class.
+        # Set the filename and line number so # that errors are correctly reported
+        # Inject the relative source path so manifests can be tracked back to a source file
+        def self.from_class(klass, scoped_options = {})
+          filename, _ = klass.method(:scope_manifest).source_location
+          relative_source = filename.sub(/^#{File.join(Matsuri::Config.base_path, '/')}/, '')
+          child_scope = scoped_options.merge(source_file: relative_source)
+
+          # Create a new scope and pass it to the class
+          new_scope = new(scoped_options: child_scope)
+          klass.scope_manifest(new_scope)
+
+          new_scope
+        end
+
+        # This could be used by the DSL, but we really should not
+        def import_class(klass)
+          definitions << self.class.from_class(klass, scoped_options)
+        end
+
         ### Manifest sets
         let(:rbac_manifests)    { definitions.map(&descend_tree.(:rbac_manifests)) }
         let(:cluster_manifests) { definitions.map(&descend_tree.(:cluster_manifests)) }
