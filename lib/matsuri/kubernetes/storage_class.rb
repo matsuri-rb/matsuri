@@ -14,13 +14,19 @@ module Matsuri
 
       let(:parameters)  { fail NotImplementedError, 'Must define let(:parameters)' }
 
+      ### K8S default is "Immediate", but "WaitForFirstConsumer" is the sensible default
+      let(:volume_binding_mode) { 'WaitForFirstConsumer' }
+      let(:allowed_topologies)  { nil }
+
       let(:manifest) do
         {
           apiVersion:  api_version,
           kind:        kind,
           metadata:    final_metadata,
           provisioner: provisioner,
-          parameters:  parameters
+          parameters:  parameters,
+          volumeBindingMode: volume_binding_mode,
+          allowedTopologies: allowed_topologies
         }
       end
 
