@@ -30,13 +30,14 @@ module Matsuri
           hostNetwork: host_network,
 
           # Scheduling
-          nodeName:          node_name,
-          nodeSelector:      node_selector,
-          affinity:          affinity,
-          tolerations:       tolerations,
-          priority:          priority,
-          priorityClassName: priority_class_name,
-          schedulerName:     scheduler_name,
+          nodeName:                  node_name,
+          nodeSelector:              node_selector,
+          affinity:                  affinity,
+          tolerations:               tolerations,
+          priority:                  priority,
+          priorityClassName:         priority_class_name,
+          schedulerName:             scheduler_name,
+          topologySpreadConstraints: topology_spread_constraints,
 
           # Lifecylce
           readinessGates:                readiness_gates,
@@ -62,17 +63,18 @@ module Matsuri
       let(:image_pull_secrets) { [] }
 
       # Schedulering
-      let(:node_name)           { nil }
-      let(:node_selector)       { { } }
-      let(:tolerations)         { [toleration].compact }
-      let(:toleration)          { nil }
-      let(:affinity)            { { nodeAffinity: node_affinity, podAffinity: pod_affinity, podAntiAffinity: pod_anti_affinity }.compact }
-      let(:node_affinity)       { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#nodeaffinity-v1-core
-      let(:pod_affinity)        { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#podaffinity-v1-core
-      let(:pod_anti_affinity)   { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#podantiaffinity-v1-core
-      let(:priority)            { nil }
-      let(:priority_class_name) { nil }
-      let(:scheduler_name)      { nil }
+      let(:node_name)                  { nil }
+      let(:node_selector)              { { } }
+      let(:tolerations)                { [toleration].compact }
+      let(:toleration)                 { nil }
+      let(:affinity)                   { { nodeAffinity: node_affinity, podAffinity: pod_affinity, podAntiAffinity: pod_anti_affinity }.compact }
+      let(:node_affinity)              { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#nodeaffinity-v1-core
+      let(:pod_affinity)               { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#podaffinity-v1-core
+      let(:pod_anti_affinity)          { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#podantiaffinity-v1-core
+      let(:priority)                   { nil }
+      let(:priority_class_name)        { nil }
+      let(:scheduler_name)             { nil }
+      let(:toplogy_spread_constraints) { nil } # https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
 
       # Networking and Host
       let(:hostname)           { nil } # https://kubernetes.io/docs/admin/dns/
@@ -272,6 +274,14 @@ module Matsuri
         }
       end
 
+      def match_labels_selector(matcher)
+        label_selector(match_labels: matcher)
+      end
+
+      def match_expressions_selector(matcher)
+        label_selector(match_expressions: matcher)
+      end
+
       def match_expression(key:, operator:, values: nil)
         { key: key, operator: operator, values: values }.compact
       end
@@ -318,6 +328,27 @@ module Matsuri
       end
 
       alias_method :required_during_scheduling, :required_during_scheduling_ignored_during_execution
+
+      def topology_spread_constraint(opts = {})
+        {
+          maxSkew:           opts[:max_skew],
+          topologyKey:       opts[:topology_key],
+          whenUnsatisfiable: opts[:when_unsatisfiable],
+          labelSelector:     opts[:label_selector]
+        }.compact
+      end
+
+      def spread_by_node(opts = {})
+        topology_spread_constraint({topology_key: 'kubernetes.io/hostname'}.merge(opts))
+      end
+
+      def spread_by_zone(opts = {})
+        topology_spread_constraint({topology_key: 'topology.kubernetes.io/zone'}.merge(opts))
+      end
+
+      def spread_by_region(opts = {})
+        topology_spread_constraint({topology_key: 'topology.kubernetes.io/region'}.merge(opts))
+      end
 
       # Helpers
 
