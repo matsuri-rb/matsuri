@@ -62,19 +62,19 @@ module Matsuri
       let(:volumes)            { [volume] }
       let(:image_pull_secrets) { [] }
 
-      # Schedulering
-      let(:node_name)                  { nil }
-      let(:node_selector)              { { } }
-      let(:tolerations)                { [toleration].compact }
-      let(:toleration)                 { nil }
-      let(:affinity)                   { { nodeAffinity: node_affinity, podAffinity: pod_affinity, podAntiAffinity: pod_anti_affinity }.compact }
-      let(:node_affinity)              { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#nodeaffinity-v1-core
-      let(:pod_affinity)               { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#podaffinity-v1-core
-      let(:pod_anti_affinity)          { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#podantiaffinity-v1-core
-      let(:priority)                   { nil }
-      let(:priority_class_name)        { nil }
-      let(:scheduler_name)             { nil }
-      let(:toplogy_spread_constraints) { nil } # https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
+      # Scheduling
+      let(:node_name)                   { nil }
+      let(:node_selector)               { { } }
+      let(:tolerations)                 { [toleration].compact }
+      let(:toleration)                  { nil }
+      let(:affinity)                    { { nodeAffinity: node_affinity, podAffinity: pod_affinity, podAntiAffinity: pod_anti_affinity }.compact }
+      let(:node_affinity)               { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#nodeaffinity-v1-core
+      let(:pod_affinity)                { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#podaffinity-v1-core
+      let(:pod_anti_affinity)           { nil } # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#podantiaffinity-v1-core
+      let(:priority)                    { nil }
+      let(:priority_class_name)         { nil }
+      let(:scheduler_name)              { nil }
+      let(:topology_spread_constraints) { nil } # https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
 
       # Networking and Host
       let(:hostname)           { nil } # https://kubernetes.io/docs/admin/dns/
