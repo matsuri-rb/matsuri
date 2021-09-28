@@ -59,30 +59,32 @@ module Matsuri
     default(:config_overlays_path) { File.join 'etc', 'config-maps' } # Actual config files themselves
     default(:platform_load_paths)  { [ File.join(config_path, 'platform.rb'), File.join(base_path, '.platform.rb') ] }
 
-    default(:cache_path)                    { File.join base_path, '.cache' }
-    default(:build_path)                    { File.join base_path, 'build' }
-    default(:docker_path)                   { File.join base_path, 'docker' }
-    default(:src_path)                      { File.join base_path, 'src' }
-    default(:lib_path)                      { File.join base_path, 'lib' }
-    default(:platform_path)                 { File.join base_path, 'platform' }
-    default(:images_path)                   { File.join platform_path, 'images' }
-    default(:pods_path)                     { File.join platform_path, 'pods' }
-    default(:rcs_path)                      { File.join platform_path, 'replication_controllers' }
-    default(:replica_sets_path)             { File.join platform_path, 'replica_sets' }
-    default(:daemon_sets_path)              { File.join platform_path, 'daemon_sets' }
-    default(:deployments_path)              { File.join platform_path, 'deployments' }
-    default(:stateful_sets_path)            { File.join platform_path, 'stateful_sets' }
-    default(:persistent_volumes_path)       { File.join platform_path, 'persistent_volumes' }
-    default(:persistent_volume_claims_path) { File.join platform_path, 'persistent_volume_claims' }
-    default(:storage_classes_path)          { File.join platform_path, 'storage_classes' }
-    default(:services_path)                 { File.join platform_path, 'services' }
-    default(:ingresses_path)                { File.join platform_path, 'ingresses' }
-    default(:endpoints_path)                { File.join platform_path, 'endpoints' }
-    default(:apps_path)                     { File.join platform_path, 'apps' }
-    default(:secrets_path)                  { File.join platform_path, 'secrets' } # Kubernetes Secret definition, not the actual secrets
-    default(:config_maps_path)              { File.join platform_path, 'config_maps' } # Kubernetes ConfigMaps definition, not the actual config ovelay
+    default(:cache_path)           { File.join base_path, '.cache' }
+    default(:build_path)           { File.join base_path, 'build' }
+    default(:docker_path)          { File.join base_path, 'docker' }
+    default(:src_path)             { File.join base_path, 'src' }
+    default(:lib_path)             { File.join base_path, 'lib' }
+    default(:platform_path)        { File.join base_path, 'platform' }
 
-    default(:clusters_path)                 { File.join platform_path, 'clusters' } # For Cluster DSL, managing cluster-wide configuration
+    default(:images_path)                     { File.join platform_path, 'images' }
+    default(:pods_path)                       { File.join platform_path, 'pods' }
+    default(:rcs_path)                        { File.join platform_path, 'replication_controllers' }
+    default(:replica_sets_path)               { File.join platform_path, 'replica_sets' }
+    default(:daemon_sets_path)                { File.join platform_path, 'daemon_sets' }
+    default(:deployments_path)                { File.join platform_path, 'deployments' }
+    default(:stateful_sets_path)              { File.join platform_path, 'stateful_sets' }
+    default(:persistent_volumes_path)         { File.join platform_path, 'persistent_volumes' }
+    default(:persistent_volume_claims_path)   { File.join platform_path, 'persistent_volume_claims' }
+    default(:storage_classes_path)            { File.join platform_path, 'storage_classes' }
+    default(:services_path)                   { File.join platform_path, 'services' }
+    default(:ingresses_path)                  { File.join platform_path, 'ingresses' }
+    default(:endpoints_path)                  { File.join platform_path, 'endpoints' }
+    default(:apps_path)                       { File.join platform_path, 'apps' }
+    default(:secrets_path)                    { File.join platform_path, 'secrets' } # Kubernetes Secret definition, not the actual secrets
+    default(:config_maps_path)                { File.join platform_path, 'config_maps' } # Kubernetes ConfigMaps definition, not the actual config ovelay
+    default(:horizontal_pod_autoscalers_path) { File.join platform_path, 'horizontal_pod_autoscalers' }
+
+    default(:clusters_path)                   { File.join platform_path, 'clusters' } # For Cluster DSL, managing cluster-wide configuration
 
     default :manifests_path, '/etc/kubernetes/manifests'
 

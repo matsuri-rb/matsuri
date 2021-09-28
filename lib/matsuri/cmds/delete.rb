@@ -59,6 +59,10 @@ module Matsuri
       map configmap: :config_map
       map cm: :config_map
 
+      desc 'horizontal_pod_autoscaler HPA_NAME', 'delete a horizontal pod autoscaler'
+      delete_cmd_for :horizontal_pod_autoscaler
+      map hpa: :horizontal_pod_autoscaler
+
       desc 'pv PV_NAME', 'delete a persistent volume'
       delete_cmd_for :pv
 

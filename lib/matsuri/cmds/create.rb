@@ -77,6 +77,10 @@ module Matsuri
       desc 'storage_class STORAGE_CLASS_NAME', 'upload a storage class'
       create_cmd_for :storage_class
 
+      desc 'horizontal_pod_autoscaler HPA_NAME', 'create a horizontal pod autoscaler'
+      create_cmd_for :horizontal_pod_autoscaler
+      map hpa: :horizontal_pod_autoscaler
+
       private
 
       def create_resource

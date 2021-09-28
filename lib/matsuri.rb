@@ -12,27 +12,29 @@ module Matsuri
   autoload :App,         'matsuri/app'
 
   module Kubernetes
-    autoload :Base,                  'matsuri/kubernetes/base'
+    autoload :Base,                    'matsuri/kubernetes/base'
 
     # Core
-    autoload :Pod,                   'matsuri/kubernetes/pod'
-    autoload :ReplicationController, 'matsuri/kubernetes/replication_controller'
-    autoload :Service,               'matsuri/kubernetes/service'
-    autoload :Endpoints,             'matsuri/kubernetes/endpoints'
-    autoload :Ingress,               'matsuri/kubernetes/ingress'
-    autoload :Secret,                'matsuri/kubernetes/secret'
-    autoload :ConfigMap,             'matsuri/kubernetes/config_map'
+    autoload :Pod,                     'matsuri/kubernetes/pod'
+    autoload :ReplicationController,   'matsuri/kubernetes/replication_controller'
+    autoload :Service,                 'matsuri/kubernetes/service'
+    autoload :Endpoints,               'matsuri/kubernetes/endpoints'
+    autoload :Ingress,                 'matsuri/kubernetes/ingress'
+    autoload :Secret,                  'matsuri/kubernetes/secret'
+    autoload :ConfigMap,               'matsuri/kubernetes/config_map'
 
     # Apps
-    autoload :ReplicaSet,            'matsuri/kubernetes/replica_set'
-    autoload :StatefulSet,           'matsuri/kubernetes/stateful_set'
-    autoload :DaemonSet,             'matsuri/kubernetes/daemon_set'
-    autoload :Deployment,            'matsuri/kubernetes/deployment'
+    autoload :ReplicaSet,              'matsuri/kubernetes/replica_set'
+    autoload :StatefulSet,             'matsuri/kubernetes/stateful_set'
+    autoload :DaemonSet,               'matsuri/kubernetes/daemon_set'
+    autoload :Deployment,              'matsuri/kubernetes/deployment'
+
+    autoload :HorizontalPodAutoscaler, 'matsuri/kubernetes/horizontal_pod_autoscaler'
 
     # Persistent Storage
-    autoload :PersistentVolume,      'matsuri/kubernetes/persistent_volume'
-    autoload :PersistentVolumeClaim, 'matsuri/kubernetes/persistent_volume_claim'
-    autoload :StorageClass,          'matsuri/kubernetes/storage_class'
+    autoload :PersistentVolume,        'matsuri/kubernetes/persistent_volume'
+    autoload :PersistentVolumeClaim,   'matsuri/kubernetes/persistent_volume_claim'
+    autoload :StorageClass,            'matsuri/kubernetes/storage_class'
   end
 
   module AddOns

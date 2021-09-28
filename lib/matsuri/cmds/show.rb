@@ -80,6 +80,10 @@ module Matsuri
       map configmap: :config_map
       show_cmd_for :config_map
 
+      desc 'horizontal_pod_autoscaler HPA_NAME', 'show a horizontal pod autoscaler'
+      show_cmd_for :horizontal_pod_autoscaler
+      map hpa: :horizontal_pod_autoscaler
+
       desc 'pv PV_NAME', 'show manifest for persistent volume'
       show_cmd_for :pv
 

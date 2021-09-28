@@ -44,6 +44,10 @@ module Matsuri
       recreate_cmd_for :deployment, image_tag: true
       map deploy: :deployment
 
+      desc 'horizontal_pod_autoscaler HPA_NAME', 'recreate a horizontal pod autoscaler'
+      recreate_cmd_for :horizontal_pod_autoscaler
+      map hpa: :horizontal_pod_autoscaler
+
       desc 'service SERVICE_NAME', 'recreate a service'
       recreate_cmd_for :service
 

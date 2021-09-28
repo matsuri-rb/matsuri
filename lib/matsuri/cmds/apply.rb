@@ -58,6 +58,10 @@ module Matsuri
       map configmap: :config_map
       map cm: :config_map
 
+      desc 'horizontal_pod_autoscaler HPA_NAME', 'apply changes to a horizontal pod autoscaler'
+      apply_cmd_for :horizontal_pod_autoscaler
+      map hpa: :horizontal_pod_autoscaler
+
       private
 
       def apply_resource

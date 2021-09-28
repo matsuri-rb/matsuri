@@ -35,7 +35,7 @@ module Matsuri
       diff_cmd_for :stateful_set, image_tag: true
       map sts: :stateful_set
 
-      desc 'daemon-set DAEMON_SET_NAME', 'diff manifest for daemon_set'
+      desc 'daemon_set DAEMON_SET_NAME', 'diff manifest for daemon_set'
       diff_cmd_for :daemon_set, image_tag: true
       map ds: :daemon_set
 
@@ -59,6 +59,10 @@ module Matsuri
       diff_cmd_for :config_map
       map configmap: :config_map
       map cm: :config_map
+
+      desc 'horizontal_pod_autoscaler HPA_NAME', 'diff a horizontal pod autoscaler'
+      diff_cmd_for :horizontal_pod_autoscaler
+      map hpa: :horizontal_pod_autoscaler
 
       desc 'pv PV_NAME', 'diff manifest for persistent volume'
       diff_cmd_for :pv

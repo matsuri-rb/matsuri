@@ -50,6 +50,13 @@ module Matsuri
         def endpoints(name, opt={})
           Matsuri::Registry.endpoints(name).new(opt)
         end
+
+        def horizontal_pod_autoscaler(name, opt={})
+          Matsuri::Registry.horizontal_pod_autoscaler(name).new(opt)
+        end
+
+        alias_method :hpa, :horizontal_pod_autoscaler
+
       end
     end
   end
