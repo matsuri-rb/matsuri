@@ -35,6 +35,10 @@ module Matsuri
       diff_cmd_for :stateful_set, image_tag: true
       map sts: :stateful_set
 
+      desc 'daemon-set DAEMON_SET_NAME', 'diff manifest for daemon_set'
+      diff_cmd_for :daemon_set, image_tag: true
+      map ds: :daemon_set
+
       desc 'deployment DEPLOYMENT_NAME', 'diff manifest for deployment'
       diff_cmd_for :deployment, image_tag: true
       map deploy: :deployment
