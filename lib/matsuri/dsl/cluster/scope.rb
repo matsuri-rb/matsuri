@@ -41,7 +41,9 @@ module Matsuri
         def self.from_filename(filename, scoped_options = {})
           relative_source = filename.sub(/^#{File.join(Matsuri::Config.base_path, '/')}/, '')
           child_scope = scoped_options.merge(source_file: relative_source)
-          new(scoped_options: child_scope).instance_eval(File.read(filename), filename, 1)
+          # Always return the newly created scope regardless of return value from evaluating
+          # the imported source file
+          new(scoped_options: child_scope).tap { |s| s.instance_eval(File.read(filename), filename, 1) }
         end
 
         # This could be used by the DSL, but we really should not
