@@ -85,6 +85,9 @@ module Matsuri
 
       def recreate!
         if created?
+          # Preload any lazy upstream variable assignments
+          to_json
+
           delete!
           awaiting!('resource deletion', interval: 0.5) { !created? }
         end
