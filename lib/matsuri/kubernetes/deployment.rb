@@ -95,7 +95,7 @@ module Matsuri
 
         desired = JSON.parse(to_json)
 
-        HashDiff.diff current['spec']['template']['spec']['containers'][0], desired['spec']['template']['spec']['containers'][0]
+        Hashdiff.diff current['spec']['template']['spec']['containers'][0], desired['spec']['template']['spec']['containers'][0]
       end
 
       class << self

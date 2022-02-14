@@ -161,7 +161,7 @@ module Matsuri
         current.delete('status')
         current['metadata'] = current['metadata'].slice('name', 'labels', 'namespace') if current['metadata']
 
-        HashDiff.diff current, desired
+        Hashdiff.diff current, desired
       end
 
       def print_diff(deltas)
