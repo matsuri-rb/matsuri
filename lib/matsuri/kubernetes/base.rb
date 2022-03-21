@@ -1,6 +1,7 @@
 require 'rlet'
 
 require 'hashdiff'
+require 'unit'
 require 'active_support/core_ext/hash/keys'
 require 'active_support/core_ext/hash/except'
 require 'active_support/core_ext/hash/slice'
@@ -157,11 +158,77 @@ module Matsuri
 
         desired = JSON.parse(to_json)
 
-        # Filter what is being compared
-        current.delete('status')
-        current['metadata'] = current['metadata'].slice('name', 'labels', 'namespace') if current['metadata']
+        Hashdiff.diff(current, desired) do |path, current_value, desired_value|
+          filter_comparison_values(path, current_value, desired_value)
+        end
+      end
 
-        Hashdiff.diff current, desired
+      def filter_comparison_values(path, current_value, desired_value)
+        if empty_assignment_to_empty?(current_value, desired_value) or
+           readonly_path?(path) or
+           always_changed_path?(path) or
+           default_value_assigned_nothing?(path, current_value, desired_value) or
+           unit_comparison_is_equal?(current_value, desired_value)
+           # (
+           #   path.start_with?("metadata.") and
+           #   path !~ /^metadata\.\b(name|labels|namespace)\b/
+           # ) or
+          true
+        else
+          :perform_normal_comparison end
+      end
+
+      def empty_assignment_to_empty?(current_value, desired_value)
+        empty_value?(current_value) and empty_value?(desired_value)
+      end
+
+      def readonly_path?(path)
+        [
+          'status',
+        ].member?(path)
+      end
+
+      def always_changed_path?(path)
+        [
+           'metadata.annotations.kubectl.kubernetes.io/last-applied-configuration',
+           'metadata.annotations.kubernetes.io/change-cause',
+        ].member?(path)
+      end
+
+      def default_value_assigned_nothing?(path, current_value, desired_value)
+        # standard case of empty value desired but current value is
+        # atomic/predefined
+        (
+          empty_value?(desired_value) and
+            not (current_value.is_a?(Hash) or current_value.is_a?(Array))
+        ) or
+
+        # volumeMounts are not readOnly by default, making a setting of false
+        # redundant
+        (
+          path =~ /volumeMount.*readOnly/ and
+          current_value.nil? and
+          desired_value == false
+        ) or
+
+        # minReadySeconds is 0 by default but not presented as such
+        (
+          path == 'spec.minReadySeconds'
+          current_value.nil? and
+          desired_value == 0
+        )
+      end
+
+      def unit_comparison_is_equal?(current_value, desired_value)
+        if current_value =~ /^\d+[A-Za-z]+$/ or desired_value =~ /^\d+[A-Za-z]+$/
+          Unit(current_value + 'B') == Unit(desired_value + 'B')
+        else
+          false
+        end
+      end
+
+      def empty_value?(value)
+        value.nil? or value == {} or value == [] or value == ""
       end
 
       def print_diff(deltas)
