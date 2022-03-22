@@ -235,12 +235,10 @@ module Matsuri
       end
 
       def includes_unit?(value)
-        begin
-          Unit(value)
-          true
-        rescue TypeError
-          false
-        end
+        Unit(value)
+        true
+      rescue TypeError
+        false
       end
 
       def empty_value?(value)
