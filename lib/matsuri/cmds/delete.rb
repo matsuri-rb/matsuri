@@ -4,7 +4,7 @@ module Matsuri
       include Matsuri::Cmd
 
       def self.delete_cmd_for(resource_name)
-        define_method(resource_name) do |name|
+        define_method(resource_name) do |name = :not_specified|
           delete_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new }
         end
       end
