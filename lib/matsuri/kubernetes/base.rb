@@ -220,9 +220,25 @@ module Matsuri
       end
 
       def unit_comparison_is_equal?(current_value, desired_value)
-        if current_value =~ /^\d+[A-Za-z]+$/ or desired_value =~ /^\d+[A-Za-z]+$/
-          Unit(current_value + 'B') == Unit(desired_value + 'B')
+        if current_value =~ /^\d+\s*[A-Za-z]+$/ or desired_value =~ /^\d+\s*[A-Za-z]+$/
+          (
+            includes_unit?(current_value) and
+            includes_unit?(desired_value) and
+            Unit(current_value) == Unit(desired_value)
+          ) or
+          (
+            Unit(current_value + 'B') == Unit(desired_value + 'B')
+          )
         else
+          false
+        end
+      end
+
+      def includes_unit?(value)
+        begin
+          Unit(value)
+          true
+        rescue TypeError
           false
         end
       end
