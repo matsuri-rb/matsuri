@@ -7,11 +7,11 @@ module Matsuri
 
       def self.create_cmd_for(resource_name, image_tag: false)
         unless image_tag
-          define_method(resource_name) do |name|
+          define_method(resource_name) do |name = :not_specified|
             create_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new }
           end
         else
-          define_method(resource_name) do |name, image_tag = nil|
+          define_method(resource_name) do |name = :not_specified, image_tag = nil|
             create_resource do
               image_tag ||= Matsuri::Registry.fetch_or_load(resource_name, name).new.try(:current_image_tag)
               image_tag ||= 'latest'

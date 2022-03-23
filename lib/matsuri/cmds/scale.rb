@@ -4,7 +4,7 @@ module Matsuri
       include Matsuri::Cmd
 
       def self.scale_cmd_for(resource_name)
-        define_method(resource_name) do |name, replicas|
+        define_method(resource_name) do |name = :not_specified, replicas|
           scale_resource(replicas) { Matsuri::Registry.fetch_or_load(resource_name, name).new }
         end
       end
