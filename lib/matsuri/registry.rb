@@ -94,20 +94,10 @@ module Matsuri
       end
 
       def print_options_for_type(type)
-        load_path    = load_path_for(type)
-        env_def_path = File.join(load_path, Matsuri.environment)
-        def_path     = env_def_path
+        global_load_path = load_path_for(type)
+        env_def_path     = File.join(global_load_path, Matsuri.environment)
 
-        if not File.directory?(def_path)
-          Matsuri.log :debug, "Unable to find #{def_path} ... trying global definition"
-          def_path = load_path
-        end
-
-        if not File.directory?(def_path)
-          Matsuri.log :fatal, "Unable to find #{env_def_path} or #{def_path}"
-        end
-
-        definition_files = Dir.glob(File.join(def_path, "*.rb"))
+        definition_files = Dir.glob(File.join(env_def_path, "*.rb")) + Dir.glob(File.join(global_load_path, "*.rb"))
         if definition_files.empty?
           Matsuri.log :fatal, "Unable to find any definition files in #{env_def_path}"
         end
@@ -115,8 +105,7 @@ module Matsuri
         Matsuri.log :error, "Which #{type}?\n\n"
         definition_files
           .map  {|file| File.basename(file, File.extname(file))}
-          .map  {|name| load_definition(type, name)}
-          .map  {|definition| definition.new.name}
+          .uniq
           .sort
           .each {|def_name| Matsuri.log :error, "   #{def_name}"}
 
