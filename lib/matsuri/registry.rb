@@ -94,22 +94,29 @@ module Matsuri
       end
 
       def print_options_for_type(type)
-        global_load_path = load_path_for(type)
-        env_def_path     = File.join(global_load_path, Matsuri.environment)
-
-        definition_files = Dir.glob(File.join(env_def_path, "*.rb")) + Dir.glob(File.join(global_load_path, "*.rb"))
-        if definition_files.empty?
-          Matsuri.log :fatal, "Unable to find any definition files in #{env_def_path}"
+        options = options_for_type(type)
+        if options.empty?
+          global_load_path = load_path_for(type)
+          env_def_path     = File.join(global_load_path, Matsuri.environment)
+          Matsuri.log :fatal, "Unable to find any definition files in #{env_def_path} or #{global_load_path}"
         end
 
         Matsuri.log :error, "Which #{type}?\n\n"
-        definition_files
+
+        options.each do |def_name|
+          Matsuri.log :error, "   #{def_name}"
+        end
+
+        Matsuri.log :fatal, "\nPlease specify a #{type} from the above list."
+      end
+
+      def options_for_type(type)
+        global_load_path = load_path_for(type)
+        env_def_path     = File.join(global_load_path, Matsuri.environment)
+        Dir.glob(File.join(env_def_path, "*.rb")) + Dir.glob(File.join(global_load_path, "*.rb"))
           .map  {|file| File.basename(file, File.extname(file))}
           .uniq
           .sort
-          .each {|def_name| Matsuri.log :error, "   #{def_name}"}
-
-        Matsuri.log :fatal, "\nPlease specify a #{type} from the above list."
       end
 
       def pod(name)
