@@ -64,6 +64,7 @@ module Matsuri
   end
 
   module Concerns
+    autoload :ImportManifest,     'matsuri/concerns/import_manifest'
     autoload :ExportManifest,     'matsuri/concerns/export_manifest'
 
     autoload :Awaiting,           'matsuri/concerns/awaiting'
