@@ -64,7 +64,7 @@ module Matsuri
   end
 
   module Concerns
-    autoload :TransformManifest,  'matsuri/concerns/transform_manifest'
+    autoload :ExportManifest,     'matsuri/concerns/export_manifest'
 
     autoload :Awaiting,           'matsuri/concerns/awaiting'
     autoload :RegistryHelpers,    'matsuri/concerns/registry_helpers'

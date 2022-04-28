@@ -7,7 +7,7 @@ module Matsuri
       # be driven by the cluster dsl
       class Role
         include Let
-        include Matsuri::Concerns::TransformManifest
+        include Matsuri::Concerns::ExportManifest
         include Matsuri::DSL::Concerns::Metadata
         include Matsuri::DSL::Concerns::RbacRules
         include Matsuri::DSL::Concerns::DefaultBinding

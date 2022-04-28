@@ -15,7 +15,7 @@ module Matsuri
       #   - subject api_group defaults to "" (core) for other kinds (ServiceAccounts)
       class Binding
         include Let
-        include Matsuri::Concerns::TransformManifest
+        include Matsuri::Concerns::ExportManifest
         include Matsuri::DSL::Concerns::Metadata
         include Matsuri::DSL::Concerns::ManifestSet
 

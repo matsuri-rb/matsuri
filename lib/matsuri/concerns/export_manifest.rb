@@ -2,7 +2,7 @@ require 'active_support/concern'
 
 module Matsuri
   module Concerns
-    module TransformManifest
+    module ExportManifest
       extend ActiveSupport::Concern
 
       included do

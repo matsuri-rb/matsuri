@@ -15,7 +15,7 @@ module Matsuri
       include Let
       include RLet::LazyOptions
       include Matsuri::ShellOut
-      include Matsuri::Concerns::TransformManifest
+      include Matsuri::Concerns::ExportManifest
       include Matsuri::Concerns::RegistryHelpers
       include Matsuri::Concerns::Awaiting
 
