@@ -35,6 +35,9 @@ module Matsuri
     autoload :PersistentVolume,        'matsuri/kubernetes/persistent_volume'
     autoload :PersistentVolumeClaim,   'matsuri/kubernetes/persistent_volume_claim'
     autoload :StorageClass,            'matsuri/kubernetes/storage_class'
+
+    # Other
+    autoload :ImportedManifest,        'matsuri/kubernetes/imported_manifest'
   end
 
   module AddOns

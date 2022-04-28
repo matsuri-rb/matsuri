@@ -16,6 +16,10 @@ module Matsuri
         let(:full_import_path)      {   File.join(Matsuri::Config.platform_path, 'manifests', import_path)}
 
         # Support for finding and extracting a manifeest from a stream (multiple yaml documents in a file)
+        # Override with:
+        # let(:imported_manifest) { extracted_manifest }
+        # let(:import_filter_criteria) { { kind: "Something", name: "something", namespace: "something" }}
+
         let(:extracted_manifest)     { Map.new(lookup_manifests(imported_manifests, import_filter_criteria).first) }
         let(:imported_manifests)     { YAML.load_stream(File.read(full_import_path)) }
         let(:import_filter_criteria) { fail NotImplementedError, 'Must define let(:import_filter_criteria)' }
@@ -32,16 +36,29 @@ module Matsuri
         end
 
       end
-      # Assumes that the complex key of {kind, name, namespace} is unique within a given cluster
+
+      # Assumes that the complex key of {kind, name, namespace} is unique within a given set of manifests
       def lookup_manifests(set, criteria)
         raise ArgumentError, "Must pass name: and kind: for criteria" unless criteria[:kind] && criteria[:name]
-        set.select do |hash|
-          h = Map.new(hash)
-          h.get(:kind) == criteria[:kind] &&
-            h.get(:metadata, :name) == criteria[:name] &&
-            (criteria[:namespace] == nil || h.get(:metadata, :namespace) == criteria[:namespace])
-        end
+        set.select(&method(:criteria_matcher))
       end
+
+      # This is used when we have a collection of manifests, more useful for importing a bundle
+      # using Matsuri::Kubernetes::ImportedManifest (importing raw manifests from a vendor upstream)
+      def without_manifest(set, criteria)
+        raise ArgumentError, "Must pass name: and kind: for criteria" unless criteria[:kind] && criteria[:name]
+
+        set.reject(&method(:criteria_matcher))
+      end
+
+
+      def criteria_matcher(hash)
+        h = Map.new(hash)
+        h.get(:kind) == criteria[:kind] &&
+          h.get(:metadata, :name) == criteria[:name] &&
+          (criteria[:namespace] == nil || h.get(:metadata, :namespace) == criteria[:namespace])
+      end
+
 
       def without_container(spec, name:)
         update_in(spec, [:containers]) { |x|  except_entry_by_name(x, name: name) }
