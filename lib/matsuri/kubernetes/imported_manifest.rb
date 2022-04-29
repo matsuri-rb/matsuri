@@ -4,6 +4,8 @@ require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/object/try'
 require 'json'
 
+require 'awesome_print'
+
 # rubocop:disable Lint/MissingCopEnableDirective
 # rubocop:disable Style/Alias
 module Matsuri
@@ -20,7 +22,12 @@ module Matsuri
       let(:extracted_manifests) { imported_manifests }
 
       # Used to hook into ExportManifest concern
-      let(:manifest)            { extracted_manifests }
+      let(:manifest_for_export)         { normalize_manifests(extracted_manifests) }
+      let(:applied_manifest_for_export) { normalize_manifests(extracted_manifests) }
+
+      def normalize_manifests(manifests)
+        Array(manifests).map(&:deep_stringify_keys)
+      end
 
       def create!
         Matsuri.log :fatal, "create not supported for imported manifests"
@@ -43,6 +50,17 @@ module Matsuri
 
       def annotate!
         Matsuri.log :fatal, "annotate not supported for imported manifests"
+      end
+
+      ### Matsuri Registry
+      class << self
+        def load_path
+          Matsuri::Config.imported_manifests_path
+        end
+
+        def definition_module_name
+          'ImportedManifests'
+        end
       end
 
     end

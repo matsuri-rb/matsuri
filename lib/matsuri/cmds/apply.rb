@@ -21,6 +21,9 @@ module Matsuri
         end
       end
 
+      desc 'imported_manifest NAME', 'apply changes to an imported manifest'
+      apply_cmd_for :imported_manifest
+
       desc 'pod POD_NAME', 'apply changes to a pod'
       apply_cmd_for :pod, image_tag: true
 

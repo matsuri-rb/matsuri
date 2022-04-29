@@ -119,6 +119,10 @@ module Matsuri
           .sort
       end
 
+      def imported_manifest(name)
+        fetch_or_load :imported_manifest, name
+      end
+
       def pod(name)
         fetch_or_load :pod, name
       end
@@ -237,6 +241,7 @@ end
 # Register the definition classes
 # TODO: Consider making this dynamically and lazy loaded
 Matsuri::Registry.register_class 'app',                       class: Matsuri::App
+Matsuri::Registry.register_class 'imported_manifest',         class: Matsuri::Kubernetes::ImportedManifest
 Matsuri::Registry.register_class 'pod',                       class: Matsuri::Kubernetes::Pod
 Matsuri::Registry.register_class 'replication_controller',    class: Matsuri::Kubernetes::ReplicationController, aliases: %w[rc]
 Matsuri::Registry.register_class 'service',                   class: Matsuri::Kubernetes::Service

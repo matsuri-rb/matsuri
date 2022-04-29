@@ -41,6 +41,9 @@ module Matsuri
         end
       end
 
+      desc 'imported_manifest NAME', 'show imported manifest'
+      show_cmd_for :imported_manifest
+
       desc 'pod POD_NAME', 'show manifest for pod'
       show_cmd_for :pod, image_tag: true
 

@@ -13,7 +13,7 @@ module Matsuri
         let(:imported_pod_metadata) { imported_manifest.get(:spec, :template, :metadata) }
         let(:imported_pod_spec)     { imported_manifest.get(:spec, :template, :spec) }
         let(:imported_manifest)     { Map.new(YAML.load_file(full_import_path)) }
-        let(:full_import_path)      {   File.join(Matsuri::Config.platform_path, 'manifests', import_path)}
+        let(:full_import_path)      { File.join(Matsuri::Config.imported_manifests_path, import_path)}
 
         # Support for finding and extracting a manifeest from a stream (multiple yaml documents in a file)
         # Override with:
@@ -40,7 +40,7 @@ module Matsuri
       # Assumes that the complex key of {kind, name, namespace} is unique within a given set of manifests
       def lookup_manifests(set, criteria)
         raise ArgumentError, "Must pass name: and kind: for criteria" unless criteria[:kind] && criteria[:name]
-        set.select(&method(:criteria_matcher))
+        set.select(&criteria_matcher(criteria))
       end
 
       # This is used when we have a collection of manifests, more useful for importing a bundle
@@ -48,11 +48,14 @@ module Matsuri
       def without_manifest(set, criteria)
         raise ArgumentError, "Must pass name: and kind: for criteria" unless criteria[:kind] && criteria[:name]
 
-        set.reject(&method(:criteria_matcher))
+        set.reject(&criteria_matcher(criteria))
       end
 
+      def criteria_matcher(criteria)
+        ->(hash) { matches_criteria?(hash, criteria) }
+      end
 
-      def criteria_matcher(hash)
+      def matches_criteria?(hash, criteria)
         h = Map.new(hash)
         h.get(:kind) == criteria[:kind] &&
           h.get(:metadata, :name) == criteria[:name] &&

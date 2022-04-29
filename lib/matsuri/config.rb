@@ -86,7 +86,8 @@ module Matsuri
 
     default(:clusters_path)                   { File.join platform_path, 'clusters' } # For Cluster DSL, managing cluster-wide configuration
 
-    default :manifests_path, '/etc/kubernetes/manifests'
+    default(:imported_manifests_path) { File.join platform_path, 'manifests' }
+    default(:manifests_path)          { File.join platform_path, 'manifests' }
 
     # API Versions
     default :rbac_api_version, 'rbac.authorization.k8s.io/v1'
