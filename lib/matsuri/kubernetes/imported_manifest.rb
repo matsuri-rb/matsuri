@@ -29,6 +29,21 @@ module Matsuri
         Array(manifests).map(&:deep_stringify_keys)
       end
 
+      # Don't return a yaml array. Return a concated set of yaml files
+      def to_yaml
+        manifest_for_export.
+          map(&:to_yaml).
+          join('')
+      end
+
+      # Override this to avoid triggering the normal path
+      # Also, use the to_yaml transform so we can apply multiple manifest
+      def apply!
+        puts "Applying (create or update) imported manifest #{import_path}".color(:yellow).bright if config.verbose
+        puts to_json if config.debug
+        kubectl! "apply --namespace #{namespace} --record=true -f -", input: to_yaml
+      end
+
       def create!
         Matsuri.log :fatal, "create not supported for imported manifests"
       end
