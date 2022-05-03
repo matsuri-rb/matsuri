@@ -20,6 +20,7 @@ module Matsuri
 
       # Override this to run transforms
       let(:extracted_manifests) { imported_manifests }
+      let(:namespace)           { Matsuri.fail "Must define let(:namespace); check the imported manifest and use the namespace found there" }
 
       # Used to hook into ExportManifest concern
       let(:manifest_for_export)         { normalize_manifests(extracted_manifests) }
