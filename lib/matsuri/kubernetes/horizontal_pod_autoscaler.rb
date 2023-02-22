@@ -76,7 +76,7 @@ module Matsuri
         { type: 'Utilization', averageUtilization: target }
       end
 
-      def average_value_matric_target(target)
+      def average_value_metric_target(target)
         { type: 'AverageValue', averageValue: target }
       end
 
