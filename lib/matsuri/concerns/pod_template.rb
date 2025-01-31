@@ -1,6 +1,7 @@
 require 'json'
 require 'yaml'
 require 'active_support/concern'
+require 'active_support/core_ext/hash/compact'
 
 module Matsuri
   module Concerns
@@ -17,12 +18,14 @@ module Matsuri
         # Overide let(:pod_name)
         let(:template) { { metadata: { labels: pod_labels, annotations: pod_annotations }, spec: pod_spec } }
 
-        let(:pod_def)           { pod(pod_name, image_tag: image_tag, release: release) }
-        let(:primary_image)     { pod_def.primary_image }
-        let(:primary_container) { pod_def.primary_container }
-        let(:pod_labels)        { pod_def.final_labels }
-        let(:pod_annotations)   { pod_def.final_annotations }
-        let(:pod_spec)          { pod_def.spec }
+        let(:pod_def)             { pod(pod_name, pod_options) }
+        let(:primary_image)       { pod_def.primary_image }
+        let(:primary_container)   { pod_def.primary_container }
+        let(:pod_labels)          { pod_def.final_labels }
+        let(:pod_annotations)     { pod_def.final_annotations }
+        let(:pod_spec)            { pod_def.spec }
+        let(:pod_options)         { default_pod_options }
+        let(:default_pod_options) { { image_tag: image_tag, release: release } }
       end
 
       ### Helpers
