@@ -39,6 +39,11 @@ module Matsuri
       delete_cmd_for :deployment
       map deploy: :deployment
 
+      desc 'cron-job CRONJOB_NAME', 'apply changes to a cronjob'
+      delete_cmd_for :cron_job
+      map cj: :cron_job
+      map cronjob: :cron_job
+
       desc 'service SERVICE_NAME', 'delete a service'
       delete_cmd_for :service
 

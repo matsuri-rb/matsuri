@@ -159,6 +159,10 @@ module Matsuri
         fetch_or_load :deployment, name
       end
 
+      def cron_job(name)
+        fetch_or_load :cron_job, name
+      end
+
       def persistent_volume(name)
         fetch_or_load :persistent_volume, name
       end
@@ -253,6 +257,7 @@ Matsuri::Registry.register_class 'replica_set',               class: Matsuri::Ku
 Matsuri::Registry.register_class 'stateful_set',              class: Matsuri::Kubernetes::StatefulSet,           aliases: %w[sts]
 Matsuri::Registry.register_class 'daemon_set',                class: Matsuri::Kubernetes::DaemonSet,             aliases: %w[ds]
 Matsuri::Registry.register_class 'deployment',                class: Matsuri::Kubernetes::Deployment
+Matsuri::Registry.register_class 'cron_job',                  class: Matsuri::Kubernetes::CronJob
 Matsuri::Registry.register_class 'persistent_volume',         class: Matsuri::Kubernetes::PersistentVolume, aliases: %w[pv]
 Matsuri::Registry.register_class 'persistent_volume_claim',   class: Matsuri::Kubernetes::PersistentVolumeClaim, aliases: %w[pvc]
 Matsuri::Registry.register_class 'storage_class',             class: Matsuri::Kubernetes::StorageClass

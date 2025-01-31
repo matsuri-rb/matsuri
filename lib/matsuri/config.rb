@@ -72,6 +72,7 @@ module Matsuri
     default(:replica_sets_path)               { File.join platform_path, 'replica_sets' }
     default(:daemon_sets_path)                { File.join platform_path, 'daemon_sets' }
     default(:deployments_path)                { File.join platform_path, 'deployments' }
+    default(:cron_jobs_path)                  { File.join platform_path, 'cron_jobs' }
     default(:stateful_sets_path)              { File.join platform_path, 'stateful_sets' }
     default(:persistent_volumes_path)         { File.join platform_path, 'persistent_volumes' }
     default(:persistent_volume_claims_path)   { File.join platform_path, 'persistent_volume_claims' }
