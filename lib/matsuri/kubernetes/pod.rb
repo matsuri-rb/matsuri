@@ -234,8 +234,16 @@ module Matsuri
         }.compact
       end
 
-      def mount(name, path, read_only: false)
-        { name: name, mountPath: path, readOnly: read_only }
+      def mount(name, path, options = {})
+        {
+          name:                name,
+          mountPath:           path,
+          readOnly:            options[:read_only] || false,
+          mountPropogation:    options[:mount_propogation],
+          recursivelyReadOnly: options[:recursively_read_only],
+          subPath:             options[:sub_path],
+          subPathExpr:         options[:sub_path_expr]
+        }.compact
       end
 
       def host_path_volume(name, host_path)

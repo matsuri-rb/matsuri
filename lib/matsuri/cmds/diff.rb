@@ -43,6 +43,11 @@ module Matsuri
       diff_cmd_for :deployment, image_tag: true
       map deploy: :deployment
 
+      desc 'cron-job CRONJOB_NAME', 'apply changes to a cronjob'
+      diff_cmd_for :cron_job, image_tag: true
+      map cj: :cron_job
+      map cronjob: :cron_job
+
       desc 'service SERVICE_NAME', 'diff manifest for service'
       diff_cmd_for :service
 

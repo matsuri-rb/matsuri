@@ -28,6 +28,7 @@ module Matsuri
     autoload :StatefulSet,             'matsuri/kubernetes/stateful_set'
     autoload :DaemonSet,               'matsuri/kubernetes/daemon_set'
     autoload :Deployment,              'matsuri/kubernetes/deployment'
+    autoload :CronJob,                 'matsuri/kubernetes/cron_job'
 
     autoload :HorizontalPodAutoscaler, 'matsuri/kubernetes/horizontal_pod_autoscaler'
 

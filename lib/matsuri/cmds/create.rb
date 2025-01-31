@@ -51,6 +51,11 @@ module Matsuri
       create_cmd_for :deployment, image_tag: true
       map deploy: :deployment
 
+      desc 'cron-job CRONJOB_NAME', 'apply changes to a cronjob'
+      create_cmd_for :cron_job, image_tag: true
+      map cj: :cron_job
+      map cronjob: :cron_job
+
       desc 'service SERVICE_NAME', 'create a service'
       create_cmd_for :service
 
