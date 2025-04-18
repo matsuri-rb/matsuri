@@ -220,6 +220,10 @@ module Matsuri
       end
 
       def unit_comparison_is_equal?(current_value, desired_value)
+        # Unit cannot handle nil values, so if one one of the values
+        # are empty, then return false (beacuse it is not comparable)
+        return false if empty_value?(current_value) || empty_value?(desired_value)
+
         if current_value =~ /^\d+\s*[A-Za-z]+$/ or desired_value =~ /^\d+\s*[A-Za-z]+$/
           (
             includes_unit?(current_value) and
