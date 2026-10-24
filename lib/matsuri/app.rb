@@ -47,12 +47,6 @@ module Matsuri
       end
     end
 
-    # Override this. This command defines how to build the app,
-    # including all dependencies
-    def build!
-      fail NotImplementedError, 'Must implement #build!'
-    end
-
     # Override this. This commands defines how to display the status
     # Maybe we can find some useful, standardized way of displaying
     # status.
@@ -115,11 +109,6 @@ module Matsuri
           resource.converge!(opts)
         end
       end
-    end
-
-    def call_on_failure(type, name)
-      return nil unless hook = self.class.failure_hooks.get(type, name)
-      send(hook, type, name)
     end
 
     # Hooks
