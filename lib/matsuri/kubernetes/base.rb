@@ -213,7 +213,7 @@ module Matsuri
 
         # minReadySeconds is 0 by default but not presented as such
         (
-          path == 'spec.minReadySeconds'
+          path == 'spec.minReadySeconds' and
           current_value.nil? and
           desired_value == 0
         )
