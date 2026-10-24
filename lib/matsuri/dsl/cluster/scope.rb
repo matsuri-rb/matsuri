@@ -78,7 +78,7 @@ module Matsuri
 
         ### DSL methods
         def scope(options = {}, &block)
-          Matsuri::DSL::ClusterScope.new(options, &block)
+          definitions << self.class.new(options.merge(scoped_options: scoped_options), &block)
         end
 
         def namespace(name, &block)
@@ -161,7 +161,7 @@ module Matsuri
           forbid_namespace!('aggregated_cluster_role', options)
 
           final_options = { name: name }.merge(options).merge(scoped_options: scoped_options)
-          definitions << Matsuri::DSL::Cluster::ClusterRole.new(final_options, &block)
+          definitions << Matsuri::DSL::Cluster::AggregatedClusterRole.new(final_options, &block)
         end
 
         # Examples
@@ -226,7 +226,7 @@ module Matsuri
         private
 
         def require_namespace!(helper_name, final_options)
-          return if final_options[:namespace].present?
+          return if final_options[:namespace].present? || current_namespace.present?
 
           fail ArgumentError,
                "#{helper_name} requires namespace to be declared. Either pass namespace as an option or declare it inside " \
