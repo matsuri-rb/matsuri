@@ -1,3 +1,4 @@
+require 'thor'
 
 module Matsuri
   module Cmds
