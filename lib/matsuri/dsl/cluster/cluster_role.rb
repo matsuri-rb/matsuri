@@ -10,13 +10,13 @@ module Matsuri
           {
             apiVersion:  api_version,
             kind:        kind,
-            metadata:    metadata,
+            metadata:    final_metadata,
             rules:       rules
           }
         end
 
         # Cluster Roles are not namespaced. Override from MetadataDsl concern
-        let(:metadata) { { name: name, labels: final_labels, annotations: final_annotations } }
+        let(:default_metadata) { { name: name, labels: final_labels, annotations: final_annotations } }
 
         ### DSL Helper
 
