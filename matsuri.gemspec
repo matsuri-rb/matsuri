@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = "matsuri"
   spec.version       = Matsuri::VERSION
   spec.authors       = ["Ho-Sheng Hsiao"]
-  spec.email         = ["hosh@legal.io"]
+  spec.email         = ["ho-sheng.hsiao@solace.health"]
 
   spec.summary       = %q{Build a dev environment using Docker and Kubernetes}
   spec.description   = %q{Framework and toolkit to build a dev environment using Docker and Kubernetes}
@@ -18,6 +18,9 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
+  spec.required_ruby_version = ">= 3.2"
+
+  spec.add_dependency 'base64'
   spec.add_dependency 'thor'
   spec.add_dependency 'mixlib-shellout'
   spec.add_dependency 'mixlib-config'
@@ -28,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'rainbow'
   spec.add_dependency 'unit', '~> 0.5.0'
 
-  spec.add_development_dependency "bundler", "~> 1.10"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "bundler", ">= 2.4"
+  spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec"
 end

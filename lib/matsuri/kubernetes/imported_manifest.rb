@@ -4,8 +4,6 @@ require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/object/try'
 require 'json'
 
-require 'awesome_print'
-
 # rubocop:disable Lint/MissingCopEnableDirective
 # rubocop:disable Style/Alias
 module Matsuri
