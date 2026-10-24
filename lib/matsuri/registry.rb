@@ -113,7 +113,7 @@ module Matsuri
       def options_for_type(type)
         global_load_path = load_path_for(type)
         env_def_path     = File.join(global_load_path, Matsuri.environment)
-        Dir.glob(File.join(env_def_path, "*.rb")) + Dir.glob(File.join(global_load_path, "*.rb"))
+        (Dir.glob(File.join(env_def_path, "*.rb")) + Dir.glob(File.join(global_load_path, "*.rb")))
           .map  {|file| File.basename(file, File.extname(file))}
           .uniq
           .sort
