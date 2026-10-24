@@ -15,7 +15,7 @@ module Matsuri
       let(:spec) do
         {
           schedule:                   schedule,
-          time_zone:                  time_zone,
+          timeZone:                   time_zone,
           suspend:                    suspend,
           concurrencyPolicy:          concurrency_policy,
           successfulJobsHistoryLimit: successful_jobs_history_limit,
@@ -65,8 +65,8 @@ module Matsuri
           backoffLimitPerIndex:    backoff_limit_per_index,
           maxFailedIndexes:        max_failed_indexes,
           podFailurePolicy:        pod_failure_policy,
-          successPolicy:           sucess_policy,
-        }
+          successPolicy:           success_policy,
+        }.compact
       end
 
       let(:active_deadline_seconds)    { nil } # integer
@@ -95,7 +95,7 @@ module Matsuri
       let(:pod_failure_policy)         { nil } # null | PodFailurePolicySpec
 
       # See: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#successpolicy-v1-batch
-      let(:sucess_policy)              { nil } # null | SucessPolicySpec
+      let(:success_policy)             { nil } # null | SuccessPolicySpec
 
 
       class << self
