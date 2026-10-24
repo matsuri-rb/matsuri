@@ -3,7 +3,7 @@ module Matsuri
     module Cluster
       # Cluster resources here in Matsuri are a bit different as the are meant to
       # be driven by the cluster dsl
-      class ClusterRole < Matsuri::DSL::Cluster::Role
+      class AggregatedClusterRole < Matsuri::DSL::Cluster::Role
         attr_accessor :aggregation_selectors
 
         let(:kind)        { 'ClusterRole' }
@@ -18,7 +18,7 @@ module Matsuri
         end
 
         # Cluster Roles are not namespaced. Override from MetadataDsl concern
-        let(:metadata) { { name: name, labels: final_labels, annotations: final_annotations } }
+        let(:default_metadata) { { name: name, labels: final_labels, annotations: final_annotations } }
 
         def initialize(options = {}, &block)
           self.aggregation_selectors = []
