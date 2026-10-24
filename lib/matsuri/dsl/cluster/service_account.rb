@@ -25,7 +25,7 @@ module Matsuri
           {
             apiVersion:  api_version,
             kind:        kind,
-            metadata:    metadata,
+            metadata:    final_metadata,
 
             automountServiceAccountToken: manifest_config[:automount_token],
             imagePullSecrets:             manifest_config[:image_pull_secrets],
