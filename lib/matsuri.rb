@@ -97,8 +97,8 @@ module Matsuri
     end
   end
 
-  def self.define(*args, &blk)
-    Matsuri::Registry.define(*args, &blk)
+  def self.define(type, name, inherits: nil, &blk)
+    Matsuri::Registry.define(type, name, inherits: inherits, &blk)
   end
 
   def self.environment
