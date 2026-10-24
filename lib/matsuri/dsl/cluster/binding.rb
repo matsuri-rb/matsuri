@@ -25,7 +25,7 @@ module Matsuri
         let(:binding_type)   { options[:type] }
 
         ### Manifest Set
-        let(:rbac_manifests) { subjects.any? && manifest } # Return manifest only if there are subjects defined for binding
+        let(:rbac_manifests) { subjects.any? ? manifest : nil } # Return manifest only if there are subjects defined for binding
 
         ### Manifest
         let(:api_version)    { Matsuri::Config.rbac_api_version }
@@ -34,7 +34,7 @@ module Matsuri
           {
             apiVersion:  api_version,
             kind:        kind,
-            metadata:    metadata,
+            metadata:    final_metadata,
             roleRef:     final_role_ref,
             subjects:    subjects
           }
@@ -79,7 +79,7 @@ module Matsuri
             name:      name,
             kind:      map_subject_type_to_kind(kind),
             namespace: namespace,
-            api_group: api_group || default_subject_api_group(kind)
+            apiGroup:  api_group || default_subject_api_group(kind)
           }.compact
         end
 
