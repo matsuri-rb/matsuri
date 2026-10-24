@@ -17,7 +17,7 @@ module Matsuri
         let(:kind)        { 'Role' }
 
         ### Manifest Set
-        let(:rbac_manifests) { [manifest, default_binding.manifest].compact }
+        let(:rbac_manifests) { [manifest, default_binding.rbac_manifests].compact }
 
         ### Manifest
 
@@ -25,7 +25,7 @@ module Matsuri
           {
             apiVersion:  api_version,
             kind:        kind,
-            metadata:    metadata,
+            metadata:    final_metadata,
             rules:       rules
           }
         end
