@@ -1,10 +1,10 @@
-require 'active_support/concern'
+require 'rlet/concern'
 
 module Matsuri
   module DSL
     module Concerns
       module RbacRules
-        extend ActiveSupport::Concern
+        extend Concern
 
         included do
           attr_accessor :rules

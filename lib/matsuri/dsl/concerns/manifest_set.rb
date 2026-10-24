@@ -1,11 +1,11 @@
-require 'active_support/concern'
+require 'rlet/concern'
 
 module Matsuri
   module DSL
     module Concerns
       # Defines the callbacks for being able to generate a ManifestSet
       module ManifestSet
-        extend ActiveSupport::Concern
+        extend Concern
 
         included do
           # By default, return nil. This will exclude the manifest from being generated

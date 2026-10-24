@@ -1,4 +1,4 @@
-require 'active_support/concern'
+require 'rlet/concern'
 
 module Matsuri
   module Concerns
@@ -6,7 +6,7 @@ module Matsuri
     # around the Matsuri platforms. For example, you can reference other pods,
     # rcs, or reference configuration settings.
     module RegistryHelpers
-      extend ActiveSupport::Concern
+      extend Concern
 
       included do
         def config

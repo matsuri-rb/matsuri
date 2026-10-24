@@ -1,5 +1,5 @@
 require 'rlet'
-require 'active_support/core_ext/hash/keys'
+require 'matsuri/core_ext'
 
 module Matsuri
   module Cmd

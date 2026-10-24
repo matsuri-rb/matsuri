@@ -1,7 +1,7 @@
 
 require 'mixlib/config'
 require 'pathname'
-require 'active_support/core_ext/object/blank'
+require 'matsuri/core_ext'
 
 module Matsuri
   # Matsuri-specific configuration. These are things you probably

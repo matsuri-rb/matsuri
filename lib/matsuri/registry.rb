@@ -1,6 +1,6 @@
 require 'singleton'
 require 'map'
-require 'active_support/core_ext/string/inflections'
+require 'matsuri/core_ext'
 
 module Matsuri
   class Registry

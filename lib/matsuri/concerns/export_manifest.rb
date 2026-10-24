@@ -1,9 +1,9 @@
-require 'active_support/concern'
+require 'rlet/concern'
 
 module Matsuri
   module Concerns
     module ExportManifest
-      extend ActiveSupport::Concern
+      extend Concern
 
       included do
 

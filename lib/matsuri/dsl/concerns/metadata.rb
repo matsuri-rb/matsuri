@@ -1,10 +1,10 @@
-require 'active_support/concern'
+require 'rlet/concern'
 
 module Matsuri
   module DSL
     module Concerns
       module Metadata
-        extend ActiveSupport::Concern
+        extend Concern
 
         included do
           attr_accessor :labels, :annotations, :options

@@ -1,5 +1,5 @@
 require 'rlet'
-require 'active_support/core_ext/object/blank'
+require 'matsuri/core_ext'
 
 module Matsuri
   module DSL

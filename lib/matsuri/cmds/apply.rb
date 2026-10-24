@@ -1,4 +1,4 @@
-require 'active_support/core_ext/object/try'
+require 'matsuri/core_ext'
 
 module Matsuri
   module Cmds

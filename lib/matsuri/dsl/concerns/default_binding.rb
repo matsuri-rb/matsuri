@@ -1,10 +1,10 @@
-require 'active_support/concern'
+require 'rlet/concern'
 
 module Matsuri
   module DSL
     module Concerns
       module DefaultBinding
-        extend ActiveSupport::Concern
+        extend Concern
 
         included do
           let(:default_binding) { Matsuri::DSL::Cluster::Binding.new(default_binding_options) }

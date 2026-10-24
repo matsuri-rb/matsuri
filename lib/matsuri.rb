@@ -1,4 +1,4 @@
-require 'active_support/concern'
+require 'matsuri/core_ext'
 
 module Matsuri
   autoload :Initializer, 'matsuri/initializer'

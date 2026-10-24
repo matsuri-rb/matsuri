@@ -1,6 +1,4 @@
-require 'active_support/core_ext/hash/compact'
-require 'active_support/core_ext/object/blank'
-require 'active_support/core_ext/object/try'
+require 'matsuri/core_ext'
 require 'json'
 
 # rubocop:disable Lint/MissingCopEnableDirective

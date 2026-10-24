@@ -1,6 +1,7 @@
 require 'map'
-require 'active_support/core_ext/class/attribute'
+require 'matsuri/core_ext'
 require 'rainbow/ext/string'
+require 'rlet'
 require 'rlet/lazy_options'
 
 module Matsuri

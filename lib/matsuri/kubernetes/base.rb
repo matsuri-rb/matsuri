@@ -2,9 +2,7 @@ require 'rlet'
 
 require 'hashdiff'
 require 'unit'
-require 'active_support/core_ext/hash/keys'
-require 'active_support/core_ext/hash/except'
-require 'active_support/core_ext/hash/slice'
+require 'matsuri/core_ext'
 
 require 'rainbow/ext/string'
 require 'rlet/lazy_options'
