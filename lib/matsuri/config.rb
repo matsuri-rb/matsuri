@@ -106,8 +106,6 @@ module Matsuri
     end
 
     def self.apply_configuration(options = {})
-      config_file = options[:config]
-      # Matsuri::Config.from_file(config_file) if File.file?(config_file)
       Matsuri::Config.verbose     = options[:verbose]     if options[:verbose]
       Matsuri::Config.debug       = options[:debug]       if options[:debug]
       Matsuri::Config.environment = options[:environment] if options[:environment]
