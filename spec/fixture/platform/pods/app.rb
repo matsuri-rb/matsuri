@@ -1,16 +1,28 @@
-# frozen_string_literal: true
-
-# One podspec shared by every bulkhead. The owning deployment decides
-# identity and capacity through lazy options; the pod overrides only the
-# granular leaves. Assembly (resources, containers) stays in the base Pod.
+# One podspec shared by every bulkhead. Identity is two axes passed by
+# the owning deployment: app_role (web, worker) names the workload,
+# resource_class (standard, streams, general) names the capacity class.
+# The class table supplies scalar defaults; each scalar stays its own
+# override point, so a deployment can name a class and still tune one
+# leaf.
 Matsuri.define :pod, 'app' do
-  let(:app_role) { options[:app_role] }
-  let(:labels)   { { 'app_role' => app_role }.compact }
+  let(:app_role)       { options[:app_role] }
+  let(:resource_class) { options[:resource_class] || 'standard' }
 
-  let(:cpu_request) { options[:cpu_request] || '250m' }
-  let(:mem_request) { options[:mem_request] || '256Mi' }
-  let(:cpu_limit)   { options[:cpu_limit] }
-  let(:mem_limit)   { options[:mem_limit] || '512Mi' }
+  let(:labels) { { 'app_role' => app_role, 'resource_class' => resource_class }.compact }
+
+  let(:resource_classes) do
+    {
+      'standard' => { cpu_request: '250m', mem_request: '256Mi', mem_limit: '512Mi' },
+      'streams'  => { cpu_request: '1',    mem_request: '1Gi',   mem_limit: '2Gi'   },
+      'general'  => { cpu_request: '500m', mem_request: '512Mi', mem_limit: '1Gi'   }
+    }
+  end
+  let(:resource_class_defaults) { resource_classes.fetch(resource_class) }
+
+  let(:cpu_request) { options[:cpu_request] || resource_class_defaults[:cpu_request] }
+  let(:mem_request) { options[:mem_request] || resource_class_defaults[:mem_request] }
+  let(:cpu_limit)   { options[:cpu_limit]   || resource_class_defaults[:cpu_limit] }
+  let(:mem_limit)   { options[:mem_limit]   || resource_class_defaults[:mem_limit] }
 
   let(:volumes) { [] }
 

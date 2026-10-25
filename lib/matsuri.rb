@@ -77,6 +77,11 @@ module Matsuri
     autoload :RegistryHelpers,    'matsuri/concerns/registry_helpers'
     autoload :Scalable,           'matsuri/concerns/scalable'
     autoload :PodTemplate,        'matsuri/concerns/pod_template'
+
+    module Pods
+      autoload :SpreadPods,       'matsuri/concerns/pods/spread_pods'
+      autoload :SpreadTopology,   'matsuri/concerns/pods/spread_topology'
+    end
   end
 
   module DSL
