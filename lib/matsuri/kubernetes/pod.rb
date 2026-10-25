@@ -279,7 +279,7 @@ module Matsuri
         {
           matchLabels:      match_labels,
           matchExpressions: match_expressions.present? ? Array(match_expressions) : nil
-        }
+        }.compact
       end
 
       def match_labels_selector(matcher)
