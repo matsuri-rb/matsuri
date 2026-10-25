@@ -80,6 +80,7 @@ module Matsuri
 
     module Pods
       autoload :SpreadPods,       'matsuri/concerns/pods/spread_pods'
+      autoload :SpreadTopology,   'matsuri/concerns/pods/spread_topology'
     end
   end
 
