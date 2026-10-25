@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # One podspec shared by every bulkhead. The owning deployment decides
 # identity and capacity through lazy options; the pod overrides only the
 # granular leaves. Assembly (resources, containers) stays in the base Pod.

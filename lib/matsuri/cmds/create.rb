@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Matsuri
   module Cmds
     class Create < Thor

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Matsuri.define :stateful_set, 'db' do
   let(:replicas)              { 3 }
   let(:match_labels)          { { 'app' => 'db' } }

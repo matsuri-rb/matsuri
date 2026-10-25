@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Matsuri.define :deployment, 'app-web-streams' do
   let(:replicas)     { 2 }
   let(:match_labels) { { 'app_role' => 'web-streams' } }

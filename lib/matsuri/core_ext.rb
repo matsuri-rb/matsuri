@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Vendored replacements for the ActiveSupport core_ext methods matsuri
 # depends on. These are monkeypatches rather than refinements because
 # definition files in downstream matsuri repos evaluate inside this

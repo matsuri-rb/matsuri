@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Matsuri
   module Kubernetes
     class DaemonSet < Matsuri::Kubernetes::Base

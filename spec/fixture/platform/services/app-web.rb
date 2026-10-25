@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # The service selects on the same labels the deployment selects on, by
 # asking the deployment rather than restating them.
 Matsuri.define :service, 'app-web' do

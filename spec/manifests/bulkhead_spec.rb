@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 # Two deployments share one podspec; each parameterizes it through lazy

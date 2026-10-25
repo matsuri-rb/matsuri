@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'map'
 require 'matsuri/core_ext'
 require 'rainbow/ext/string'

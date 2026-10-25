@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rlet'
 require 'matsuri/core_ext'
 

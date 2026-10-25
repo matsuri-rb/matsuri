@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'mixlib/shellout'
 require 'rainbow/ext/string'
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 cluster_role 'traefik-ingress-controller' do
   resources %w[services endpoints secrets], verbs: %w[get list watch]
   bind_to 'traefik-ingress-controller', kind: :service_account, namespace: 'kube-system'
