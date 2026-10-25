@@ -132,7 +132,7 @@ module Matsuri
       let(:cpu_limit)   { fail NotImplementedError, 'Must define let(:cpu_limit)' }
       let(:mem_limit)   { fail NotImplementedError, 'Must define let(:mem_limit)' }
       let(:cpu_request) { cpu_limit }
-      let(:mem_request) { cpu_limit }
+      let(:mem_request) { mem_limit }
 
       # Default container security context
       let(:security_context) do
@@ -140,8 +140,8 @@ module Matsuri
           runAsUser:                 run_as_user,
           runAsGroup:                run_as_group,
           runAsNonRoot:              run_as_non_root,
-          priviledged:               priviledged,
-          allowPriviledgeEscalation: allow_priviledge_escalation,
+          privileged:                privileged,
+          allowPrivilegeEscalation:  allow_privilege_escalation,
           seLinuxOptions:            se_linux_options,
           capabilities:              capabilities
         }.compact
@@ -150,8 +150,8 @@ module Matsuri
       let(:run_as_user)                 { nil }
       let(:run_as_group)                { nil }
       let(:run_as_non_root)             { nil }
-      let(:priviledged)                 { nil }
-      let(:allow_priviledge_escalation) { nil }
+      let(:privileged)                  { nil }
+      let(:allow_privilege_escalation)  { nil }
       let(:se_linux_options)            { nil }
       let(:capabilities)                { nil }
 
