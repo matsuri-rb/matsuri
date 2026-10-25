@@ -30,8 +30,8 @@ module Matsuri
             metadata:    final_metadata,
 
             automountServiceAccountToken: manifest_config[:automount_token],
-            imagePullSecrets:             manifest_config[:image_pull_secrets],
-            secrets:                      manifest_config[:secrets]
+            imagePullSecrets:             manifest_config[:image_pull_secrets].presence,
+            secrets:                      manifest_config[:secrets].presence
           }.compact
         end
 

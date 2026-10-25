@@ -10,7 +10,7 @@ aggregated_cluster_role 'platform-admin' do
   match 'example.com/aggregate', :exists
 end
 
-namespace 'default' do
+namespace :default do
   role 'deployer' do
     resources :deployments, verbs: %w[patch update]
     bind_to 'deployer', kind: :service_account

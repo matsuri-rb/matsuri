@@ -51,6 +51,18 @@ RSpec.describe 'cluster DSL manifests' do
     ]
   end
 
+  it 'omits the namespace key on cluster-scoped binding metadata' do
+    binding = by_kind_and_name[%w[ClusterRoleBinding traefik-ingress-controller]].first
+
+    expect(binding[:metadata].key?(:namespace)).to be false
+  end
+
+  it 'coerces symbol namespaces to strings' do
+    role = by_kind_and_name[%w[Role deployer]].first
+
+    expect(role[:metadata][:namespace]).to eq 'default'
+  end
+
   it 'scopes roles declared inside a namespace block' do
     role = by_kind_and_name[%w[Role deployer]].first
     binding = by_kind_and_name[%w[RoleBinding deployer]].first
@@ -65,6 +77,13 @@ RSpec.describe 'cluster DSL manifests' do
     sa = cluster_manifests.find { |m| m[:kind] == 'ServiceAccount' && m[:metadata][:name] == 'ci-runner' }
 
     expect(sa[:metadata][:namespace]).to eq 'default'
+  end
+
+  it 'omits empty secret collections so apply makes no ownership claim' do
+    sa = cluster_manifests.find { |m| m[:kind] == 'ServiceAccount' && m[:metadata][:name] == 'ci-runner' }
+
+    expect(sa.key?(:imagePullSecrets)).to be false
+    expect(sa.key?(:secrets)).to be false
   end
 
   it 'accumulates image pull secrets, secrets, and automount through the helpers' do
