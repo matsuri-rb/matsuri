@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 require 'map'
-require 'active_support/core_ext/class/attribute'
+require 'matsuri/core_ext'
 require 'rainbow/ext/string'
+require 'rlet'
 require 'rlet/lazy_options'
 
 module Matsuri
@@ -13,14 +16,14 @@ module Matsuri
 
     class_attribute :build_order
 
-    # When we pass image_tag to converge command, propogate this
-    # down the convergance tree.
+    # When we pass image_tag to converge command, propagate this
+    # down the convergence tree.
     let(:image_tag) { options[:image_tag] }
 
     # Defines a list of deps, used to  to idempotently converge Kubernetes
     # resources. Generally, you will add a an app as a dep for resources you are
     # sharing with other apps, while directly referencing Kubernetes resources
-    # for things this app is directly respondible for.
+    # for things this app is directly responsible for.
     #
     # Examples:
     # needs :app,     'postgresql-95'
@@ -45,12 +48,6 @@ module Matsuri
       def config_file(path)
         File.join(Matsuri::Config.config_path, path)
       end
-    end
-
-    # Override this. This command defines how to build the app,
-    # including all dependencies
-    def build!
-      fail NotImplementedError, 'Must implement #build!'
     end
 
     # Override this. This commands defines how to display the status
@@ -115,11 +112,6 @@ module Matsuri
           resource.converge!(opts)
         end
       end
-    end
-
-    def call_on_failure(type, name)
-      return nil unless hook = self.class.failure_hooks.get(type, name)
-      send(hook, type, name)
     end
 
     # Hooks

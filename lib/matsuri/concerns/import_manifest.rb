@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module Matsuri
   module Concerns
     module ImportManifest
-      extend ActiveSupport::Concern
+      extend Concern
 
       included do
         let(:import_path)           { fail NotImplementedError, 'Must define let(:import_path)' }

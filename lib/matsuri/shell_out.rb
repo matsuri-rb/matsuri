@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 require 'mixlib/shellout'
 require 'rainbow/ext/string'
-require 'active_support/core_ext/hash/compact'
 
 module Matsuri
   module ShellOut

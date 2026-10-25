@@ -1,13 +1,14 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'yaml'
-require 'active_support/concern'
-require 'active_support/core_ext/hash/compact'
+require 'rlet/concern'
 
 module Matsuri
   module Concerns
     # Mixin for K8S resources that uses pod template
     module PodTemplate
-      extend ActiveSupport::Concern
+      extend Concern
 
       included do
         # Define this to point to an existing pod definition. This is the name

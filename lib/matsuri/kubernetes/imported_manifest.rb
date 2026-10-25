@@ -1,10 +1,7 @@
+# frozen_string_literal: true
 
-require 'active_support/core_ext/hash/compact'
-require 'active_support/core_ext/object/blank'
-require 'active_support/core_ext/object/try'
+require 'matsuri/core_ext'
 require 'json'
-
-require 'awesome_print'
 
 # rubocop:disable Lint/MissingCopEnableDirective
 # rubocop:disable Style/Alias
@@ -12,7 +9,7 @@ module Matsuri
   module Kubernetes
     # Some quirks about this one:
     # 1. The generated manifest is usually an array of hashes, not a hash
-    # 2. It isn't generated so much as imported from a raw manifest provided by an updtream vendor
+    # 2. It isn't generated so much as imported from a raw manifest provided by an upstream vendor
     # 3. There are helpers to transform the manifest and customize it locally
     # 4. This current version is apply-only, and does not support deletions and other operations
     class ImportedManifest < Matsuri::Kubernetes::Base

@@ -1,4 +1,6 @@
-require 'active_support/core_ext/object/try'
+# frozen_string_literal: true
+
+require 'matsuri/core_ext'
 
 module Matsuri
   module Cmds

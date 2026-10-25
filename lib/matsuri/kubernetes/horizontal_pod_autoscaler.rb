@@ -1,4 +1,5 @@
-require 'active_support/core_ext/hash/compact'
+# frozen_string_literal: true
+
 module Matsuri
   module Kubernetes
     class HorizontalPodAutoscaler < Matsuri::Kubernetes::Base

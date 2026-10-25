@@ -1,10 +1,10 @@
+# frozen_string_literal: true
+
 require 'rlet'
 
 require 'hashdiff'
 require 'unit'
-require 'active_support/core_ext/hash/keys'
-require 'active_support/core_ext/hash/except'
-require 'active_support/core_ext/hash/slice'
+require 'matsuri/core_ext'
 
 require 'rainbow/ext/string'
 require 'rlet/lazy_options'
@@ -213,7 +213,7 @@ module Matsuri
 
         # minReadySeconds is 0 by default but not presented as such
         (
-          path == 'spec.minReadySeconds'
+          path == 'spec.minReadySeconds' and
           current_value.nil? and
           desired_value == 0
         )

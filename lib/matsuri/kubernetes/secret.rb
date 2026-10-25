@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "base64"
 
 module Matsuri
@@ -35,7 +37,7 @@ module Matsuri
       # Helpers
 
       # Secrets must be Base64 Encoded. This load the secret from
-      # disk (default: config/securets/)  base64 encode it.
+      # disk (default: config/secrets/)  base64 encode it.
       def secret_from(path)
         secret_from_path(secret_file(path))
       end

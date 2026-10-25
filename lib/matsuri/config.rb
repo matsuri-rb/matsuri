@@ -1,7 +1,8 @@
+# frozen_string_literal: true
 
 require 'mixlib/config'
 require 'pathname'
-require 'active_support/core_ext/object/blank'
+require 'matsuri/core_ext'
 
 module Matsuri
   # Matsuri-specific configuration. These are things you probably
@@ -12,7 +13,7 @@ module Matsuri
     config_strict_mode true  # will see how annoying this is
 
     # Base path of the platform repo, defaults to PWD
-    default(:base_path)   { Fail 'Matsuri.base_path must be set. This is usually set by the initializer' }
+    default(:base_path)   { fail 'Matsuri.base_path must be set. This is usually set by the initializer' }
     default :verbose,     false
     default :debug,       false
     default(:environment) { fail 'Matsuri.environment must be set. This is usually set by the initializer' }
@@ -25,7 +26,7 @@ module Matsuri
     # authentication, in which case we want to map environment names
     # to kubectl context
     # Example: staging -> Matsuri::Platform.staging.kube_context
-    # With "staging", you must define Magsuri::Platform.staging.kube_context
+    # With "staging", you must define Matsuri::Platform.staging.kube_context
     # to pull the correct kube context.
     default :map_env_to_kube_context, false
 
@@ -106,8 +107,6 @@ module Matsuri
     end
 
     def self.apply_configuration(options = {})
-      config_file = options[:config]
-      # Matsuri::Config.from_file(config_file) if File.file?(config_file)
       Matsuri::Config.verbose     = options[:verbose]     if options[:verbose]
       Matsuri::Config.debug       = options[:debug]       if options[:debug]
       Matsuri::Config.environment = options[:environment] if options[:environment]

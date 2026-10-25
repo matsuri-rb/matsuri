@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+require 'thor'
 
 module Matsuri
   module Cmds

@@ -1,4 +1,6 @@
-require 'active_support/concern'
+# frozen_string_literal: true
+
+require 'matsuri/core_ext'
 
 module Matsuri
   autoload :Initializer, 'matsuri/initializer'
@@ -97,8 +99,8 @@ module Matsuri
     end
   end
 
-  def self.define(*args, &blk)
-    Matsuri::Registry.define(*args, &blk)
+  def self.define(type, name, inherits: nil, &blk)
+    Matsuri::Registry.define(type, name, inherits: inherits, &blk)
   end
 
   def self.environment

@@ -1,4 +1,6 @@
 #!/bin/bash
+# frozen_string_literal: true
+
 set -euo pipefail
 IFS=$'\n\t'
 

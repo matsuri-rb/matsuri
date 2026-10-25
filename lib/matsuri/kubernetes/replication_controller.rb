@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 module Matsuri
   module Kubernetes
@@ -21,7 +22,7 @@ module Matsuri
       # Parameters passed from command line
       # These are here to support rolling updates
       let(:maybe_param_name)     { options[:name] || name }
-      let(:maybe_param_replicas) { options[:relicas] || replicas }
+      let(:maybe_param_replicas) { options[:replicas] || replicas }
       let(:image_tag)            { options[:image_tag] || 'latest' }
 
       # Explicitly define replicas
