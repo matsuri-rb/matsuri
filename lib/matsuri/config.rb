@@ -13,7 +13,7 @@ module Matsuri
     config_strict_mode true  # will see how annoying this is
 
     # Base path of the platform repo, defaults to PWD
-    default(:base_path)   { Fail 'Matsuri.base_path must be set. This is usually set by the initializer' }
+    default(:base_path)   { fail 'Matsuri.base_path must be set. This is usually set by the initializer' }
     default :verbose,     false
     default :debug,       false
     default(:environment) { fail 'Matsuri.environment must be set. This is usually set by the initializer' }
@@ -26,7 +26,7 @@ module Matsuri
     # authentication, in which case we want to map environment names
     # to kubectl context
     # Example: staging -> Matsuri::Platform.staging.kube_context
-    # With "staging", you must define Magsuri::Platform.staging.kube_context
+    # With "staging", you must define Matsuri::Platform.staging.kube_context
     # to pull the correct kube context.
     default :map_env_to_kube_context, false
 
