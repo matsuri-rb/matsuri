@@ -1,22 +1,22 @@
 # One podspec shared by every bulkhead. The owning deployment decides
-# identity and capacity through lazy options; the pod only declares the
-# defaults.
+# identity and capacity through lazy options; the pod overrides only the
+# granular leaves. Assembly (resources, containers) stays in the base Pod.
 Matsuri.define :pod, 'app' do
-  let(:app_role)          { options[:app_role] }
-  let(:resource_requests) { options[:requests] || { cpu: '250m', memory: '256Mi' } }
-  let(:resource_limits)   { options[:limits]   || { memory: '512Mi' } }
+  let(:app_role) { options[:app_role] }
+  let(:labels)   { { 'app_role' => app_role }.compact }
 
-  let(:labels) { { 'app_role' => app_role }.compact }
+  let(:cpu_request) { options[:cpu_request] || '250m' }
+  let(:mem_request) { options[:mem_request] || '256Mi' }
+  let(:cpu_limit)   { options[:cpu_limit] }
+  let(:mem_limit)   { options[:mem_limit] || '512Mi' }
 
-  let(:spec) do
+  let(:volumes) { [] }
+
+  let(:container) do
     {
-      containers: [
-        {
-          name:      'app',
-          image:     "app:#{image_tag}",
-          resources: { requests: resource_requests, limits: resource_limits }
-        }
-      ]
+      name:      'app',
+      image:     "app:#{image_tag}",
+      resources: resources
     }
   end
 end
