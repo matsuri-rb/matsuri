@@ -62,9 +62,16 @@ RSpec.describe 'cluster DSL manifests' do
   end
 
   it 'renders the service account as a cluster manifest' do
-    sa = cluster_manifests.find { |m| m[:kind] == 'ServiceAccount' }
+    sa = cluster_manifests.find { |m| m[:kind] == 'ServiceAccount' && m[:metadata][:name] == 'ci-runner' }
 
-    expect(sa[:metadata][:name]).to eq 'ci-runner'
     expect(sa[:metadata][:namespace]).to eq 'default'
+  end
+
+  it 'accumulates image pull secrets, secrets, and automount through the helpers' do
+    sa = cluster_manifests.find { |m| m[:kind] == 'ServiceAccount' && m[:metadata][:name] == 'image-puller' }
+
+    expect(sa[:automountServiceAccountToken]).to be false
+    expect(sa[:imagePullSecrets]).to eq [{ name: 'regcred' }]
+    expect(sa[:secrets]).to eq [{ name: 'deploy-key' }]
   end
 end

@@ -56,12 +56,12 @@ module Matsuri
         end
 
         def image_pull_secret(name)
-          manifest_config[:image_pull_secret] << { name: name }
+          manifest_config[:image_pull_secrets] << { name: name }
         end
 
         # Usually the name is sufficient.
         def secret(name, options = {})
-          manifest_config[:secret] << {
+          manifest_config[:secrets] << {
             name: name,
             namespace:       options[:namespace],
             apiVersion:      options[:api_version],

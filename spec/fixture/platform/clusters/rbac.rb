@@ -18,3 +18,9 @@ namespace 'default' do
 end
 
 service_account 'ci-runner', namespace: 'default'
+
+service_account 'image-puller', namespace: 'default' do
+  automount_token false
+  image_pull_secret 'regcred'
+  secret 'deploy-key'
+end
