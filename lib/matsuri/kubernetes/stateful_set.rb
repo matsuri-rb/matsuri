@@ -29,7 +29,7 @@ module Matsuri
       # Copied from ReplicationController, but
       # Don't know if we are going to keep this around
       let(:maybe_param_name)     { options[:name] || name }
-      let(:maybe_param_replicas) { options[:relicas] || replicas }
+      let(:maybe_param_replicas) { options[:replicas] || replicas }
       let(:image_tag)            { options[:image_tag] || 'latest' }
 
       let(:selector) { { matchLabels: match_labels, matchExpressions: match_expressions }.compact }
