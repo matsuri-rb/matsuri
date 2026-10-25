@@ -16,14 +16,14 @@ module Matsuri
 
     class_attribute :build_order
 
-    # When we pass image_tag to converge command, propogate this
-    # down the convergance tree.
+    # When we pass image_tag to converge command, propagate this
+    # down the convergence tree.
     let(:image_tag) { options[:image_tag] }
 
     # Defines a list of deps, used to  to idempotently converge Kubernetes
     # resources. Generally, you will add a an app as a dep for resources you are
     # sharing with other apps, while directly referencing Kubernetes resources
-    # for things this app is directly respondible for.
+    # for things this app is directly responsible for.
     #
     # Examples:
     # needs :app,     'postgresql-95'

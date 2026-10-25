@@ -29,7 +29,7 @@ module Matsuri
 
         ### DSL Helper
 
-        # Match helper for creating selectors for aggregatied cluster roles
+        # Match helper for creating selectors for aggregated cluster roles
         # Examples:
         #   match 'example.com/aggregate-to-monitor' => true
         #   match 'example.com/aggregate-to-monitor', 

@@ -25,7 +25,7 @@ module Matsuri
       # Helpers
 
       # Binary Files must be Base64 Encoded. This load the secret from
-      # disk (default: config/securets/)  base64 encode it.
+      # disk (default: config/secrets/)  base64 encode it.
       def binary_from(path)
         binary_from_path(config_overlays_path(path))
       end
