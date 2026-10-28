@@ -15,7 +15,7 @@ RSpec.describe 'load order' do
     Matsuri::Registry
     Matsuri::Task
     Matsuri::Cmd
-    Matsuri::App
+    Matsuri::Stack
     Matsuri::Cmds::Cli
     Matsuri::Kubernetes::Base
     Matsuri::Tasks::Cluster

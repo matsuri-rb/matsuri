@@ -67,7 +67,7 @@ module Matsuri
       exec _cmd
     end
 
-    # This is so that it is easier to write app commands
+    # This is so that it is easier to write stack commands
     def kubectl_cmd(_cmd, options = {})
       kube_options = { context: kube_context, namespace: namespace }.merge(options).compact
       kube_cli_options = kube_options.map { |k,v| "--#{k}=#{v}" }.join(' ')

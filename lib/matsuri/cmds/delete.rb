@@ -55,8 +55,8 @@ module Matsuri
       desc 'endpoints ENDPOINTS_NAME', 'delete an endpoint set'
       delete_cmd_for :endpoints
 
-      desc 'app APP_NAME', 'deletes all resources in an app'
-      delete_cmd_for :app
+      desc 'stack STACK_NAME', 'deletes all resources in a stack'
+      delete_cmd_for :stack
 
       desc 'secret SECRET_NAME', 'delete a secret'
       delete_cmd_for :secret

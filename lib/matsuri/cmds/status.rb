@@ -11,8 +11,8 @@ module Matsuri
         end
       end
 
-      desc 'app APP_NAME', 'app status'
-      status_cmd_for :app
+      desc 'stack STACK_NAME', 'stack status'
+      status_cmd_for :stack
 
       desc 'pod POD_NAME', 'pod status'
       status_cmd_for :pod

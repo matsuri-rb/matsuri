@@ -7,7 +7,7 @@ require 'rlet'
 require 'rlet/lazy_options'
 
 module Matsuri
-  class App
+  class Stack
     include Let
     include RLet::LazyOptions
     include Matsuri::ShellOut
@@ -21,14 +21,14 @@ module Matsuri
     let(:image_tag) { options[:image_tag] }
 
     # Defines a list of deps, used to  to idempotently converge Kubernetes
-    # resources. Generally, you will add a an app as a dep for resources you are
-    # sharing with other apps, while directly referencing Kubernetes resources
-    # for things this app is directly responsible for.
+    # resources. Generally, you will add a stack as a dep for resources you are
+    # sharing with other stacks, while directly referencing Kubernetes resources
+    # for things this stack is directly responsible for.
     #
     # Examples:
-    # needs :app,     'postgresql-95'
-    # needs :app,     'redis-28'
-    # needs :app,     'load-balancer'
+    # needs :stack,   'postgresql-95'
+    # needs :stack,   'redis-28'
+    # needs :stack,   'load-balancer'
     # needs :rc,      'rails-app-worker'
     # needs :rc,      'rails-app'
     # needs :service, 'rails-app'
@@ -57,17 +57,17 @@ module Matsuri
       fail NotImplementedError, 'Must implement #status!'
     end
 
-    # Override this. This command defines how all the app depenencies
+    # Override this. This command defines how all the stack depenencies
     # are started, such as services, endpoints, replication controllers, etc.
     def create!
       converge! # Most of the time, we want to converge
     end
 
-    # Override this. This command defines how all app dependencies are stopped
+    # Override this. This command defines how all stack dependencies are stopped
     def delete!
       self.class.build_order.each do |(type, name)|
-        if type == :app
-          puts "Skipping app #{name}"
+        if type == :stack
+          puts "Skipping stack #{name}"
           next
         end
 
@@ -105,8 +105,8 @@ module Matsuri
         if options[:check_only]
           next if resource.created?
           send(options[:on_failure], type, name) || Matsuri.log(:fatal, "#{type}/#{name} not found on cluster")
-        elsif type == :app && !opts[:reboot]
-          puts "Shallow converging app #{name}".color(:red).bright if config.verbose
+        elsif type == :stack && !opts[:reboot]
+          puts "Shallow converging stack #{name}".color(:red).bright if config.verbose
           resource.converge!
         else
           resource.converge!(opts)
@@ -116,27 +116,27 @@ module Matsuri
 
     # Hooks
     def reload!(version, opt={})
-      Matsuri.log :fatal, "I don't know how to reload #{name}. Define me at in the app config."
+      Matsuri.log :fatal, "I don't know how to reload #{name}. Define me in the stack definition."
     end
 
     def update!(version, opt={})
-      Matsuri.log :fatal, "I don't know how to update #{name}. Define me at in the app config."
+      Matsuri.log :fatal, "I don't know how to update #{name}. Define me in the stack definition."
     end
 
     def sh!(opt, args)
-      Matsuri.log :fatal, "I don't know how to shell into #{name}. Define me at in the app config."
+      Matsuri.log :fatal, "I don't know how to shell into #{name}. Define me in the stack definition."
     end
 
     def console!(opt, args)
-      Matsuri.log :fatal, "I don't know how to get to the console for #{name}. Define me at in the app config."
+      Matsuri.log :fatal, "I don't know how to get to the console for #{name}. Define me in the stack definition."
     end
 
     def build!(opt={})
-      Matsuri.log :fatal, "I don't know how to build #{name}. Define me at in the app config."
+      Matsuri.log :fatal, "I don't know how to build #{name}. Define me in the stack definition."
     end
 
     def push!(opt={})
-      Matsuri.log :fatal, "I don't know how to push #{name}. Define me at in the app config."
+      Matsuri.log :fatal, "I don't know how to push #{name}. Define me in the stack definition."
     end
 
     # Helper functions
@@ -144,17 +144,17 @@ module Matsuri
       Matsuri::Registry.fetch_or_load type, name
     end
 
-    def app(name, opt={})
-      Matsuri::Registry.app(name).new(opt)
+    def stack(name, opt={})
+      Matsuri::Registry.stack(name).new(opt)
     end
 
     class << self
       def load_path
-        Matsuri::Config.apps_path
+        Matsuri::Config.stacks_path
       end
 
       def definition_module_name
-        'Apps'
+        'Stacks'
       end
     end
   end
