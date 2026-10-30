@@ -39,7 +39,7 @@ module Matsuri
       def apply!
         puts "Applying (create or update) imported manifest #{import_path}".color(:yellow).bright if config.verbose
         puts to_json if config.debug
-        kubectl! "apply --namespace #{namespace} --record=true -f -", input: to_yaml
+        kubectl! "apply --namespace #{namespace} -f -", input: to_yaml
       end
 
       def create!

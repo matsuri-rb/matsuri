@@ -39,6 +39,17 @@ Working toward 0.3.0.
 
 ### Removed
 
+- **`--record` everywhere kubectl is invoked** — create, apply, replace,
+  scale, imported-manifest apply, and `Deployment#rollout!`. kubectl
+  deprecated the flag (~1.22): it stamped the
+  `kubernetes.io/change-cause` annotation as a side effect of imperative
+  verbs, recording a command rather than an intent. Nothing replaced it
+  server-side — SSA's managedFields attributes who owns a field, not why
+  it changed. The intention here is to support
+  `kubernetes.io/change-cause` deliberately, as a post-generation
+  manifest transform stamping a platform-supplied value (release id,
+  ticket, ref) on the declarative path. The diff logic keeps treating
+  change-cause as an always-changed path.
 - **ReplicationController support.** The resource type, its registry
   entries and `rc` aliases, the `rc` subcommands on
   show/diff/create/delete/recreate/apply/scale/status, the `rcs_path`

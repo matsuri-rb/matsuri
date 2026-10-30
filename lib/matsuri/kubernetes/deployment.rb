@@ -61,7 +61,7 @@ module Matsuri
 
       def rollout!(versions:)
         version_changes = versions.map { |(k,v)| "#{k}=#{v}" }.join(' ')
-        kubectl! "set image #{resource_type}/#{name} #{version_changes} --record=true"
+        kubectl! "set image #{resource_type}/#{name} #{version_changes}"
       end
 
       def watch_rollout!

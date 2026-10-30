@@ -67,7 +67,7 @@ module Matsuri
       def create!
         puts "Creating #{resource_type}/#{name}".color(:yellow).bright if config.verbose
         puts to_json if config.debug
-        kubectl! "create --save-config=true --record=true -f -", input: to_json
+        kubectl! "create --save-config=true -f -", input: to_json
       end
 
       def delete!
@@ -78,13 +78,13 @@ module Matsuri
       def apply!
         puts "Applying (create or update) #{resource_type}/#{name}".color(:yellow).bright if config.verbose
         puts to_json if config.debug
-        kubectl! "apply --record=true -f -", input: applied_to_json
+        kubectl! "apply -f -", input: applied_to_json
       end
 
       def replace!
         puts "Replacing (create or update) #{resource_type}/#{name}".color(:yellow).bright if config.verbose
         puts to_json if config.debug
-        kubectl! "replace --record=true -f -", input: to_json
+        kubectl! "replace -f -", input: to_json
       end
 
       def recreate!
