@@ -33,9 +33,9 @@ delegation, no method_missing, no fallback to the underlying value.
 
 Properties:
 
-- Failure at the seam is loud and immediate. A read the surface does not
-  answer raises at the point of use, instead of a nil surfacing later
-  inside a rendered manifest.
+- Failure at the boundary is loud and immediate. A read the surface does
+  not answer raises at the point of use, instead of a nil surfacing
+  later inside a rendered manifest.
 - Consumers couple to an owned interface, never to the artifact's
   schema. When upstream renames a field, the remap happens in the
   acceptor, in one place, and no consumer moves.
@@ -56,8 +56,8 @@ Properties:
 
 - Consumers cannot disagree. Every read in an instance derives from the
   same binding, so consistency is structural rather than disciplined.
-- The seam has an address. Questions about what the artifact means to
-  this platform have exactly one place to be answered, and changes to
+- The boundary has an address. Questions about what the artifact means
+  to this platform have exactly one place to be answered, and changes to
   that meaning have exactly one place to happen.
 
 ## Constraint: unconsumed vocabulary passes in silence
@@ -111,24 +111,24 @@ Properties:
   structure is where the loss compounds. The cost falls on the
   definition that chose the structure, not on the rest of the surface.
 
-## Constraint: an acceptor is seam-ignorant; the accepting site names the seam
+## Constraint: an acceptor does not know its boundary; the accepting site binds it
 
 An acceptor does not know which boundary it stands at. The declaration
 that accepts — a stack naming its config acceptor, or any future
-accepting site — binds the acceptor to a seam; the class itself promises
-only the grammar above.
+accepting site — binds the acceptor at its boundary, under a named
+collection; the class itself promises only the grammar above.
 
 Properties:
 
-- One noun serves every foreign admission. New seams bind existing
-  machinery; they do not mint new types.
+- One noun serves every foreign admission. New accepting sites bind
+  existing machinery; they do not mint new types.
 - Acceptors are testable in isolation: hand one a value, read the
   surface. No stack, environment, or cluster is implied.
 - The registry definition and a bare class are interchangeable, because
   the contract is only the two promises of the grammar. The registry is
   a convenience of definition, not part of the contract.
 
-## Constraint: acceptors stand only at foreign seams
+## Constraint: acceptors stand only at foreign boundaries
 
 An acceptor is warranted where the admitted value's vocabulary has an
 independent owner and lifecycle. Values the platform passes to itself
@@ -140,18 +140,18 @@ Properties:
   independent owner exists there is no churn to absorb and no remap to
   localize — an acceptor there adds a layer and no property, and the
   definition excludes it rather than a style rule.
-- The discriminator is decidable. Whether a seam deserves an acceptor
-  reduces to one question: who owns this vocabulary, and does it change
-  on a lifecycle that is not ours?
+- The discriminator is decidable. Whether a boundary deserves an
+  acceptor reduces to one question: who owns this vocabulary, and does
+  it change on a lifecycle that is not ours?
 
 ## Vocabulary note
 
 The noun names the receiving side's act, and the declaration site is its
-only habitat: consumers read the accepted value under the seam's own
-name, so "acceptor" appears exactly where the policy is declared and
+only habitat: consumers read the accepted value under the collection's
+own name, so "acceptor" appears exactly where the policy is declared and
 nowhere downstream. The inbound posture — read only what you declare —
 has an outbound mirror in manifest transforms, which write only what
-they own; the two share a discipline of least contact at seams, never
-machinery. Resemblance to presenters, adapters, or anti-corruption
+they own; the two share a discipline of least contact at boundaries,
+never machinery. Resemblance to presenters, adapters, or anti-corruption
 layers in other ecosystems may be adjacent and carries none of their
 promises.
