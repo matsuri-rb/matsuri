@@ -160,8 +160,8 @@ module Matsuri
       ### Helpers
 
       # Pods are practically useless with using apply. When we converge, we want
-      # to recreate instead. Pods unmanaged by rc, rs, or deployment are more useful
-      # in dev mode than anywhere else
+      # to recreate instead. Pods unmanaged by a workload controller are more
+      # useful in dev mode than anywhere else
       def converge!(opts = {})
         converge_by_recreate!(opts)
       end

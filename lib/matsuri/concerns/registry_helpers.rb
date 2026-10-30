@@ -27,12 +27,6 @@ module Matsuri
           Matsuri::Registry.pod(name).new(opt)
         end
 
-        def replication_controller(name, opt={})
-          Matsuri::Registry.replication_controller(name).new(opt)
-        end
-
-        alias_method :rc, :replication_controller
-
         def replica_set(name, opt={})
           Matsuri::Registry.replica_set(name).new(opt)
         end

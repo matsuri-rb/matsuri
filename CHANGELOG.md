@@ -39,6 +39,15 @@ Working toward 0.3.0.
 
 ### Removed
 
+- **ReplicationController support.** The resource type, its registry
+  entries and `rc` aliases, the `rc` subcommands on
+  show/diff/create/delete/recreate/apply/scale/status, the `rcs_path`
+  config key, and the `rollout` verb. `rollout` was the client-side
+  rolling update — mint `name-rN+1`, shell to `kubectl rolling-update` —
+  and `kubectl rolling-update` itself was removed from kubectl years
+  ago; the Deployment controller has owned rollouts since. Definitions
+  using `:rc` should move to Deployments (or ReplicaSets where the
+  controller semantics are genuinely wanted).
 - **Support for legacy locally-bootstrapped Kubernetes.** Matsuri once
   helped stand up a local cluster by hand — etcd, hyperkube, and SkyDNS
   on the dev machine — from before minikube and k3s made that someone

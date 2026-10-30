@@ -78,13 +78,6 @@ module Matsuri
       desc 'scale SUBCOMMAND ...ARGS', 'scale resource'
       subcommand 'scale', Matsuri::Cmds::Scale
 
-      desc 'rollout RC_NAME [TAG]', 'Rolls out a new image for a replication controller'
-      def rollout(name, image_tag = nil)
-        with_config do |opt|
-          Matsuri::Registry.rc(name).new.rollout!(image_tag, opt)
-        end
-      end
-
       desc 'migrate STACK_NAME VERSION', 'Migrates a stack to VERSION'
       def migrate(name, version)
         with_config do |opt|

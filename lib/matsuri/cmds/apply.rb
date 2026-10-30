@@ -29,9 +29,6 @@ module Matsuri
       desc 'pod POD_NAME', 'apply changes to a pod'
       apply_cmd_for :pod, image_tag: true
 
-      desc 'rc RC_NAME', 'apply changes to a rc'
-      apply_cmd_for :rc, image_tag: true
-
       desc 'replica-set REPLICA-SET_NAME', 'apply changes to a replica-set'
       apply_cmd_for :replica_set, image_tag: true
       map replicaset: :replica_set

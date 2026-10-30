@@ -34,10 +34,10 @@ module Matsuri
     # Examples:
     # needs :stack,   'postgresql-95'
     # needs :stack,   'redis-28'
-    # needs :stack,   'load-balancer'
-    # needs :rc,      'rails-app-worker'
-    # needs :rc,      'rails-app'
-    # needs :service, 'rails-app'
+    # needs :stack,      'load-balancer'
+    # needs :deployment, 'rails-app-worker'
+    # needs :deployment, 'rails-app'
+    # needs :service,    'rails-app'
     #
     # Hooks:
     #   check_only: when set to true, do not create or apply resource. Only check for it's presence

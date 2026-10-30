@@ -137,14 +137,6 @@ module Matsuri
         fetch_or_load :ingress, name
       end
 
-      def replication_controller(name)
-        fetch_or_load :replication_controller, name
-      end
-
-      def rc(name)
-        replication_controller(name)
-      end
-
       def replica_set(name)
         fetch_or_load :replica_set, name
       end
@@ -254,7 +246,6 @@ Matsuri::Registry.register_class 'stack',                     class: Matsuri::St
 Matsuri::Registry.register_class 'acceptor',                  class: Matsuri::Acceptor
 Matsuri::Registry.register_class 'imported_manifest',         class: Matsuri::Kubernetes::ImportedManifest
 Matsuri::Registry.register_class 'pod',                       class: Matsuri::Kubernetes::Pod
-Matsuri::Registry.register_class 'replication_controller',    class: Matsuri::Kubernetes::ReplicationController, aliases: %w[rc]
 Matsuri::Registry.register_class 'service',                   class: Matsuri::Kubernetes::Service
 Matsuri::Registry.register_class 'ingress',                   class: Matsuri::Kubernetes::Ingress
 Matsuri::Registry.register_class 'endpoints',                 class: Matsuri::Kubernetes::Endpoints

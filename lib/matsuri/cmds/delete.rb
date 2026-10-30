@@ -14,9 +14,6 @@ module Matsuri
       desc 'pod POD_NAME', 'delete a pod'
       delete_cmd_for :pod
 
-      desc 'rc RC_NAME', 'delete a replication controller'
-      delete_cmd_for :rc
-
       desc 'replica_set REPLICA_SET_NAME', 'delete a replica_set'
       delete_cmd_for :replica_set
       map replicaset: :replica_set

@@ -31,9 +31,6 @@ module Matsuri
         end
       end
 
-      desc 'rc RC_NAME [IMAGE_TAG]', 'replication controller status'
-      status_cmd_for :rc
-
       desc 'service SERVICE_NAME', 'service status'
       status_cmd_for :service
 

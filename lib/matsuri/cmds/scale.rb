@@ -11,9 +11,6 @@ module Matsuri
         end
       end
 
-      desc 'rc RC_NAME REPLICAS', 'scale a replication controller'
-      scale_cmd_for :rc
-
       desc 'replica-set RS_NAME REPLICAS', 'scale a replica set'
       scale_cmd_for :replica_set
       map replicaset: :replica_set

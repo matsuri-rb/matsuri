@@ -33,9 +33,6 @@ module Matsuri
       desc 'pod POD_NAME', 'diff manifest for pod'
       diff_cmd_for :pod, image_tag: true
 
-      desc 'rc RC_NAME', 'diff manifest for rc'
-      diff_cmd_for :rc, image_tag: true
-
       desc 'replica_set REPLICA_SET_NAME', 'diff manifest for replica_set'
       diff_cmd_for :replica_set, image_tag: true
       map replicaset: :replica_set

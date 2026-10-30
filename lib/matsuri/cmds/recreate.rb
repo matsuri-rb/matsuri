@@ -26,9 +26,6 @@ module Matsuri
       desc 'pod POD_NAME [IMAGE TAG]', 'recreate a pod'
       recreate_cmd_for :pod, image_tag: true
 
-      desc 'rc RC_NAME [IMAGE TAG]', 'recreate a replication controller'
-      recreate_cmd_for :rc, image_tag: true
-
       desc 'replica-set REPLICA_SET_NAME [IMAGE TAG]', 'recreate a replica set'
       recreate_cmd_for :replica_set, image_tag: true
       map replicaset: :replica_set

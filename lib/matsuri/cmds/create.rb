@@ -26,9 +26,6 @@ module Matsuri
       desc 'pod POD_NAME [IMAGE_TAG]', 'create a pod'
       create_cmd_for :pod, image_tag: true
 
-      desc 'rc RC_NAME [IMAGE_TAG]', 'create a replication controller'
-      create_cmd_for :rc, image_tag: true
-
       desc 'replica-set RS_NAME [IMAGE_TAG]', 'create a replica set'
       create_cmd_for :replica_set, image_tag: true
       map replicaset: :replica_set
