@@ -79,10 +79,10 @@ class AppConfig
 end
 ```
 
-## Seams and Built-in Acceptors
+## Built-in Acceptors
 
-A stack binds acceptors at named seams, declared with `accept`. Last
-declaration per seam wins. `Matsuri::Stack` ships one implicit seam:
+A stack registers acceptors under named collections with `accept`; last
+declaration per collection wins. `Matsuri::Stack` ships one built-in:
 
 ```ruby
 accept :image_tag, Matsuri::Acceptors::ImageTag
@@ -90,11 +90,12 @@ accept :image_tag, Matsuri::Acceptors::ImageTag
 
 The built-in acceptor declares a single read, `image_tag`, defaulting to
 `latest` — the only place that default lives. The converge positional
-(`matsuri converge app v42`) arrives through this seam; with no
-positional, the seam admits the empty value and the default answers.
+(`matsuri converge app v42`) arrives through the `:image_tag` collection;
+with no positional, the acceptor admits the empty value and the default
+answers.
 
-A stack overrides the seam by re-declaring it with its own acceptor
-(registry name or class):
+A stack overrides a built-in by re-declaring its collection with its own
+acceptor (registry name or class):
 
 ```ruby
 Matsuri.define :stack, 'app' do
@@ -105,9 +106,9 @@ end
 ```
 
 Downstream resources do not have to listen. Members that never read
-`image_tag` are unaffected by what the seam admits, and the workload
-classes themselves carry no default — a definition instantiated below
-any seam that wants one declares its own.
+`image_tag` are unaffected by what the acceptor admits, and the workload
+classes themselves carry no default — a definition instantiated outside
+a stack that wants one declares its own.
 
 ## Acceptors and Stacks
 

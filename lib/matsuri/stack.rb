@@ -16,11 +16,11 @@ module Matsuri
     include Matsuri::Concerns::Awaiting
 
     class_attribute :build_order
-    class_attribute :acceptor_seams
+    class_attribute :acceptors
 
-    # Invocation options are the raw value offered to every acceptor seam;
-    # each seam's acceptor declares what it takes. The built-in :image_tag
-    # seam carries the converge positional and owns the 'latest' default.
+    # Invocation options are the raw value offered to every acceptor; each
+    # acceptor declares what it takes. The built-in :image_tag collection
+    # carries the converge positional and owns the 'latest' default.
     let(:image_tag) { accepted(:image_tag).image_tag }
 
     # Defines a list of deps, used to  to idempotently converge Kubernetes
@@ -52,10 +52,10 @@ module Matsuri
         File.join(Matsuri::Config.config_path, path)
       end
 
-      # Binds an acceptor to a named seam. Last declaration per seam wins,
-      # so a stack overrides a built-in seam by re-declaring it.
-      def accept(seam, acceptor)
-        self.acceptor_seams = (acceptor_seams || {}).merge(seam.to_sym => acceptor)
+      # Registers an acceptor under a named collection. Last declaration
+      # per collection wins; a stack overrides a built-in by re-declaring it.
+      def accept(collection, acceptor)
+        self.acceptors = (acceptors || {}).merge(collection.to_sym => acceptor)
       end
     end
 
@@ -151,14 +151,13 @@ module Matsuri
     end
 
     # Helper functions
-    def accepted(seam)
+    def accepted(collection)
       @accepted ||= {}
-      @accepted[seam] ||= acceptor_class_for(seam).new(options)
+      @accepted[collection] ||= acceptor_class_for(self.class.acceptors.fetch(collection)).new(options)
     end
 
-    def acceptor_class_for(seam)
-      acceptor = self.class.acceptor_seams.fetch(seam)
-      acceptor.is_a?(Class) ? acceptor : Matsuri::Registry.acceptor(acceptor)
+    def acceptor_class_for(name)
+      name.is_a?(Class) ? name : Matsuri::Registry.acceptor(name)
     end
 
     def dep(type, name)

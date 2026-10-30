@@ -20,9 +20,9 @@ Working toward 0.3.0.
 - **Workload `image_tag` defaults are removed.** Pod, Deployment,
   ReplicaSet, ReplicationController, StatefulSet, DaemonSet, and CronJob no
   longer default `image_tag` to `latest`; the default lives in the built-in
-  `Matsuri::Acceptors::ImageTag` bound to the stack's `:image_tag` seam.
-  Definitions instantiated below a seam (bare `.new`, library use) that
-  relied on the implicit `latest` must declare their own:
+  `Matsuri::Acceptors::ImageTag` registered under the stack's `:image_tag`
+  collection. Definitions instantiated outside a stack (bare `.new`,
+  library use) that relied on the implicit `latest` must declare their own:
   `let(:image_tag) { options[:image_tag] || 'latest' }`. Resource-level
   CLI verbs supply the tag explicitly and are unchanged.
 
@@ -35,9 +35,10 @@ Working toward 0.3.0.
 
 ### Added
 
-- **Acceptor seams on stacks.** `accept :seam, <acceptor>` binds an
-  acceptor (class or registry name) to a named seam; last declaration per
-  seam wins, so re-declaring overrides. `Matsuri::Stack` ships the implicit
+- **Acceptor collections on stacks.** `accept(collection, acceptor)`
+  registers an acceptor (class or registry name) under a named collection;
+  last declaration per collection wins, so re-declaring overrides.
+  `Matsuri::Stack` ships the implicit
   `accept :image_tag, Matsuri::Acceptors::ImageTag`, and the converge
   positional routes through it — the first built-in acceptor, declaring a
   single read with the `latest` default.

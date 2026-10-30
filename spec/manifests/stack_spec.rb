@@ -45,12 +45,12 @@ RSpec.describe 'app stack' do
     )
   end
 
-  it 'resolves image_tag through the built-in acceptor seam' do
+  it 'resolves image_tag through the built-in acceptor' do
     expect(stack.image_tag).to eq 'latest'
     expect(stack_class.new(image_tag: 'v42').image_tag).to eq 'v42'
   end
 
-  it 'overrides a seam by re-declaring it, locally to the declaring stack' do
+  it 'overrides a built-in acceptor by re-declaring its collection, locally to the declaring stack' do
     pinned = Class.new(Matsuri::Acceptor) do
       let(:image_tag) { options[:image_tag] || 'pinned' }
     end
