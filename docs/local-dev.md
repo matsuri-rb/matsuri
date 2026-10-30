@@ -118,3 +118,27 @@ matsuri dev top pods              # top is an alias for status
 Resource-level `status` calls the resource's `status!`, which a
 definition may implement; the Stack base class requires the definition
 to supply it.
+
+## Incomplete Features
+
+Pieces of the local-dev story that were started and never finished, or
+whose finishing era passed. They are not wired to any CLI verb; they are
+kept here so their intent is on the record.
+
+- `matsuri <env> rebuild` — prints "Rebuild not implemented yet" and
+  exits 1. The intended loop was `build!` then `recreate!`, which
+  `Stack#rebuild!` still implements for anyone who wires it up.
+- `Matsuri::Tasks::Docker#kill_all!` — the cluster reset button from
+  when the cluster was a pile of containers on your own machine: stop
+  and force-remove **every container on the Docker daemon**, then
+  re-converge from definitions. Indiscriminate against a modern shared
+  daemon; do not wire this up casually.
+- `Matsuri::Tasks::Docker#fix_pts!` — prints (does not run)
+  `sudo mount -o remount,ptmxmode=666 /dev/pts`, the boot-ritual fix for
+  an early-Docker bug where restrictive devpts permissions broke PTY
+  allocation, so `docker exec -it` — and therefore `sh` and `console` —
+  could not open a terminal.
+- `Matsuri::Tasks::Pod#build!` and `#list!` — empty method bodies; a
+  per-pod image build task that never grew content.
+- `Matsuri::Config.host_osx?` — platform detection left over from the
+  boot2docker era; currently has no callers.
