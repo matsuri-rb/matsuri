@@ -22,6 +22,7 @@
           devShell = mkShell {
             buildInputs = [
               ruby_4_0
+              pandoc
             ];
           };
     });
