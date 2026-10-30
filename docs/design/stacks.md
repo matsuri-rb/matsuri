@@ -17,28 +17,27 @@ the narrowness.
 
 A resource belongs to a stack because its operator wants to converge it
 together with the others — one owner, one lifecycle, one converge act.
-Runtime topology, architectural wholeness, and system boundaries are
-not membership criteria.
+Runtime topology, architectural wholeness, and system boundaries are not
+membership criteria.
 
 Properties:
 
-- The management partition is orthogonal to the runtime connector
-  graph. Two workloads may communicate heavily and live in different
-  stacks; two may never speak and share one. Runtime coupling does not
-  force co-membership, and co-membership promises nothing about
-  reachability.
+- The management partition is orthogonal to the runtime connector graph.
+  Two workloads may communicate heavily and live in different stacks;
+  two may never speak and share one. Runtime coupling does not force
+  co-membership, and co-membership promises nothing about reachability.
 - One noun serves every scale. A stack may be an entire platform or a
   single service with its sidecars; because the noun claims only
   co-management, it does not lie at either extreme, and there is no
   ladder of bigger nouns to invent.
 - Membership is revisable. Moving a workload between stacks reassigns a
-  management promise, nothing more. The cost is confined to the cut:
-  an in-stack neighbor is reached by local name, an out-of-stack
-  neighbor by an address carried in configuration. The change is small,
-  explicit, and visible in the definitions.
-- Wholeness is not required, but filled references are. A stack need
-  not contain everything it depends on; every dependency it does not
-  contain must resolve to an address.
+  management promise, nothing more. The cost is confined to the cut: an
+  in-stack neighbor is reached by local name, an out-of-stack neighbor
+  by an address carried in configuration. The change is small, explicit,
+  and visible in the definitions.
+- Wholeness is not required, but filled references are. A stack need not
+  contain everything it depends on; every dependency it does not contain
+  must resolve to an address.
 
 ## Constraint: instance data arrives as an argument, not as ambient state
 
@@ -101,8 +100,8 @@ Properties:
   failing loudly on "unknown" keys would promise an authority matsuri
   cannot have. Strict vocabulary enforcement belongs to whatever system
   owns the vocabulary, at its own boundary.
-- Vocabulary can grow without gem changes. The gem ships the mechanism
-  — the flag, the loading, the binding; what any key means is defined
+- Vocabulary can grow without gem changes. The gem ships the mechanism —
+  the flag, the loading, the binding; what any key means is defined
   entirely by the repository's own definitions.
 
 ## Constraint: environment and stack-config vary on different axes
@@ -115,8 +114,8 @@ substitutes for the other.
 Properties:
 
 - Dynamic environments without environment proliferation. The
-  lifecycle-driven case (a short-lived instance per feature branch)
-  is carried by instance data; the tier set stays small, static, and
+  lifecycle-driven case (a short-lived instance per feature branch) is
+  carried by instance data; the tier set stays small, static, and
   reviewable.
 - Tier concerns stay in code review; instance concerns stay in data.
   Changing a cluster mapping is a change to committed definitions;
@@ -125,9 +124,9 @@ Properties:
 ## Constraint: cross-stack connections are references with defaults; a pin is the only override
 
 Where a stack depends on something outside itself, the dependency is a
-reference. References resolve to a default — the standing instances of
-a shared tier such as staging — and a stack-config may pin any
-reference to a different address. Pinning is the only override form.
+reference. References resolve to a default — the standing instances of a
+shared tier such as staging — and a stack-config may pin any reference
+to a different address. Pinning is the only override form.
 
 Properties:
 
@@ -145,10 +144,10 @@ Properties:
 
 ## Vocabulary note
 
-Names make implied promises, and the flag grammar is part of the name.
-A plural noun with a source suffix (`--values-from=`) promises a
-document folded into a keyspace — overlay and merge semantics. The
-singular `--stack-config=` promises an argument the render is for.
-Stack-config is defined only in matsuri's own terms, as stated above;
-resemblance to concepts in other tools is incidental and carries none
-of their contracts.
+Names make implied promises, and the flag grammar is part of the name. A
+plural noun with a source suffix (`--values-from=`) promises a document
+folded into a keyspace — overlay and merge semantics. The singular
+`--stack-config=` promises an argument the render is for. Stack-config
+is defined only in matsuri's own terms, as stated above; resemblance to
+concepts in other tools is incidental and carries none of their
+contracts.
