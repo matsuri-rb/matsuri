@@ -26,7 +26,10 @@ module Matsuri
         let(:pod_annotations)     { pod_def.final_annotations }
         let(:pod_spec)            { pod_def.spec }
         let(:pod_options)         { default_pod_options }
-        let(:default_pod_options) { { image_tag: image_tag, release: release } }
+        # Once mapped, the acceptor instance is the accepted values; the
+        # template forwards it so pod definitions read the same binding the
+        # owning resource holds.
+        let(:default_pod_options) { { image_tag: image_tag, release: release, stack_config: stack_config } }
       end
 
       ### Helpers

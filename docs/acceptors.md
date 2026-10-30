@@ -142,9 +142,11 @@ spec, a controller, other tooling — supplies data the same way, with no
 file involved. The stack binds its acceptor once per instance, and
 resource members read the acceptor instance as `stack_config` — one
 binding per converge, so members cannot disagree about what was
-accepted. A missing flag is the empty value: every declared read lands
-on its default. A flag with a bad path fails loudly; there is no
-fallback. The stack wiring is described in [stacks](stacks.md).
+accepted. The pod template forwards the instance, so a pod definition
+reads the same binding the owning resource holds. A missing flag is the
+empty value: every declared read lands on its default. A flag with a bad
+path fails loudly; there is no fallback. The stack wiring is described
+in [stacks](stacks.md).
 
 ## One Artifact, Many Consumers
 

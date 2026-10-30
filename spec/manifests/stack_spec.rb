@@ -100,6 +100,13 @@ RSpec.describe 'app stack' do
     expect(members.map(&:stack_config)).to all(be(instance.stack_config))
   end
 
+  it 'passes the acceptor instance through the pod template to pod definitions' do
+    instance   = stack_class.new(config: { log_level: 'debug' })
+    deployment = instance.members.find { |m| m.is_a?(Matsuri::Kubernetes::Deployment) }
+
+    expect(deployment.pod_def.stack_config).to be instance.stack_config
+  end
+
   it 'never passes stack-config across a stack boundary' do
     expect(stack.dep_options(:deployment)).to have_key(:stack_config)
     expect(stack.dep_options(:stack)).not_to have_key(:stack_config)

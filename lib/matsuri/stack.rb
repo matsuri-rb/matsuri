@@ -97,7 +97,9 @@ module Matsuri
           next
         end
 
-        dep(type, name).new.delete!
+        # Same options as converge, so a member whose identity derives from
+        # an accepted value addresses the same resource it created.
+        dep(type, name).new(dep_options(type)).delete!
       end
     end
 

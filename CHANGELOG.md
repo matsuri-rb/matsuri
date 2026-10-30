@@ -53,10 +53,13 @@ Working toward 0.3.0.
   stacks with data directly. A platform declares its accepted surface
   with `accept :config, <acceptor>`; resource members read the bound
   acceptor instance as `stack_config` (nil when a definition is invoked
-  standalone). No flag is the empty value and every declared read lands
-  on its default; a flag with a bad path fails loudly, never falls back.
-  stack-config never crosses a stack boundary — nested stack deps do not
-  inherit it.
+  standalone), and the pod template forwards it, so pod definitions read
+  the same binding. `Stack#delete!` instantiates members with the same
+  options as converge, so a member whose identity derives from an
+  accepted value addresses the same resource it created. No flag is the
+  empty value and every declared read lands on its default; a flag with a
+  bad path fails loudly, never falls back. stack-config never crosses a
+  stack boundary — nested stack deps do not inherit it.
 - **Acceptor** — a class that admits a value whose vocabulary matsuri does
   not own, such as a per-instance config artifact. The raw value arrives
   whole as `options`; `let` declarations are the accepted surface.
