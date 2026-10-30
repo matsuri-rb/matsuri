@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+Working toward 0.3.0.
+
+### Breaking
+
+- **`Matsuri::App` is renamed `Matsuri::Stack`.** A stack is a bundle of
+  resources managed together — one owner, one converge act; "app" never
+  described that. Registry type is `stack`, definitions load from
+  `platform/stacks`, the definition module is `Stacks`, and the CLI verbs
+  address stacks. There is no back-compat alias for the `app` type;
+  definitions must rename their directory and `Matsuri.define :app` calls.
+
+### Added
+
+- **Acceptor** — a class that admits a value whose vocabulary matsuri does
+  not own, such as a per-instance config artifact. The raw value arrives
+  whole as `options`; `let` declarations are the accepted surface.
+  Undeclared reads raise `NoMethodError`, unconsumed fields pass in
+  silence, and every declared read carries its default, so the empty value
+  is valid. Registry type `acceptor`, definitions in `platform/acceptors`,
+  bare classes equally valid. See docs/acceptors.md and
+  docs/design/acceptors.md.
+- **Stack and acceptor documentation** — docs/stacks.md and
+  docs/design/stacks.md (constraints and the properties they induce),
+  docs/acceptors.md and docs/design/acceptors.md in the same form. Stack
+  fixture and specs pin the converge sequence, member resolution, and
+  per-stack `build_order` locality.
+- **`rake docs:fmt`** — reformats docs/**/*.md through pandoc (gfm, 72
+  columns, em-dashes and fence style preserved). Pandoc is included in the
+  nix devshell.
+
 ## [0.2.0] - 2026-10-24
 
 Modernization release: the gem now targets Ruby >= 3.2 (developed and tested
