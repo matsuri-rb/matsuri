@@ -48,10 +48,6 @@ module Matsuri
     autoload :ImportedManifest,        'matsuri/kubernetes/imported_manifest'
   end
 
-  module AddOns
-    autoload :DNS, 'matsuri/add_ons/dns'
-  end
-
   module Cmds
     autoload :Cli,      'matsuri/cmds/cli'
     autoload :Kubectl,  'matsuri/cmds/kubectl'

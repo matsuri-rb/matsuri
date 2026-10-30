@@ -36,13 +36,6 @@ module Matsuri
         end
       end
 
-      desc 'dns', 'displays DNS Add On definition'
-      def dns
-        with_config do |opt|
-          Matsuri::AddOns::DNS.show!(opt)
-        end
-      end
-
       desc 'stack STACK_NAME', 'show manifests for all stack members'
       option :stack_config, type: :string, banner: 'PATH'
       def stack(name = :not_specified)

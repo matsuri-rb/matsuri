@@ -26,6 +26,20 @@ Working toward 0.3.0.
   `let(:image_tag) { options[:image_tag] || 'latest' }`. Resource-level
   CLI verbs supply the tag explicitly and are unchanged.
 
+### Removed
+
+- **Support for legacy locally-bootstrapped Kubernetes.** Matsuri once
+  helped stand up a local cluster by hand — etcd, hyperkube, and SkyDNS
+  on the dev machine — from before minikube and k3s made that someone
+  else's job. The DNS add-on (`Matsuri::AddOns::DNS`, a SkyDNS/kube2sky
+  deployment pinned to Kubernetes v1.0) and its `show dns` /
+  `create dns` / `delete dns` verbs are removed, along with the
+  bootstrap-era config keys: `etcd_version`, `hyperkube_version`,
+  `kube2dns_version`, `skydns_version`, `kubernetes_cidr`, `etcd_addr`,
+  `etcd_bind_addr`, `master_addr`, `master_bind_addr`, `api_servers`,
+  `master_url`, `cluster_dns`, and `cluster_domain`. `dev_addr` stays —
+  Endpoints definitions still default `public_ip_address` to it.
+
 ### Changed
 
 - **Untagged stack converges propagate `latest` explicitly** (previously

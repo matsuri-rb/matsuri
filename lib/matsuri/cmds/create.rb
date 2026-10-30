@@ -23,13 +23,6 @@ module Matsuri
         end
       end
 
-      desc 'dns', 'creates cluster dns'
-      def dns
-        with_config do |_|
-          Matsuri::AddOns::DNS.create!
-        end
-      end
-
       desc 'pod POD_NAME [IMAGE_TAG]', 'create a pod'
       create_cmd_for :pod, image_tag: true
 

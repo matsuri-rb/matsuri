@@ -11,13 +11,6 @@ module Matsuri
         end
       end
 
-      desc 'dns', 'deletes cluster dns'
-      def dns
-        with_config do |_|
-          Matsuri::AddOns::DNS.delete!
-        end
-      end
-
       desc 'pod POD_NAME', 'delete a pod'
       delete_cmd_for :pod
 
