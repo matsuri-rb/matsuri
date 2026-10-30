@@ -26,6 +26,17 @@ Working toward 0.3.0.
   `let(:image_tag) { options[:image_tag] || 'latest' }`. Resource-level
   CLI verbs supply the tag explicitly and are unchanged.
 
+- **Ingress emits `networking.k8s.io/v1`** (was `extensions/v1beta1`,
+  removed in Kubernetes 1.22). `spec.backend` is now
+  `spec.defaultBackend`; the `path` helper emits `pathType` (default
+  `Prefix`) and the v1 backend shape
+  (`service: { name:, port: { number: | name: } }` — an Integer port is
+  a number, anything else names a port); `ingress_class` now renders as
+  `spec.ingressClassName` instead of the retired
+  `kubernetes.io/ingress.class` annotation. Definitions that hand-rolled
+  `rules` or `default_backend` in the v1beta1 shape must move to the v1
+  shape.
+
 ### Removed
 
 - **Support for legacy locally-bootstrapped Kubernetes.** Matsuri once
