@@ -18,10 +18,13 @@ module Matsuri
     class_attribute :build_order
     class_attribute :acceptors
 
-    # Invocation options are the raw value offered to every acceptor; each
-    # acceptor declares what it takes. The built-in :image_tag collection
-    # carries the converge positional and owns the 'latest' default.
-    let(:image_tag) { accepted(:image_tag).image_tag }
+    # The collection name is the options key: each acceptor admits its own
+    # component of the invocation options, whole. The built-in :image_tag
+    # collection carries the converge positional and owns the 'latest'
+    # default; :config carries the stack-config artifact, already loaded —
+    # whoever constructs the stack supplies data, never a path.
+    let(:image_tag)    { accepted(:image_tag).image_tag }
+    let(:stack_config) { accepted(:config) }
 
     # Defines a list of deps, used to  to idempotently converge Kubernetes
     # resources. Generally, you will add a stack as a dep for resources you are
@@ -60,12 +63,24 @@ module Matsuri
     end
 
     accept :image_tag, Matsuri::Acceptors::ImageTag
+    # Empty acceptor: the collection is total, its surface is empty until
+    # a platform re-declares it.
+    accept :config, Matsuri::Acceptor
 
     # Override this. This commands defines how to display the status
     # Maybe we can find some useful, standardized way of displaying
     # status.
     def status!
       fail NotImplementedError, 'Must implement #status!'
+    end
+
+    # Renders every member manifest as one kubectl-compatible YAML stream.
+    def show!(_opt = {})
+      members.each { |member| puts member.to_yaml }
+    end
+
+    def diff!(opt = {})
+      members.each { |member| member.diff!(opt) }
     end
 
     # Override this. This command defines how all the stack depenencies
@@ -111,7 +126,7 @@ module Matsuri
           next
         end
 
-        resource = dep(type, name).new(image_tag: image_tag)
+        resource = dep(type, name).new(dep_options(type))
         # @TODO if-elsif-end ladder code smell, refactor
         if options[:check_only]
           next if resource.created?
@@ -151,9 +166,30 @@ module Matsuri
     end
 
     # Helper functions
+    # stack-config never crosses a stack boundary: instance identity is the
+    # (stack, stack-config) pair, and a nested stack is a different instance.
+    def dep_options(type)
+      return { image_tag: image_tag } if type == :stack
+
+      { image_tag: image_tag, stack_config: stack_config }
+    end
+
+    def members
+      self.class.build_order.filter_map do |(type, name, _)|
+        next if type == :file || type == :task
+
+        if type == :stack
+          puts "Skipping stack #{name}"
+          next
+        end
+
+        dep(type, name).new(dep_options(type))
+      end
+    end
+
     def accepted(collection)
       @accepted ||= {}
-      @accepted[collection] ||= acceptor_class_for(self.class.acceptors.fetch(collection)).new(options)
+      @accepted[collection] ||= acceptor_class_for(self.class.acceptors.fetch(collection)).new(options[collection])
     end
 
     def acceptor_class_for(name)

@@ -52,7 +52,7 @@ RSpec.describe 'app stack' do
 
   it 'overrides a built-in acceptor by re-declaring its collection, locally to the declaring stack' do
     pinned = Class.new(Matsuri::Acceptor) do
-      let(:image_tag) { options[:image_tag] || 'pinned' }
+      let(:image_tag) { options || 'pinned' }
     end
 
     custom = Matsuri.define(:stack, 'app-pinned') do
@@ -62,6 +62,47 @@ RSpec.describe 'app stack' do
 
     expect(custom.new.image_tag).to eq 'pinned'
     expect(stack_class.new.image_tag).to eq 'latest'
+  end
+
+  it 'admits nothing through :config until a platform re-declares it' do
+    expect(stack.stack_config).to be_a Matsuri::Acceptor
+    expect { stack.stack_config.log_level }.to raise_error(NoMethodError)
+  end
+
+  it 'admits stack-config through a platform-declared acceptor, named in the registry' do
+    configured = Matsuri.define(:stack, 'app-configured') do
+      accept :config, 'app'
+      needs :deployment, 'app-web'
+    end
+
+    expect(configured.new(config: { log_level: 'debug' }).stack_config.log_level).to eq 'debug'
+    expect(configured.new.stack_config.log_level).to eq 'info'
+  end
+
+  it 'projects each collection its own component of the options' do
+    configured = Matsuri.define(:stack, 'app-projected') do
+      accept :config, 'app'
+      needs :deployment, 'app-web'
+    end
+
+    instance = configured.new(image_tag: 'v42', config: { name: 'app-feat' })
+
+    expect(instance.image_tag).to eq 'v42'
+    expect(instance.stack_config.instance_name).to eq 'app-feat'
+    expect(instance.stack_config.artifact).to eq(name: 'app-feat')
+  end
+
+  it 'binds one acceptor instance per converge and hands it to every resource member' do
+    instance = stack_class.new(config: { log_level: 'debug' })
+
+    members = instance.members
+    expect(members.length).to eq 5
+    expect(members.map(&:stack_config)).to all(be(instance.stack_config))
+  end
+
+  it 'never passes stack-config across a stack boundary' do
+    expect(stack.dep_options(:deployment)).to have_key(:stack_config)
+    expect(stack.dep_options(:stack)).not_to have_key(:stack_config)
   end
 
   it 'keeps build order local to each stack' do

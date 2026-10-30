@@ -43,6 +43,14 @@ module Matsuri
         end
       end
 
+      desc 'stack STACK_NAME', 'show manifests for all stack members'
+      option :stack_config, type: :string, banner: 'PATH'
+      def stack(name = :not_specified)
+        with_config do |opt|
+          Matsuri::Registry.stack(name).new(config: stack_config_data(opt)).show!(opt)
+        end
+      end
+
       desc 'imported_manifest NAME', 'show imported manifest'
       show_cmd_for :imported_manifest
 

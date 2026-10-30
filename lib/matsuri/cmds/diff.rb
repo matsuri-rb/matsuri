@@ -22,6 +22,14 @@ module Matsuri
         end
       end
 
+      desc 'stack STACK_NAME', 'diff manifests for all stack members'
+      option :stack_config, type: :string, banner: 'PATH'
+      def stack(name = :not_specified)
+        with_config do |opt|
+          Matsuri::Registry.stack(name).new(config: stack_config_data(opt)).diff!(opt)
+        end
+      end
+
       desc 'pod POD_NAME', 'diff manifest for pod'
       diff_cmd_for :pod, image_tag: true
 

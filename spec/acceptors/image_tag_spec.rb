@@ -2,20 +2,19 @@
 
 require 'spec_helper'
 
+# The :image_tag collection carries a scalar: the acceptor admits the
+# converge positional whole. The empty value is nil, which is what the
+# collection projects when no positional was given.
 RSpec.describe Matsuri::Acceptors::ImageTag do
-  it 'answers the declared read' do
-    expect(described_class.new(image_tag: 'v42').image_tag).to eq 'v42'
+  it 'admits the scalar whole' do
+    expect(described_class.new('v42').image_tag).to eq 'v42'
   end
 
   it 'defaults to latest over the empty value' do
-    expect(described_class.new.image_tag).to eq 'latest'
-    expect(described_class.new(image_tag: nil).image_tag).to eq 'latest'
+    expect(described_class.new(nil).image_tag).to eq 'latest'
   end
 
-  it 'passes unconsumed vocabulary in silence, raises on undeclared reads' do
-    accepted = described_class.new(image_tag: 'v42', owner: 'pipeline')
-
-    expect(accepted.image_tag).to eq 'v42'
-    expect { accepted.owner }.to raise_error(NoMethodError)
+  it 'raises on undeclared reads' do
+    expect { described_class.new('v42').owner }.to raise_error(NoMethodError)
   end
 end

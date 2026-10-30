@@ -52,7 +52,10 @@ module Matsuri
       let(:matsuri_env)         { Matsuri.environment }
 
       # Optional parameters
-      let(:release)     { (options[:release] || '0').to_s }
+      let(:release)      { (options[:release] || '0').to_s }
+      # The acceptor instance the owning stack bound for this converge; nil
+      # when the definition is invoked standalone.
+      let(:stack_config) { options[:stack_config] }
 
       # Overridables
       let(:spec)        { fail NotImplementedError, 'Must define let(:spec)' }

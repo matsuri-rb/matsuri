@@ -52,9 +52,12 @@ module Matsuri
 
       desc 'converge STACK_NAME [IMAGE_TAG]', 'Idempotently converges a stack and all dependencies'
       option :restart, type: :boolean, default: false
+      option :stack_config, type: :string, banner: 'PATH'
       def converge(name, image_tag = nil)
         with_config do |opt|
-          Matsuri::Registry.stack(name).new(image_tag: image_tag).converge!(opt)
+          Matsuri::Registry.stack(name)
+            .new(image_tag: image_tag, config: stack_config_data(opt))
+            .converge!(opt)
         end
       end
 

@@ -37,11 +37,26 @@ Working toward 0.3.0.
 
 - **Acceptor collections on stacks.** `accept(collection, acceptor)`
   registers an acceptor (class or registry name) under a named collection;
-  last declaration per collection wins, so re-declaring overrides.
-  `Matsuri::Stack` ships the implicit
-  `accept :image_tag, Matsuri::Acceptors::ImageTag`, and the converge
-  positional routes through it — the first built-in acceptor, declaring a
-  single read with the `latest` default.
+  last declaration per collection wins, so re-declaring overrides. The
+  collection name is the options key: each acceptor admits its own
+  component of the invocation options, whole, and cannot see another
+  collection's. `Matsuri::Stack` ships two built-ins — `:image_tag`
+  carries the converge positional (a scalar, admitted whole, owning the
+  `latest` default) and `:config` carries the stack-config artifact (the
+  built-in is the empty acceptor: the collection is total, its surface is
+  empty until a platform re-declares it).
+- **stack-config.** `--stack-config=PATH` on `converge` and the new
+  `show stack` / `diff stack` verbs names a YAML artifact for the stack
+  instance being addressed. The CLI owns the boundary mapping — it loads
+  the file and supplies data under the `:config` key; the stack itself
+  never loads anything, so specs, controllers, and tooling construct
+  stacks with data directly. A platform declares its accepted surface
+  with `accept :config, <acceptor>`; resource members read the bound
+  acceptor instance as `stack_config` (nil when a definition is invoked
+  standalone). No flag is the empty value and every declared read lands
+  on its default; a flag with a bad path fails loudly, never falls back.
+  stack-config never crosses a stack boundary — nested stack deps do not
+  inherit it.
 - **Acceptor** — a class that admits a value whose vocabulary matsuri does
   not own, such as a per-instance config artifact. The raw value arrives
   whole as `options`; `let` declarations are the accepted surface.

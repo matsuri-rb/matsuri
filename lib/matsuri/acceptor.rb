@@ -10,6 +10,12 @@ module Matsuri
   # instead of the raw value. Fields the acceptor does not declare are
   # ignored. Reads the acceptor does not declare raise NoMethodError. There
   # is no fallback to the underlying value.
+  #
+  # The empty value belongs to the acceptor: every declared read is total
+  # over nil, because what nil means is collection-specific. A scalar
+  # surface reads options whole (options || default); a hash-shaped surface
+  # anchors once with let(:artifact) { options || {} } and reads fields off
+  # the anchor.
   class Acceptor
     include Let
     include RLet::LazyOptions
