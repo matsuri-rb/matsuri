@@ -119,6 +119,35 @@ Resource-level `status` calls the resource's `status!`, which a
 definition may implement; the Stack base class requires the definition
 to supply it.
 
+## Deploy Verbs: reload, update, migrate
+
+These drive stack-definition hooks the same way `build` and `push` do,
+but they encode an application deploy lifecycle rather than an image
+one:
+
+```bash
+matsuri dev reload  myapp           # push config without recreating pods
+matsuri dev update  myapp v42       # migrate, then roll to VERSION
+matsuri dev migrate myapp v42       # run migrations only
+```
+
+`update` accepts `--skip-migrations`. The intended shape was for the
+stack definition to supply `update!(version, opt)` as its own deploy
+choreography — run database migrations, then roll pods to the new
+version — with `migrate` and `reload` as the narrower pieces.
+
+**These verbs have not been modernized to current Kubernetes flows.**
+They predate Deployments: rolling to a version is now the manifest
+path's job (`converge <stack> <image_tag>`), and migrations are better
+expressed as invoking a Job (or a `:task` dependency in the stack's
+build order) than as imperative hook choreography. The wiring also
+shows its age: `migrate` routes to a `migrate!` hook that has no stub
+on the Stack base class, so without a definition it fails with a raw
+NoMethodError rather than a message; and the CLI invokes `reload!` with
+only the options hash, so the hook's `version` parameter never receives
+a version. Prefer `converge` and Job resources; these verbs remain for
+stacks that already define the hooks.
+
 ## Incomplete Features
 
 Pieces of the local-dev story that were started and never finished, or
