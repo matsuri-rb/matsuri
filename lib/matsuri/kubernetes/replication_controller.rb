@@ -23,7 +23,7 @@ module Matsuri
       # These are here to support rolling updates
       let(:maybe_param_name)     { options[:name] || name }
       let(:maybe_param_replicas) { options[:replicas] || replicas }
-      let(:image_tag)            { options[:image_tag] || 'latest' }
+      let(:image_tag)            { options[:image_tag] }
 
       # Explicitly define replicas
       let(:replicas) { fail NotImplementedError, 'Must define let(:replicas)' }

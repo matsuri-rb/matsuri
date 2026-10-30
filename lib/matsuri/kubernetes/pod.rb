@@ -55,7 +55,7 @@ module Matsuri
       end
 
       # Get image tag from the command line
-      let(:image_tag)          { options[:image_tag] || 'latest' }
+      let(:image_tag)          { options[:image_tag] }
 
       let(:containers)         { [container] }
       let(:init_containers)    { nil }

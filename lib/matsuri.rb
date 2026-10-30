@@ -14,6 +14,10 @@ module Matsuri
   autoload :Stack,       'matsuri/stack'
   autoload :Acceptor,    'matsuri/acceptor'
 
+  module Acceptors
+    autoload :ImageTag, 'matsuri/acceptors/image_tag'
+  end
+
   module Kubernetes
     autoload :Base,                    'matsuri/kubernetes/base'
 

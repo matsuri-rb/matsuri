@@ -45,6 +45,25 @@ RSpec.describe 'app stack' do
     )
   end
 
+  it 'resolves image_tag through the built-in acceptor seam' do
+    expect(stack.image_tag).to eq 'latest'
+    expect(stack_class.new(image_tag: 'v42').image_tag).to eq 'v42'
+  end
+
+  it 'overrides a seam by re-declaring it, locally to the declaring stack' do
+    pinned = Class.new(Matsuri::Acceptor) do
+      let(:image_tag) { options[:image_tag] || 'pinned' }
+    end
+
+    custom = Matsuri.define(:stack, 'app-pinned') do
+      needs :deployment, 'app-web'
+    end
+    custom.accept :image_tag, pinned
+
+    expect(custom.new.image_tag).to eq 'pinned'
+    expect(stack_class.new.image_tag).to eq 'latest'
+  end
+
   it 'keeps build order local to each stack' do
     other = Matsuri.define(:stack, 'app-canary') do
       needs :deployment, 'app-web'

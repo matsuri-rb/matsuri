@@ -10,7 +10,7 @@ module Matsuri
 
 
       # Parameters passed from command line
-      let(:image_tag)            { options[:image_tag] || 'latest' }
+      let(:image_tag)            { options[:image_tag] }
 
       # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#cronjobspec-v1-batch
       let(:spec) do

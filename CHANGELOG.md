@@ -17,9 +17,30 @@ Working toward 0.3.0.
   `platform/stacks`, the definition module is `Stacks`, and the CLI verbs
   address stacks. There is no back-compat alias for the `app` type;
   definitions must rename their directory and `Matsuri.define :app` calls.
+- **Workload `image_tag` defaults are removed.** Pod, Deployment,
+  ReplicaSet, ReplicationController, StatefulSet, DaemonSet, and CronJob no
+  longer default `image_tag` to `latest`; the default lives in the built-in
+  `Matsuri::Acceptors::ImageTag` bound to the stack's `:image_tag` seam.
+  Definitions instantiated below a seam (bare `.new`, library use) that
+  relied on the implicit `latest` must declare their own:
+  `let(:image_tag) { options[:image_tag] || 'latest' }`. Resource-level
+  CLI verbs supply the tag explicitly and are unchanged.
+
+### Changed
+
+- **Untagged stack converges propagate `latest` explicitly** (previously
+  propagated nil and each workload class defaulted individually). Rendered
+  output is unchanged; drift between per-class defaults is no longer
+  possible.
 
 ### Added
 
+- **Acceptor seams on stacks.** `accept :seam, <acceptor>` binds an
+  acceptor (class or registry name) to a named seam; last declaration per
+  seam wins, so re-declaring overrides. `Matsuri::Stack` ships the implicit
+  `accept :image_tag, Matsuri::Acceptors::ImageTag`, and the converge
+  positional routes through it — the first built-in acceptor, declaring a
+  single read with the `latest` default.
 - **Acceptor** — a class that admits a value whose vocabulary matsuri does
   not own, such as a per-instance config artifact. The raw value arrives
   whole as `options`; `let` declarations are the accepted surface.

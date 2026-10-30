@@ -28,7 +28,7 @@ module Matsuri
       # Don't know if we are going to keep this around
       let(:maybe_param_name)     { options[:name] || name }
       let(:maybe_param_replicas) { options[:replicas] || replicas }
-      let(:image_tag)            { options[:image_tag] || 'latest' }
+      let(:image_tag)            { options[:image_tag] }
 
       # Explicitly define replicas
       let(:replicas)          { fail NotImplementedError, 'Must define let(:replicas)' }

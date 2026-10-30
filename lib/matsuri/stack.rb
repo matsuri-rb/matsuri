@@ -2,6 +2,7 @@
 
 require 'map'
 require 'matsuri/core_ext'
+require 'matsuri/acceptors/image_tag'
 require 'rainbow/ext/string'
 require 'rlet'
 require 'rlet/lazy_options'
@@ -15,10 +16,12 @@ module Matsuri
     include Matsuri::Concerns::Awaiting
 
     class_attribute :build_order
+    class_attribute :acceptor_seams
 
-    # When we pass image_tag to converge command, propagate this
-    # down the convergence tree.
-    let(:image_tag) { options[:image_tag] }
+    # Invocation options are the raw value offered to every acceptor seam;
+    # each seam's acceptor declares what it takes. The built-in :image_tag
+    # seam carries the converge positional and owns the 'latest' default.
+    let(:image_tag) { accepted(:image_tag).image_tag }
 
     # Defines a list of deps, used to  to idempotently converge Kubernetes
     # resources. Generally, you will add a stack as a dep for resources you are
@@ -48,7 +51,15 @@ module Matsuri
       def config_file(path)
         File.join(Matsuri::Config.config_path, path)
       end
+
+      # Binds an acceptor to a named seam. Last declaration per seam wins,
+      # so a stack overrides a built-in seam by re-declaring it.
+      def accept(seam, acceptor)
+        self.acceptor_seams = (acceptor_seams || {}).merge(seam.to_sym => acceptor)
+      end
     end
+
+    accept :image_tag, Matsuri::Acceptors::ImageTag
 
     # Override this. This commands defines how to display the status
     # Maybe we can find some useful, standardized way of displaying
@@ -140,6 +151,16 @@ module Matsuri
     end
 
     # Helper functions
+    def accepted(seam)
+      @accepted ||= {}
+      @accepted[seam] ||= acceptor_class_for(seam).new(options)
+    end
+
+    def acceptor_class_for(seam)
+      acceptor = self.class.acceptor_seams.fetch(seam)
+      acceptor.is_a?(Class) ? acceptor : Matsuri::Registry.acceptor(acceptor)
+    end
+
     def dep(type, name)
       Matsuri::Registry.fetch_or_load type, name
     end

@@ -22,7 +22,7 @@ module Matsuri
       let(:selector) { { matchLabels: match_labels, matchExpressions: match_expressions } }
 
       # Parameters
-      let(:image_tag) { options[:image_tag] || 'latest' }
+      let(:image_tag) { options[:image_tag] }
 
       # Explicitly define replicas
       let(:match_labels)      { fail NotImplementedError, 'Must define let(:match_labels)' }

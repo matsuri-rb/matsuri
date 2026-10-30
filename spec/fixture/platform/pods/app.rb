@@ -7,6 +7,7 @@
 Matsuri.define :pod, 'app' do
   let(:app_role)       { options[:app_role] }
   let(:resource_class) { options[:resource_class] || 'standard' }
+  let(:image_tag)      { options[:image_tag] || 'latest' }
 
   let(:labels) { { 'app_role' => app_role, 'resource_class' => resource_class }.compact }
 
