@@ -29,7 +29,7 @@ module Matsuri
         # Once mapped, the acceptor instance is the accepted values; the
         # template forwards it so pod definitions read the same binding the
         # owning resource holds.
-        let(:default_pod_options) { { image_tag: image_tag, release: release, stack_config: stack_config } }
+        let(:default_pod_options) { { image_tag: image_tag, stack_config: stack_config } }
       end
 
       ### Helpers

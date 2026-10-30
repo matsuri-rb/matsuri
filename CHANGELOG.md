@@ -70,6 +70,19 @@ Working toward 0.3.0.
   `etcd_bind_addr`, `master_addr`, `master_bind_addr`, `api_servers`,
   `master_url`, `cluster_dns`, and `cluster_domain`. `dev_addr` stays —
   Endpoints definitions still default `public_ip_address` to it.
+- **`let(:release)` and `maybe_param_name`.** Both served the client-side
+  rolling-update machinery and lost their last consumer with it.
+  `release` was the incrementing `-rN` rollout counter, defined on every
+  resource (default `'0'`) and forwarded through pod options; nothing
+  read it. `maybe_param_name` let `options[:name]` override the manifest
+  name so a successor controller could be minted alongside the current
+  one — no caller ever passed it to Deployment, ReplicaSet, or
+  StatefulSet, and dropping it collapses their `default_metadata`
+  overrides back to the base (which also restores `final_annotations`
+  assembly on those three kinds). `maybe_param_replicas` stays for now:
+  its real requirement — apply should not clobber live replica counts
+  set by an HPA or manual scale — belongs to the planned read-back
+  manifest transforms.
 
 ### Changed
 

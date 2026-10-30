@@ -11,7 +11,6 @@ module Matsuri
 
       # Overridables
 
-      let(:default_metadata) { { name: maybe_param_name, namespace: namespace, labels: final_labels, annotations: annotations } }
       let(:spec) do
         {
           replicas: replicas,
@@ -27,7 +26,6 @@ module Matsuri
 
       # Parameters passed from command line, from the client-side
       # rolling-update era. Don't know if we are going to keep this around.
-      let(:maybe_param_name)     { options[:name] || name }
       let(:maybe_param_replicas) { options[:replicas] || replicas }
       let(:image_tag)            { options[:image_tag] }
 
