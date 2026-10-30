@@ -82,6 +82,7 @@ module Matsuri
     default(:ingresses_path)                  { File.join platform_path, 'ingresses' }
     default(:endpoints_path)                  { File.join platform_path, 'endpoints' }
     default(:stacks_path)                     { File.join platform_path, 'stacks' }
+    default(:acceptors_path)                  { File.join platform_path, 'acceptors' }
     default(:secrets_path)                    { File.join platform_path, 'secrets' } # Kubernetes Secret definition, not the actual secrets
     default(:config_maps_path)                { File.join platform_path, 'config_maps' } # Kubernetes ConfigMaps definition, not the actual config ovelay
     default(:horizontal_pod_autoscalers_path) { File.join platform_path, 'horizontal_pod_autoscalers' }

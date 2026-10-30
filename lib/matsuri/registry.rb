@@ -209,6 +209,10 @@ module Matsuri
         fetch_or_load :stack, name
       end
 
+      def acceptor(name)
+        fetch_or_load :acceptor, name
+      end
+
       private
 
       def parent_class(type, parent_name = nil)
@@ -247,6 +251,7 @@ end
 # Register the definition classes
 # TODO: Consider making this dynamically and lazy loaded
 Matsuri::Registry.register_class 'stack',                     class: Matsuri::Stack
+Matsuri::Registry.register_class 'acceptor',                  class: Matsuri::Acceptor
 Matsuri::Registry.register_class 'imported_manifest',         class: Matsuri::Kubernetes::ImportedManifest
 Matsuri::Registry.register_class 'pod',                       class: Matsuri::Kubernetes::Pod
 Matsuri::Registry.register_class 'replication_controller',    class: Matsuri::Kubernetes::ReplicationController, aliases: %w[rc]

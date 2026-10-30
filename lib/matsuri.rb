@@ -12,6 +12,7 @@ module Matsuri
   autoload :Task,        'matsuri/task'
   autoload :Cmd,         'matsuri/cmd'
   autoload :Stack,       'matsuri/stack'
+  autoload :Acceptor,    'matsuri/acceptor'
 
   module Kubernetes
     autoload :Base,                    'matsuri/kubernetes/base'
