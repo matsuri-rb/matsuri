@@ -1,0 +1,22 @@
+# The first ordinary deploy after creation: same declaration, one
+# declared value changed. Probes whether the ongoing manager can change
+# its own fields cleanly while still omitting the seeds.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: seed-via-create
+  namespace: matsuri-probes
+spec:
+  selector:
+    matchLabels:
+      app: seed-via-create
+  template:
+    metadata:
+      labels:
+        app: seed-via-create
+    spec:
+      containers:
+        - name: pause
+          env:
+            - name: DECLARED
+              value: two

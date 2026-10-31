@@ -1,0 +1,24 @@
+# Seed via create: the declaration plus the seeded image and replicas,
+# sent once by an imperative create. Seeded = declared + seeds; both
+# come from the same definition, so shared fields agree by construction.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: seed-via-create
+  namespace: matsuri-probes
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: seed-via-create
+  template:
+    metadata:
+      labels:
+        app: seed-via-create
+    spec:
+      containers:
+        - name: pause
+          image: registry.k8s.io/pause:3.9
+          env:
+            - name: DECLARED
+              value: one

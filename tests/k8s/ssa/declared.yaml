@@ -1,0 +1,22 @@
+# The ongoing declaration: image and replicas are seeds, so the payload
+# omits both — the container entry rides on its name key alone. Fields
+# not sent are never contested; that is the whole seeds+SSA bet.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: seed-via-create
+  namespace: matsuri-probes
+spec:
+  selector:
+    matchLabels:
+      app: seed-via-create
+  template:
+    metadata:
+      labels:
+        app: seed-via-create
+    spec:
+      containers:
+        - name: pause
+          env:
+            - name: DECLARED
+              value: one
