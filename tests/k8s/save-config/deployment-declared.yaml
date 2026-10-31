@@ -1,0 +1,19 @@
+# The ongoing apply payload: the declaration with the seeded field absent.
+# Don't-clobber is structural — replicas is simply not here to send.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: save-config-probe
+  namespace: matsuri-probes
+spec:
+  selector:
+    matchLabels:
+      app: save-config-probe
+  template:
+    metadata:
+      labels:
+        app: save-config-probe
+    spec:
+      containers:
+        - name: pause
+          image: registry.k8s.io/pause:3.9

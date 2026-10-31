@@ -48,6 +48,17 @@ Working toward 0.3.0.
     started" narration moves to `Get#exists?`. With it goes Base's
     `ShellOut` include — resources no longer shell out at all.
 
+- **`Concerns::ImportManifest` keeps only the import surface.** The
+  transform ops move to `Matsuri::Transform` (the concern includes the
+  Kubernetes dialect, so call sites inside definitions are unchanged),
+  and the set-carrier lookups (`lookup_manifests`, `without_manifest`,
+  criteria matching) stay. Two declarations change shape:
+  `with_resources` was a let holding a curried lambda
+  (`with_resources.(name, spec)`) and is now the dialect method
+  (`with_resources(name, spec)` — same returned step, no lambda-call on
+  the name); `node_selector_terms_path` was an overridable let and is
+  now the dialect constant `NODE_SELECTOR_TERMS_PATH`.
+
 - **The client-side diff moves off the resource classes into
   `Matsuri::Concerns::Diffable` + `Matsuri::Tasks::HashDiff`.** The
   comparison is the resource's (`Diffable#diff(current)` takes the
@@ -183,6 +194,15 @@ Working toward 0.3.0.
 
 ### Added
 
+- **`tests/` — a live-cluster probe harness.** `bin/minikube-start.sh`
+  runs a dedicated `matsuri` minikube profile (`--keep-context`; vfkit
+  driver on macOS), and `bin/probe-save-config.sh` pins the delivery
+  semantics the seed model rests on: a create without `--save-config`
+  keeps seeded fields out of last-applied, so ongoing applies of a
+  manifest omitting them never prune them, and a controller takes
+  ownership uncontested. minikube, kubectl, and (on macOS) vfkit join
+  the nix devshell. These are delivery-semantics probes against a real
+  API server, deliberately outside the rspec suite.
 - **`present` pipelines on resources.** The same `present` grammar on
   `Kubernetes::Base`; default none. Through a stack, the two declaration
   sites merge into one pipeline — resource members first, stack members
@@ -303,6 +323,17 @@ Working toward 0.3.0.
 - **`rake docs:fmt`** — reformats docs/**/*.md through pandoc (gfm, 72
   columns, em-dashes and fence style preserved). Pandoc is included in the
   nix devshell.
+
+### Fixed
+
+- **Two latent `ImportManifest` bugs die by construction with the move
+  to the strata.** `append_node_affinity` referenced a misspelled path
+  name and raised `NameError` on every call; the dialect reads the
+  `NODE_SELECTOR_TERMS_PATH` constant, so a misspelled path cannot
+  exist at a call site. `set_env` from an imported manifest crashed
+  because `update_kv` called `expand_env`, which only existed on Pod;
+  both now live in `Transform::Env`, and the vendor-app fixture pins
+  the repaired path end-to-end.
 
 ## [0.2.0] - 2026-10-24
 

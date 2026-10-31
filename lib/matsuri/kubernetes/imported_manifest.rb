@@ -15,7 +15,8 @@ module Matsuri
     class ImportedManifest < Matsuri::Kubernetes::Base
       include Matsuri::Concerns::ImportManifest
 
-      # Override this to run transforms
+      # Override this to run transforms; the Transform::Kubernetes dialect
+      # is in scope (set_env, update_in, append_volume, ...)
       let(:extracted_manifests) { imported_manifests }
       let(:namespace)           { Matsuri.fail "Must define let(:namespace); check the imported manifest and use the namespace found there" }
 
