@@ -24,6 +24,7 @@ module Matsuri
       autoload :Recreate, 'matsuri/tasks/kubectl_ops/recreate'
       autoload :Scale,    'matsuri/tasks/kubectl_ops/scale'
       autoload :Status,   'matsuri/tasks/kubectl_ops/status'
+      autoload :RolloutStatus, 'matsuri/tasks/kubectl_ops/rollout_status'
       autoload :Get,      'matsuri/tasks/kubectl_ops/get'
       autoload :Diff,     'matsuri/tasks/kubectl_ops/diff'
 
@@ -60,6 +61,10 @@ module Matsuri
 
       def status(resource)
         Status.new(identity_for(resource)).run!
+      end
+
+      def rollout_status(resource)
+        RolloutStatus.new(identity_for(resource)).run!
       end
 
       def exists?(resource)

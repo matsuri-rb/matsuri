@@ -51,11 +51,6 @@ module Matsuri
 
       let(:primary_container_path) { ['spec', 'template', 'spec', 'containers', 0] }
 
-      ### Helpers
-      def watch_rollout!
-        kubectl! "rollout status #{resource_type}/#{name}"
-      end
-
       class << self
         def load_path
           Matsuri::Config.deployments_path

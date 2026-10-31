@@ -105,6 +105,19 @@ Working toward 0.3.0.
   `platform/stacks`, the definition module is `Stacks`, and the CLI verbs
   address stacks. There is no back-compat alias for the `app` type;
   definitions must rename their directory and `Matsuri.define :app` calls.
+- **Resources carry no imperative side-effects — the last cluster reads
+  move to `Tasks::Pod`.** `Pod#up?`, `Service#selected_pods`(`_json`),
+  and `Concerns::PodTemplate#selected_pods`(`_json`) — all dead since
+  resources stopped shelling out, with zero callers in the codebase —
+  are removed from the resource classes. `Tasks::Pod` carries them
+  instead, parameterized: `up?` takes `name:`/`namespace:`,
+  `selected_pods` takes `selector:` (a flat labels hash), and
+  `Tasks::Pod.pod_selector_for(resource)` derives that selector from
+  what each kind declares (workloads' `match_labels`, Service's
+  `selector`). Unwired by design — these are part of the incomplete
+  local-dev lifecycle work. `ShellOut` is now included exactly once in
+  the library, by `Matsuri::Task`: tasks are the only things that shell.
+
 - **Read-back support is dropped in favor of seeds + server-side
   apply.** Matsuri no longer reads live cluster state to make a
   declaration decision. `Deployment#current_image`/`#current_image_tag`
@@ -383,6 +396,13 @@ Working toward 0.3.0.
 
 ### Fixed
 
+- **The rollout watch returns as a task.**
+  `Tasks::KubectlOps.rollout_status(resource)`
+  (`kubectl rollout status`) is the post-apply progress watch for
+  manually delivered changes. `Deployment#watch_rollout!` — dead since
+  resources stopped shelling out — is removed rather than revived:
+  resources are pure generators and carry no verbs, delegating ones
+  included. Callers address the boundary function with the resource.
 - **Two latent `ImportManifest` bugs die by construction with the move
   to the strata.** `append_node_affinity` referenced a misspelled path
   name and raised `NameError` on every call; the dialect reads the

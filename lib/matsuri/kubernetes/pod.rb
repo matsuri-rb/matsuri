@@ -169,16 +169,6 @@ module Matsuri
       let(:converge_via) { :recreate }
 
       # Helper methods
-      def up?
-        cmd = kubectl "get #{resource_type}/#{name} -o json", echo_level: :debug, no_stdout: true
-        Matsuri.log :fatal, "Unable to get status for #{resource_type}/#{name}" unless cmd.status.success?
-        pod_json = JSON.parse(cmd.stdout)
-        Matsuri.log :debug, pod_json['status']
-        return false unless pod_json['status']['phase'] == 'Running'
-        return false unless pod_json['status']['containerStatuses'].any?
-        pod_json['status']['containerStatuses'].all? { |c| c['ready'] == true }
-      end
-
       def config_file(path)
         File.join config.config_path, path
       end

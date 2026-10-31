@@ -32,17 +32,6 @@ module Matsuri
         let(:default_pod_options) { { image_tag: image_tag, stack_config: stack_config } }
       end
 
-      ### Helpers
-      def selected_pods_json
-        fail NotImpelmentedError, 'Match Expressions not yet implemented' if Array(match_expressions).any?
-        sel = match_labels.to_a.map { |(k,v)| "#{k}=#{v}" }.join(',')
-        cmd = kubectl "get pods -l #{sel} -o json", echo_level: :debug, no_stdout: true
-        JSON.parse(cmd.stdout)
-      end
-
-      def selected_pods
-        selected_pods_json['items']
-      end
     end
   end
 end

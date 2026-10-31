@@ -113,6 +113,13 @@ RSpec.describe Matsuri::Tasks::KubectlOps do
     end
   end
 
+  describe '.rollout_status' do
+    it 'watches the rollout with identity derived from the resource' do
+      expect_task(ops::RolloutStatus, resource_type: 'deployment', name: 'web', namespace: 'specs')
+      ops.rollout_status(deployment)
+    end
+  end
+
   describe '.converge' do
     it 'converges via apply by default' do
       expect_task(ops::Apply, description: 'deployment/web')
