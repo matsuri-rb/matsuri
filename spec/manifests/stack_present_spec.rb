@@ -123,6 +123,18 @@ RSpec.describe 'stack present declarations' do
       end
       stack.new.diff!
     end
+
+    it 'hands the declarations to the client-side hash diff' do
+      stack = Matsuri.define(:stack, 'present-hash-diff') do
+        needs :deployment, 'app-web'
+        present :on_apply, 'team-label'
+      end
+
+      expect(Matsuri::Tasks::HashDiff).to receive(:new)
+        .with(hash_including(presents: stack.presents))
+        .and_return(instance_double(Matsuri::Tasks::HashDiff, run!: true))
+      stack.new.diff!(hash_diff: true)
+    end
   end
 
   describe 'resource-level declarations' do

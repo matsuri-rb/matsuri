@@ -114,7 +114,8 @@ module Matsuri
         # --primary-container is a HashDiff-only projection, so it
         # implies --hash-diff
         if opt[:hash_diff] || opt[:primary_container]
-          Matsuri::Tasks::HashDiff.new(resource: member, primary_container: opt[:primary_container]).run!
+          Matsuri::Tasks::HashDiff.new(resource: member, primary_container: opt[:primary_container],
+                                       presents: stack_presents).run!
         else
           Matsuri::Tasks::KubectlOps.diff(member, presents: stack_presents)
         end

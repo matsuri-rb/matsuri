@@ -18,7 +18,7 @@ RSpec.describe Matsuri::Tasks::HashDiff do
 
   it 'routes primary_container to the focused diff' do
     expect(Matsuri::Tasks::KubectlOps).to receive(:manifest).with(resource).and_return(current)
-    expect(resource).to receive(:primary_container_diff).with(current).and_return([])
+    expect(resource).to receive(:primary_container_diff).with(current, desired: kind_of(Hash)).and_return([])
     task(primary_container: true).run!
   end
 
@@ -26,5 +26,34 @@ RSpec.describe Matsuri::Tasks::HashDiff do
     expect(Matsuri::Tasks::KubectlOps).to receive(:manifest).and_return(nil)
     expect(Matsuri).to receive(:log).with(:fatal, 'Cannot fetch current manifest for deployment/web').and_raise(SystemExit)
     expect { task.run! }.to raise_error(SystemExit)
+  end
+
+  describe 'the presented declaration as the comparison basis' do
+    let(:pinned) do
+      pin = Matsuri::Transform::Callable.new(label: 'pin-replicas') do |m|
+        m.set([:spec, :replicas], 7)
+      end
+      Matsuri.define(:deployment, 'web-pinned', inherits: 'web') do
+        present :on_apply, pin
+      end.new
+    end
+
+    it 'reads drift against what apply would send, not the raw declaration' do
+      live = JSON.parse(pinned.to_json)
+      live['spec']['replicas'] = 7
+
+      allow(Matsuri::Tasks::KubectlOps).to receive(:manifest).and_return(live)
+      expect { described_class.new(resource: pinned).run! }
+        .not_to output(/spec\.replicas/).to_stdout
+    end
+
+    it 'still reports drift the pipeline does not account for' do
+      live = JSON.parse(pinned.to_json)
+      live['spec']['replicas'] = 99
+
+      allow(Matsuri::Tasks::KubectlOps).to receive(:manifest).and_return(live)
+      expect { described_class.new(resource: pinned).run! }
+        .to output(/spec\.replicas/).to_stdout
+    end
   end
 end

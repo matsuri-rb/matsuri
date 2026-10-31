@@ -7,18 +7,21 @@ module Matsuri
   module Concerns
     # Client-side diff: compares the declared manifest against a current
     # manifest handed in by the caller, with comparison noise filtered out.
-    # Pure computation — fetching the current manifest and printing deltas
-    # belong to Tasks::HashDiff. The filter helpers are the per-resource
-    # override surface: a definition that knows about additional noise
-    # paths overrides them here.
+    # Pure computation — fetching the current manifest, presenting the
+    # declaration, and printing deltas belong to Tasks::HashDiff. The
+    # filter helpers are the per-resource override surface: a definition
+    # that knows about additional noise paths overrides them here.
     #
     # This diff answers "what drifted relative to my declaration". The
     # server-side diff (kubectl diff) answers "what will the cluster do
     # with this, admission injections included". Both are kept.
     module Diffable
-      # current is a plain string-keyed hash, as parsed from kubectl output.
-      def diff(current)
-        desired = JSON.parse(to_json)
+      # current is a plain string-keyed hash, as parsed from kubectl
+      # output. desired overrides the comparison basis — Tasks::HashDiff
+      # hands in the presented declaration so drift reads against what
+      # apply would send; default is the raw declaration.
+      def diff(current, desired: nil)
+        desired ||= JSON.parse(to_json)
 
         Hashdiff.diff(current, desired) do |path, current_value, desired_value|
           filter_comparison_values(path, current_value, desired_value)
@@ -29,12 +32,12 @@ module Matsuri
       # of both manifests by primary_container_path. Unfiltered — the noise
       # filters address whole-manifest paths, which do not occur inside a
       # container.
-      def primary_container_diff(current)
+      def primary_container_diff(current, desired: nil)
         unless primary_container_path
           Matsuri.log :fatal, "#{resource_type}/#{name} does not declare let(:primary_container_path)"
         end
 
-        desired = JSON.parse(to_json)
+        desired ||= JSON.parse(to_json)
 
         Hashdiff.diff current.dig(*primary_container_path), desired.dig(*primary_container_path)
       end

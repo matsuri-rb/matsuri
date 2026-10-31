@@ -16,7 +16,8 @@ The promises:
   payloads byte-identical to its rendered manifests.
 - The diff previews the delivery. One site builds the presented payload
   for both `diff` and `apply`, so what diff shows is what apply sends —
-  through presenters, with no extra work.
+  through presenters, with no extra work. The client-side `--hash-diff`
+  reads drift against the presented declaration the same way.
 
 ## Defining Presenters
 

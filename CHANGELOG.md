@@ -250,8 +250,14 @@ Working toward 0.3.0.
   `applied_to_yaml` overrides no longer shape delivery payloads, only
   `show`), and `converge` grew a `presents:` keyword — a literal
   trailing-hash `converge(r, restart: true)` call now needs braces.
-  The client-side HashDiff compares the unpresented declaration;
-  extending it through presenters is open.
+  The client-side HashDiff diffs against the presented declaration too:
+  it assembles the same `:on_apply` pipeline over its usual basis
+  (stack declarations ride in from `diff stack`; direct verbs merge the
+  resource's own), so `--hash-diff` drift reads against what apply
+  would send — a value a presenter pins is not drift, and drift the
+  pipeline does not account for still reports.
+  `Diffable#diff`/`#primary_container_diff` accept the basis as
+  `desired:`.
 - **`Matsuri::Presenter` — zero-config, context-free manifest steps.** A
   presenter is Manifest→Manifest: construction takes nothing, and
   parameterization happens before `#call` ever runs — definition lets

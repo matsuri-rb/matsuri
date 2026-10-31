@@ -16,6 +16,7 @@ module Matsuri
 
       let(:resource)          { options.fetch(:resource) }
       let(:primary_container) { options[:primary_container] }
+      let(:presents)          { options[:presents] || {} }
 
       def run!
         current = Matsuri::Tasks::KubectlOps.manifest(resource)
@@ -23,8 +24,25 @@ module Matsuri
           Matsuri.log :fatal, "Cannot fetch current manifest for #{Matsuri::Tasks::KubectlOps.description_for(resource)}"
         end
 
-        deltas = primary_container ? resource.primary_container_diff(current) : resource.diff(current)
+        deltas =
+          if primary_container
+            resource.primary_container_diff(current, desired: desired_manifest)
+          else
+            resource.diff(current, desired: desired_manifest)
+          end
         print_diff(deltas)
+      end
+
+      # The declaration through the same :on_apply pipeline apply
+      # assembles, over the same basis this diff has always used — so
+      # drift reads against what apply would send, never against a step a
+      # presenter owns. The JSON round trip is the comparison
+      # normalization diff always applied to the declaration.
+      def desired_manifest
+        ops = Matsuri::Tasks::KubectlOps
+        presented = ops.presented(resource.manifest_for_export,
+                                  ops.presents_for(resource, presents), :on_apply)
+        JSON.parse(presented.to_json)
       end
 
       def print_diff(deltas)
