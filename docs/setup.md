@@ -3,9 +3,7 @@
 Every kubectl command matsuri runs is scoped to a context and a
 namespace:
 
-```
-kubectl --context=<context> --namespace=<namespace> ...
-```
+    kubectl --context=<context> --namespace=<namespace> ...
 
 The namespace comes from the environment's platform config (default
 `default`). The context comes from one of two modes.
@@ -39,9 +37,9 @@ staging Map.new(
 `kube_cluster` and `user` default to the environment name when not
 given; `namespace` defaults to `default`.
 
-Setup is a one-time step per environment, and it only creates the
-alias: the cluster and user entries it points at must already exist in
-your kubeconfig. Get them from your provider first — for example
+Setup is a one-time step per environment, and it only creates the alias:
+the cluster and user entries it points at must already exist in your
+kubeconfig. Get them from your provider first — for example
 `gcloud container clusters get-credentials`, or `minikube start` /
 `k3d cluster create`, which write their own entries. Local tools often
 already name their context something usable (`minikube`,
@@ -67,8 +65,8 @@ staging Map.new(
 )
 ```
 
-With this set, every environment must define `kube_context`; `kubectl
-setup` is unnecessary in this mode.
+With this set, every environment must define `kube_context`;
+`kubectl setup` is unnecessary in this mode.
 
 ## Verifying
 

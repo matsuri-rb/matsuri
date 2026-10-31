@@ -140,9 +140,9 @@ version — with `migrate` and `reload` as the narrower pieces.
 They predate Deployments: rolling to a version is now the manifest
 path's job (`converge <stack> <image_tag>`), and migrations are better
 expressed as invoking a Job (or a `:task` dependency in the stack's
-build order) than as imperative hook choreography. The wiring also
-shows its age: `migrate` routes to a `migrate!` hook that has no stub
-on the Stack base class, so without a definition it fails with a raw
+build order) than as imperative hook choreography. The wiring also shows
+its age: `migrate` routes to a `migrate!` hook that has no stub on the
+Stack base class, so without a definition it fails with a raw
 NoMethodError rather than a message; and the CLI invokes `reload!` with
 only the options hash, so the hook's `version` parameter never receives
 a version. Prefer `converge` and Job resources; these verbs remain for
