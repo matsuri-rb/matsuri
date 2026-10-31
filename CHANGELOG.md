@@ -183,6 +183,24 @@ Working toward 0.3.0.
 
 ### Added
 
+- **`Matsuri::Transform` — the pure manifest-transform strata.** Nothing
+  under the namespace shells out; everything operates on plain data and
+  composes as values. `Transform::Algebra` carries the path-addressed ops
+  (`update_in`, `append_to`, `update_each`, `append_each`, `index_by_name`
+  plus a strict `index_by_name!`, `except_entry_by_name`); contributions
+  are values composed by `+`, never super()-chained deltas.
+  `Transform::Callable` is the free monoid over transforms: `new` =
+  identity, `new(label:) { }` = leaf, `new([members])` = composite, `+` =
+  operand member-list concat into a new instance — never flattened, so a
+  composite member stays one member and its label rides along as trace
+  metadata. Coercion happens at construction and fails fast (#call-ables
+  as-is; Symbol/String will name registered presenters). `Transform::Env`
+  is the array↔map isomorphism for container env entries. Errors
+  (`EntryNotFound`, `PathNotFound`) raise rather than log fatal. Inert in
+  this phase: nothing calls the strata yet; `Concerns::ImportManifest` and
+  Pod's env helpers are untouched until they rebuild on top. Law specs pin
+  identity, associativity, zero-point, structural homomorphism,
+  no-flatten representation, carrier-is-data, and the env round trip.
 - **Acceptor collections on stacks.** `accept(collection, acceptor)`
   registers an acceptor (class or registry name) under a named collection;
   last declaration per collection wins, so re-declaring overrides. The
