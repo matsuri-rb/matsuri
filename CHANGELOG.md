@@ -221,6 +221,15 @@ Working toward 0.3.0.
 
 ### Changed
 
+- **Unknown `apply_via` values are fatal.** Delivery routing is a total
+  case over `:apply` / `:replace` / `:server_side_apply`; a typo'd value
+  raises instead of silently falling through to client-side apply and
+  delivering under the wrong merge semantics.
+- **create/recreate consult last-applied policy before seeding it.**
+  `--save-config` is gated by `consults_last_applied?(apply_via)`:
+  resources delivered by `:replace` or `:server_side_apply` create with
+  `--save-config=false` regardless of their `save_config`, because a
+  seeded last-applied is a prune trap for any later client-side apply.
 - **The `latest` positional default has one owner.** The resource-level
   CLI verbs (`show`/`diff`/`apply`/`create`/`recreate` with an image-tag
   positional) no longer hardcode `'latest'` per cmd file; the positional
@@ -241,6 +250,34 @@ Working toward 0.3.0.
 
 ### Added
 
+- **Server-side apply.** `apply_via :server_side_apply` delivers through
+  `Tasks::KubectlOps::ServerSideApply` (`kubectl apply --server-side
+  --field-manager=<m>`); the manager name comes from the resource's
+  `field_manager` let, defaulting to the repo-wide
+  `Matsuri::Platform.field_manager` (default `matsuri`). The name
+  declares the repo's ongoing-delivery identity: the conflict frontier
+  forms exactly where manager names differ, and a shared name is a
+  single manager whose writes never conflict within it. Conflicts stay
+  loud — `--force-conflicts` is never passed; forcing through a frontier
+  is an incident-time human judgment made with raw kubectl. `diff` on a
+  server-side resource routes `--server-side` under the same manager, so
+  the preview shows the same conflict frontier delivery will hit
+  (conflicts surface as diff errors).
+- **`Tasks::Stacks::Seed` — the creation protocol for
+  server-side-applied resources.** Server-side apply cannot safely
+  create an object whose payload carries seeds: seeds sent by apply are
+  owned and then pruned by the first omitting apply, and an apply
+  against empty managedFields attributes every pre-existing field to the
+  synthetic manager `before-first-apply`, which never relinquishes. The
+  protocol: create the seeded payload as `<field_manager>-seed` (the
+  seed owner, no `--save-config`), deliver the declared payload with an
+  ordinary server-side apply, then atomically remove the seed owner's
+  managedFields entry (a test+remove JSON patch — a stale index is a
+  loud rejection with a bounded reread retry, never a wrong removal).
+  The field manager ends sole owner of the declared fields; seeds end
+  unowned until a controller or deliverer takes them.
+  `tests/bin/probe-ssa.sh` pins the protocol and the refuted
+  alternatives against a live apiserver.
 - **The seed family.** `Matsuri::Presenters::SeedReplicas` / `SeedImage`
   / `SeedResources` — concern + declared-hole pairs that complete a
   create payload with a field's boot value, with `seed_replicas(n)` /

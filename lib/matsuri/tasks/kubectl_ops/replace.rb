@@ -6,8 +6,8 @@ module Matsuri
       # Full replacement of a live object with a rendered payload.
       #
       # One value of the apply_via delivery axis, mutually exclusive with
-      # apply (and with server-side apply when that arrives): a resource
-      # chooses it with `let(:apply_via) { :replace }`. No built-in
+      # apply and server-side apply: a resource chooses it with
+      # `let(:apply_via) { :replace }`. No built-in
       # declares it; the cost of choosing it is that replace clobbers
       # fields other writers own and never consults
       # last-applied-configuration — so apply is the default for a reason.

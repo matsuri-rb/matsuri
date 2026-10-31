@@ -75,8 +75,9 @@ Scenario names do not name kubectl verbs. There are two regimes:
 
 Each delivery verb assembles the pipeline for the regime it operates in:
 `create` and the create leg of `recreate` assemble `:on_create`;
-`apply`, `replace`, and `diff` assemble `:on_apply`. Replace is not a
-third regime — `apply_via :replace` picks how the payload travels, and
+`apply`, `replace`, and `diff` assemble `:on_apply`. Neither replace
+nor server-side apply is a third regime — `apply_via` (`:apply`,
+`:replace`, `:server_side_apply`) picks how the payload travels, and
 the scenario picks what the payload says; the two axes stay orthogonal,
 so flipping a resource's `apply_via` never changes which presenters run.
 Diff is not a scenario either: its meaning is "what converge will send",
@@ -193,6 +194,21 @@ manager via server-side apply. If you deliver tags manually, name the
 tag — the invocation positional or the stack's `:image_tag` acceptor is
 the source, never the cluster.
 
+Under server-side delivery (`apply_via :server_side_apply`), ongoing
+applies merge by field ownership under the repo's field manager
+(`Matsuri::Platform.field_manager`, default `matsuri`), and creation is
+a protocol rather than a single verb (`Tasks::Stacks::Seed`): create
+the seeded payload as `<field_manager>-seed` (the seed owner), deliver
+the declared payload with an ordinary server-side apply, then
+atomically remove the seed owner's managedFields entry. The field
+manager ends sole owner of the declared fields and the seeds end
+unowned — a deliverer rolling the image, or a controller scaling, takes
+them uncontested. The order is not stylistic: a server-side apply
+against an object with empty managedFields attributes every
+pre-existing field to a ghost manager that never relinquishes.
+`tests/bin/probe-ssa.sh` pins the protocol and the refuted
+alternatives.
+
 Three concerns ship, each a machinery + declared-hole pair:
 `Matsuri::Presenters::SeedReplicas` (`let(:replicas)`), `SeedImage`
 (`let(:image)`, seeding only containers without one), and
@@ -222,8 +238,11 @@ declarations.
 
 ### save_config
 
-`save_config` feeds create/recreate's `--save-config` flag on the normal
-apply path (it does not apply to server-side apply). It resolves
+`save_config` feeds create/recreate's `--save-config` flag, consulted
+only when ongoing delivery consults last-applied (`apply_via :apply`):
+under `:replace` or `:server_side_apply` it is pinned false, because a
+seeded last-applied is a prune trap for any later client-side apply.
+It resolves
 most-specific-first: a definition's own `let(:save_config)`, then the
 owning stack's `save_config false` declaration, then the repo-wide
 `Matsuri::Platform.save_config` (default `true`). Like stack-config and

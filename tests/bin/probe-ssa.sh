@@ -10,20 +10,21 @@ set -euo pipefail
 # delivers it. Replicas is the second seed; a declared env var is the
 # ongoing manager's own changeable field.
 #
-#   F. seed via create under a disposable creating manager, then the
-#      ordinary declared SSA apply, then remove the creating manager's
-#      managedFields entry with an atomic test+remove JSON patch.
+#   F. seed via create under the seed owner (a disposable manager derived
+#      from the ongoing one), then the ordinary declared SSA apply, then
+#      remove the seed owner's managedFields entry with an atomic
+#      test+remove JSON patch.
 #      managedFields is never empty when an apply arrives (so the server
 #      never invents before-first-apply), the seeds end unowned, and the
 #      ongoing applier ends sole owner of the declared fields.
-#      F1  EXPECT  create --field-manager=<creator> lands both seeds
+#      F1  EXPECT  create --field-manager=<seed owner> lands both seeds
 #      F2  EXPECT  the declared apply is accepted with the image absent
 #                  from the container entry (keyed-list partial), seeds
 #                  untouched, and the ongoing manager never owns image
-#      F3  EXPECT  test+remove of the creator's entry applies (<=3
+#      F3  EXPECT  test+remove of the seed owner's entry applies (<=3
 #                  attempts; the test op makes a stale index a loud
 #                  retry, not a wrong removal)
-#      F4  EXPECT  values intact; creator entry gone; image AND replicas
+#      F4  EXPECT  values intact; seed owner entry gone; image AND replicas
 #                  unowned; raw managedFields dumped for verification
 #      F5  EXPECT  changing a declared value is clean -- the leg every
 #                  refuted path failed -- and both seeds are untouched
@@ -45,7 +46,7 @@ set -euo pipefail
 # the record, not the filter.
 #
 # Refuted alternatives, pruned from the probe after earlier runs:
-#   - create then SSA directly: the creator's Update entry co-owns every
+#   - create then SSA directly: the create manager's Update entry co-owns every
 #     seeded field and never relinquishes; the first changed-value apply
 #     conflicts permanently.
 #   - create under the SAME name the applies use: an Update entry and an
@@ -66,8 +67,9 @@ MANAGER="${MANAGER:-matsuri}"
 OTHER_MANAGER="${OTHER_MANAGER:-other}"
 # Disposable but deliberate: the F3 removal predicate keys on this name,
 # and a converge that dies before F3 strands an object whose managedFields
-# should read as ours. The production name is a separate decision.
-CREATE_MANAGER="${CREATE_MANAGER:-creator}"
+# should read as ours. The seed owner is derived from the ongoing manager
+# (<manager>-seed), matching Tasks::Stacks::Seed.
+CREATE_MANAGER="${CREATE_MANAGER:-${MANAGER}-seed}"
 K8S="${TESTS_DIR}/k8s/ssa"
 KUBECTL=(kubectl --context "${CONTEXT}" --namespace matsuri-probes)
 
@@ -111,7 +113,7 @@ report "versions: $(kubectl --context "${CONTEXT}" version -o json 2>/dev/null |
 kubectl --context "${CONTEXT}" apply -f "${K8S}/namespace.yaml"
 "${KUBECTL[@]}" delete deployment seed-via-create --ignore-not-found --wait
 
-echo '--- Path F: seed via create, declared apply, then remove the creator entry ---'
+echo '--- Path F: seed via create, declared apply, then remove the seed owner entry ---'
 
 "${KUBECTL[@]}" create --field-manager="${CREATE_MANAGER}" -f "${K8S}/seed-via-create.yaml"
 [ "$(replicas seed-via-create)" = "3" ] || fail "F1 create did not land the seeded replicas (replicas=$(replicas seed-via-create))"
@@ -153,7 +155,7 @@ esac
 report "F4 seeds unowned, env owned by [$(owners seed-via-create env)]; managedFields verbatim:"
 managed_fields_raw seed-via-create
 
-ssa "${K8S}/declared-bumped.yaml" || fail "F5 changing a declared value conflicted -- the dead-end survives the creator-entry removal"
+ssa "${K8S}/declared-bumped.yaml" || fail "F5 changing a declared value conflicted -- the dead-end survives the seed-owner removal"
 [ "$(declared seed-via-create)" = "two" ] || fail "F5 the declared change did not land (DECLARED=$(declared seed-via-create))"
 [ "$(replicas seed-via-create)" = "3" ] || fail "F5 the declared change disturbed the unowned replicas (replicas=$(replicas seed-via-create)) -- a ghost manager came back"
 [ "$(image seed-via-create)" = "registry.k8s.io/pause:3.9" ] || fail "F5 the declared change disturbed the unowned image (image=$(image seed-via-create)) -- a ghost manager came back"

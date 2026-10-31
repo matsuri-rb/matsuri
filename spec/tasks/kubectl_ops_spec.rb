@@ -31,6 +31,32 @@ RSpec.describe Matsuri::Tasks::KubectlOps do
       expect_task(ops::Replace, input: config_map.applied_to_yaml, description: 'configmap/app-settings')
       ops.apply(config_map)
     end
+
+    it 'routes through server-side apply under the field manager when the resource declares apply_via :server_side_apply' do
+      allow(deployment).to receive(:apply_via).and_return(:server_side_apply)
+      expect_task(ops::ServerSideApply,
+                  input:         deployment.applied_to_yaml,
+                  field_manager: 'matsuri',
+                  description:   'deployment/web')
+      ops.apply(deployment)
+    end
+
+    it 'is fatal on an unknown apply_via' do
+      allow(deployment).to receive(:apply_via).and_return(:sideways)
+      expect { ops.apply(deployment) }.to raise_error(ArgumentError, /sideways/)
+    end
+  end
+
+  describe '.consults_last_applied?' do
+    it 'is true only for client-side apply' do
+      expect(ops.consults_last_applied?(:apply)).to be true
+      expect(ops.consults_last_applied?(:replace)).to be false
+      expect(ops.consults_last_applied?(:server_side_apply)).to be false
+    end
+
+    it 'is fatal on an unknown apply_via' do
+      expect { ops.consults_last_applied?(:sideways) }.to raise_error(ArgumentError, /sideways/)
+    end
   end
 
   describe '.create' do
@@ -39,6 +65,20 @@ RSpec.describe Matsuri::Tasks::KubectlOps do
       expect_task(ops::Create, input: config_map.to_yaml, save_config: false)
       ops.create(config_map)
     end
+
+    it 'pins save_config false when ongoing delivery never consults last-applied' do
+      allow(config_map).to receive(:apply_via).and_return(:server_side_apply)
+      expect_task(ops::Create, input: config_map.to_yaml, save_config: false)
+      ops.create(config_map)
+    end
+  end
+
+  describe '.recreate' do
+    it 'pins save_config false when ongoing delivery never consults last-applied' do
+      allow(config_map).to receive(:apply_via).and_return(:server_side_apply)
+      expect_task(ops::Recreate, name: 'app-settings', save_config: false)
+      ops.recreate(config_map)
+    end
   end
 
   describe '.diff' do
@@ -46,7 +86,14 @@ RSpec.describe Matsuri::Tasks::KubectlOps do
       expect_task(ops::Diff,
                   input:       deployment.applied_to_yaml,
                   namespace:   'specs',
-                  description: 'deployment/web')
+                  description: 'deployment/web',
+                  server_side: false)
+      ops.diff(deployment)
+    end
+
+    it 'routes --server-side through under the same manager apply delivers with' do
+      allow(deployment).to receive(:apply_via).and_return(:server_side_apply)
+      expect_task(ops::Diff, server_side: true, field_manager: 'matsuri')
       ops.diff(deployment)
     end
   end

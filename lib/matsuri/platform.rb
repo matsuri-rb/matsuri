@@ -20,6 +20,12 @@ module Matsuri
     # recreate; stacks override per stack, resources per definition.
     default :save_config, true
 
+    # Repo-wide field manager for server-side delivery. It declares the
+    # repo's ongoing-delivery identity: the conflict frontier forms
+    # exactly where manager names differ, and a shared name is a single
+    # manager — writes within it never conflict.
+    default :field_manager, 'matsuri'
+
     # Loads a platform file if it exists. Each subsequent file loaded
     # will override older ones.
     def self.load_configuration(load_paths = [])

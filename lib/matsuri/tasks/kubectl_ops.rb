@@ -20,6 +20,7 @@ module Matsuri
       autoload :Apply,    'matsuri/tasks/kubectl_ops/apply'
       autoload :Create,   'matsuri/tasks/kubectl_ops/create'
       autoload :Replace,  'matsuri/tasks/kubectl_ops/replace'
+      autoload :ServerSideApply, 'matsuri/tasks/kubectl_ops/server_side_apply'
       autoload :Delete,   'matsuri/tasks/kubectl_ops/delete'
       autoload :Recreate, 'matsuri/tasks/kubectl_ops/recreate'
       autoload :Scale,    'matsuri/tasks/kubectl_ops/scale'
@@ -30,18 +31,50 @@ module Matsuri
 
       module_function
 
+      # field_manager rides to every mechanism; only the server-side task
+      # reads it.
       def apply(resource, presenters: {})
-        task = resource.apply_via == :replace ? Replace : Apply
-        task.new(input:       apply_payload(resource, presenters),
-                 namespace:   resource.namespace,
-                 description: description_for(resource)).run!
+        apply_task_for(resource.apply_via)
+          .new(input:         apply_payload(resource, presenters),
+               namespace:     resource.namespace,
+               description:   description_for(resource),
+               field_manager: resource.field_manager).run!
+      end
+
+      # Routing for the apply_via delivery axis. Unknown values are
+      # fatal — a silent fall-through to client-side apply would deliver
+      # under the wrong merge semantics.
+      def apply_task_for(apply_via)
+        case apply_via
+        when :apply             then Apply
+        when :replace           then Replace
+        when :server_side_apply then ServerSideApply
+        else fail ArgumentError, "unknown apply_via: #{apply_via.inspect}"
+        end
+      end
+
+      def server_side?(apply_via)
+        apply_task_for(apply_via) == ServerSideApply
+      end
+
+      # Whether ongoing delivery under this apply_via consults the
+      # last-applied-configuration annotation. Gates create/recreate's
+      # --save-config: seeding last-applied when nothing consults it arms
+      # a prune trap — a later client-side apply would three-way-merge
+      # against the create payload, seeds included, and prune the seeds.
+      def consults_last_applied?(apply_via)
+        case apply_via
+        when :apply                       then true
+        when :replace, :server_side_apply then false
+        else fail ArgumentError, "unknown apply_via: #{apply_via.inspect}"
+        end
       end
 
       def create(resource, presenters: {})
         Create.new(input:       payload(resource.manifest_for_export, presenters_for(resource, presenters), :on_create),
                    namespace:   resource.namespace,
                    description: description_for(resource),
-                   save_config: resource.save_config).run!
+                   save_config: consults_last_applied?(resource.apply_via) && resource.save_config).run!
       end
 
       def delete(resource)
@@ -52,7 +85,7 @@ module Matsuri
         Recreate.new(identity_for(resource)
           .merge(input:       payload(resource.manifest_for_export, presenters_for(resource, presenters), :on_create),
                  description: description_for(resource),
-                 save_config: resource.save_config)).run!
+                 save_config: consults_last_applied?(resource.apply_via) && resource.save_config)).run!
       end
 
       def scale(resource, replicas)
@@ -79,12 +112,16 @@ module Matsuri
 
       # Server-side diff of the same payload apply would send: apply_payload
       # is one site, so the diff can never drift from the delivery — the
-      # invariant extends through presenters. When an SSA apply_via value
-      # exists, this is where it routes --server-side through.
+      # invariant extends through presenters. A server-side resource diffs
+      # --server-side under the same field manager apply uses — a different
+      # manager would preview a different conflict frontier. Conflicts
+      # surface as errors (exit 2) and stay loud.
       def diff(resource, presenters: {})
-        Diff.new(input:       apply_payload(resource, presenters),
-                 namespace:   resource.namespace,
-                 description: description_for(resource)).run!
+        Diff.new(input:         apply_payload(resource, presenters),
+                 namespace:     resource.namespace,
+                 description:   description_for(resource),
+                 server_side:   server_side?(resource.apply_via),
+                 field_manager: resource.field_manager).run!
       end
 
       # Lifecycle selection: the resource's converge_via policy picks the

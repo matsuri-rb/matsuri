@@ -5,8 +5,9 @@ module Matsuri
     module KubectlOps
       # Imperative create of a rendered manifest payload. --save-config
       # seeds the last-applied-configuration annotation so a later
-      # client-side apply gets its three-way merge; resources whose
-      # ongoing delivery never consults it (e.g. replace-based) opt out.
+      # client-side apply gets its three-way merge; the boundary pins it
+      # false (consults_last_applied?) when ongoing delivery never
+      # consults the annotation.
       class Create
         include Matsuri::Task
 

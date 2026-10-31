@@ -75,10 +75,14 @@ module Matsuri
       # save_config resolves most-specific-first: a definition's own let,
       # the owning stack's declaration (arriving as an option), then the
       # repo-wide Matsuri::Platform.save_config (default true). It governs
-      # the normal apply path's create/recreate only.
-      let(:converge_via) { :apply }
-      let(:apply_via)    { :apply }
-      let(:save_config)  { options.key?(:save_config) ? options[:save_config] : Matsuri::Platform.save_config }
+      # the normal apply path's create/recreate only. field_manager names
+      # the identity server-side delivery writes under; repo-wide
+      # Matsuri::Platform.field_manager (default 'matsuri'), overridable
+      # per definition.
+      let(:converge_via)  { :apply }
+      let(:apply_via)     { :apply }
+      let(:save_config)   { options.key?(:save_config) ? options[:save_config] : Matsuri::Platform.save_config }
+      let(:field_manager) { Matsuri::Platform.field_manager }
 
       # Diff policy, read by Tasks::HashDiff. The path to the primary
       # container within the manifest; resources with a pod template

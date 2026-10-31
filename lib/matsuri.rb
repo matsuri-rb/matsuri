@@ -74,6 +74,7 @@ module Matsuri
   module Tasks
     autoload :Kubectl,    'matsuri/tasks/kubectl'
     autoload :KubectlOps, 'matsuri/tasks/kubectl_ops'
+    autoload :Stacks,     'matsuri/tasks/stacks'
     autoload :HashDiff,   'matsuri/tasks/hash_diff'
     autoload :Docker,     'matsuri/tasks/docker'
     autoload :Pod,        'matsuri/tasks/pod'
