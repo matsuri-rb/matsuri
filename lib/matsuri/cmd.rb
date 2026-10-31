@@ -24,6 +24,13 @@ module Matsuri
         options.merge(parent_options || {}).merge(opts).deep_symbolize_keys
       end
 
+      # The CLI owns the boundary mapping; the built-in ImageTag acceptor
+      # owns the default — the same single owner the stack :image_tag
+      # collection uses. The positional may be nil.
+      def image_tag_for(positional)
+        Matsuri::Acceptors::ImageTag.new(positional).image_tag
+      end
+
       # The CLI owns the boundary mapping: --stack-config= names a path,
       # the stack's :config collection expects data. No flag is the empty
       # value; a flag with a bad path fails loudly, never falls back.

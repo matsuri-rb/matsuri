@@ -105,6 +105,13 @@ Working toward 0.3.0.
   `platform/stacks`, the definition module is `Stacks`, and the CLI verbs
   address stacks. There is no back-compat alias for the `app` type;
   definitions must rename their directory and `Matsuri.define :app` calls.
+- **`Matsuri::Stack` no longer shells out.** The `ShellOut` include is
+  gone, matching the resources. `docker!` remains on stacks as the hook
+  surface for definition-supplied `build!`/`push!` — it delegates to
+  `Tasks::Docker`, so definitions calling it are unchanged. A stack
+  definition that shelled with anything else (`kubectl!`, `sh_exec`)
+  must route through tasks (`Tasks::KubectlOps` for delivery verbs).
+
 - **Workload `image_tag` defaults are removed.** Pod, Deployment,
   ReplicaSet, ReplicationController, StatefulSet, DaemonSet, and CronJob no
   longer default `image_tag` to `latest`; the default lives in the built-in
@@ -127,6 +134,9 @@ Working toward 0.3.0.
 
 ### Removed
 
+- **`maybe_param_replicas`** on Deployment, ReplicaSet, and StatefulSet —
+  the client-side rolling-update era's `--replicas` passthrough, consumed
+  by nothing since `scale` became a task.
 - **`Kubernetes::Base#build!`** — a NotImplementedError stub with no
   caller: no CLI verb binds a per-resource build, and the working build
   path has always been the stack-level hook (`Stack#build!`, supplied by
@@ -181,6 +191,14 @@ Working toward 0.3.0.
 
 ### Changed
 
+- **The `latest` positional default has one owner.** The resource-level
+  CLI verbs (`show`/`diff`/`apply`/`create`/`recreate` with an image-tag
+  positional) no longer hardcode `'latest'` per cmd file; the positional
+  defaults to nil and routes through the built-in `ImageTag` acceptor —
+  the same single owner the stack `:image_tag` collection uses. Behavior
+  is unchanged by default, and the apply/create/recreate ladder keeps
+  its middle rung: positional, then the live `current_image_tag`
+  read-back, then the acceptor default.
 - **ConfigMap applies normally.** The replace-instead-of-apply override
   dated to 2016 kubectl issues (kubernetes#32432, kubernetes#41711) that
   kubectl fixed years ago; `kubectl apply` handles configmaps fine. Apply

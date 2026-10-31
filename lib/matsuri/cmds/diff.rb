@@ -17,8 +17,8 @@ module Matsuri
             diff_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new }
           end
         else
-          define_method(resource_name) do |name = :not_specified, image_tag = 'latest'|
-            diff_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new(image_tag: image_tag) }
+          define_method(resource_name) do |name = :not_specified, image_tag = nil|
+            diff_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new(image_tag: image_tag_for(image_tag)) }
           end
         end
       end

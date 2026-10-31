@@ -11,7 +11,6 @@ module Matsuri
   class Stack
     include Let
     include RLet::LazyOptions
-    include Matsuri::ShellOut
     include Matsuri::Concerns::RegistryHelpers
     include Matsuri::Concerns::Awaiting
 
@@ -200,15 +199,19 @@ module Matsuri
       Matsuri.log :fatal, "I don't know how to get to the console for #{name}. Define me in the stack definition."
     end
 
-    # To build this out beyond definition-supplied docker! calls, add a
-    # Tasks::Build carrying the mechanism — same shape as
-    # Tasks::KubectlOps: the hook declares, the task delivers.
     def build!(opt={})
       Matsuri.log :fatal, "I don't know how to build #{name}. Define me in the stack definition."
     end
 
     def push!(opt={})
       Matsuri.log :fatal, "I don't know how to push #{name}. Define me in the stack definition."
+    end
+
+    # The docker mechanism lives in Tasks::Docker; the hook declares, the
+    # task delivers. Definition-supplied build!/push! hooks call this
+    # unchanged. Stacks themselves no longer shell out.
+    def docker!(cmd, options = {})
+      Matsuri::Tasks::Docker.new.run!(cmd, options)
     end
 
     # Helper functions

@@ -112,6 +112,15 @@ RSpec.describe 'app stack' do
     expect(stack.dep_options(:stack)).not_to have_key(:stack_config)
   end
 
+  it 'delivers docker! through the Docker task; stacks do not shell out' do
+    docker = instance_double(Matsuri::Tasks::Docker)
+    expect(Matsuri::Tasks::Docker).to receive(:new).and_return(docker)
+    expect(docker).to receive(:run!).with('build -t app .', {})
+
+    stack.docker!('build -t app .')
+    expect(stack).not_to respond_to(:kubectl!)
+  end
+
   it 'keeps build order local to each stack' do
     other = Matsuri.define(:stack, 'app-canary') do
       needs :deployment, 'app-web'

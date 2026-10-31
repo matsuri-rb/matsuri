@@ -21,10 +21,9 @@ module Matsuri
         }.compact
       end
 
-      # Parameters passed from command line, from the client-side
-      # rolling-update era. Don't know if we are going to keep this around.
-      let(:maybe_param_replicas) { options[:replicas] || replicas }
-      let(:image_tag)            { options[:image_tag] }
+      # Supplied by the owning stack through dep_options, or by the CLI
+      # positional; pod templates read it.
+      let(:image_tag) { options[:image_tag] }
 
       let(:selector) { { matchLabels: match_labels, matchExpressions: match_expressions }.compact }
       let(:service_name) { fail NotImplementedError, 'Must define let(:service_name). Will define "pod-specific-string.serviceName.default.svc.cluster.local"' }
