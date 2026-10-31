@@ -55,5 +55,15 @@ RSpec.describe Matsuri::Tasks::HashDiff do
       expect { described_class.new(resource: pinned).run! }
         .to output(/spec\.replicas/).to_stdout
     end
+
+    it 'bases the comparison on the applied manifest, the payload apply sends' do
+      restricted = Matsuri.define(:deployment, 'web-restricted', inherits: 'web') do
+        let(:applied_manifest) { { apiVersion: api_version, kind: kind, metadata: final_metadata } }
+      end.new
+
+      desired = described_class.new(resource: restricted).desired_manifest
+      expect(desired).to eq JSON.parse(restricted.applied_to_json)
+      expect(desired).not_to have_key('spec')
+    end
   end
 end

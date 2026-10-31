@@ -34,13 +34,14 @@ module Matsuri
       end
 
       # The declaration through the same :on_apply pipeline apply
-      # assembles, over the same basis this diff has always used — so
-      # drift reads against what apply would send, never against a step a
-      # presenter owns. The JSON round trip is the comparison
+      # assembles, over the same basis: the applied manifest. Drift reads
+      # against what apply would send — never against a step a presenter
+      # owns, never against a field the resource restricts out of its
+      # applied_manifest. The JSON round trip is the comparison
       # normalization diff always applied to the declaration.
       def desired_manifest
         ops = Matsuri::Tasks::KubectlOps
-        presentation = ops.presentation(resource.manifest_for_export,
+        presentation = ops.presentation(resource.applied_manifest_for_export,
                                         ops.presenters_for(resource, presenters), :on_apply)
         JSON.parse(presentation.to_json)
       end
