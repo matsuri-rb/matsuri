@@ -124,4 +124,52 @@ RSpec.describe 'stack present declarations' do
       stack.new.diff!
     end
   end
+
+  describe 'resource-level declarations' do
+    it 'appends per scenario on the resource class, locally to it' do
+      declared = Matsuri.define(:deployment, 'present-own', inherits: 'app-web') do
+        present :on_apply, 'team-label'
+      end
+
+      expect(declared.presents[:on_apply]).to eq ['team-label']
+      expect(Matsuri::Registry.deployment('app-web').presents).to be_nil
+    end
+
+    it 'direct verbs assemble the resource own declarations, no stack needed' do
+      declared = Matsuri.define(:deployment, 'present-direct', inherits: 'app-web') do
+        present :on_apply, 'team-label'
+      end
+
+      expect(ops::Apply).to receive(:new) do |args|
+        expect(args[:input]).to match(/team: platform/)
+        run_double(ops::Apply)
+      end
+      ops.apply(declared.new)
+    end
+
+    it 'merges resource first, stack last: the boundary admits the finished manifest' do
+      resource_step = Matsuri::Transform::Callable.new(label: 'self-knowledge') do |m|
+        m.set([:metadata, :labels, :order], 'resource')
+      end
+      stack_step = Matsuri::Transform::Callable.new(label: 'admission') do |m|
+        m.set([:metadata, :labels, :admitted], m.get(:metadata, :labels, :order))
+        m.set([:metadata, :labels, :order], 'stack')
+      end
+
+      Matsuri.define(:deployment, 'present-merged', inherits: 'app-web') do
+        present :on_apply, resource_step
+      end
+      stack = Matsuri.define(:stack, 'present-merge-order') do
+        needs :deployment, 'present-merged'
+        present :on_apply, stack_step
+      end
+
+      expect(ops::Apply).to receive(:new) do |args|
+        expect(args[:input]).to match(/order: stack/)
+        expect(args[:input]).to match(/admitted: resource/)
+        run_double(ops::Apply)
+      end
+      stack.new.converge!
+    end
+  end
 end

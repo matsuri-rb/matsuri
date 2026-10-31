@@ -85,6 +85,24 @@ for free.
 Declarations never cross a stack boundary: a nested stack assembles from
 its own declarations, the same rule stack-config follows.
 
+## Declaring on Resources
+
+A resource declares its own pipelines with the same `present` grammar;
+the default is none. When a resource converges through a stack, the two
+declaration sites merge into one pipeline: **resource members first,
+stack members last**. These are not slot semantics — both run. Position
+is about who sees the completed manifest: the resource's pipeline
+completes its self-knowledge (closer to generation than to delivery),
+and the stack's steps sit where the server's own mutating admission sits
+relative to the client's manifest — they admit the finished product,
+including whatever the resource's steps produced. Delivery-context
+additions mostly commute and lose nothing by running late; a step that
+enforces a boundary is only enforcement if it runs last.
+
+Direct resource verbs (no stack context) assemble the resource's own
+declarations alone, so a resource behaves identically converged directly
+or through an undeclared stack.
+
 ## Selective Steps: Combinators
 
 A stack pipeline runs across every member manifest. Combinators make a

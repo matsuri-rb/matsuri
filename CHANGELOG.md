@@ -183,6 +183,15 @@ Working toward 0.3.0.
 
 ### Added
 
+- **`present` pipelines on resources.** The same `present` grammar on
+  `Kubernetes::Base`; default none. Through a stack, the two declaration
+  sites merge into one pipeline — resource members first, stack members
+  last. Both run; position is who sees the completed manifest: the
+  resource's pipeline completes its self-knowledge, the stack's steps
+  admit the finished manifest (where the server's own mutating admission
+  sits relative to the client's payload). Direct resource verbs assemble
+  the resource's own declarations alone, so a resource behaves
+  identically converged directly or through an undeclared stack.
 - **`present` pipelines on stacks.** `present(scenario, *members)`
   appends transform members to a scenario's pipeline — unlike `accept`,
   a scenario accumulates, and declaration order is member order. Members

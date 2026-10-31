@@ -16,6 +16,22 @@ module Matsuri
       include Matsuri::Concerns::RegistryHelpers
       include Matsuri::Concerns::Diffable
 
+      class_attribute :presents
+
+      # Declaration-surface vocabulary, as on stacks.
+      extend Matsuri::Transform::Combinators::Helpers
+
+      # Appends transform members to a scenario's pipeline, as on stacks:
+      # a scenario accumulates, declaration order is member order. Default
+      # is none. A resource's own pipeline completes its self-knowledge
+      # and runs before any stack-declared members — the stack's steps
+      # admit the finished manifest.
+      def self.present(scenario, *steps)
+        key = scenario.to_sym
+        current = presents || {}
+        self.presents = current.merge(key => Array(current[key]) + steps)
+      end
+
       # Namespace resolution
       let(:namespace)             { namespace_from_option || default_namespace }
 

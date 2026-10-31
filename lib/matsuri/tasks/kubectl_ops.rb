@@ -37,7 +37,7 @@ module Matsuri
       end
 
       def create(resource, presents: {})
-        Create.new(input:       payload(resource.manifest_for_export, presents, :on_create),
+        Create.new(input:       payload(resource.manifest_for_export, presents_for(resource, presents), :on_create),
                    namespace:   resource.namespace,
                    description: description_for(resource),
                    save_config: resource.save_config).run!
@@ -49,7 +49,7 @@ module Matsuri
 
       def recreate(resource, presents: {})
         Recreate.new(identity_for(resource)
-          .merge(input:       payload(resource.manifest_for_export, presents, :on_create),
+          .merge(input:       payload(resource.manifest_for_export, presents_for(resource, presents), :on_create),
                  description: description_for(resource),
                  save_config: resource.save_config)).run!
       end
@@ -106,7 +106,20 @@ module Matsuri
       end
 
       def apply_payload(resource, presents)
-        payload(resource.applied_manifest_for_export, presents, :on_apply)
+        payload(resource.applied_manifest_for_export, presents_for(resource, presents), :on_apply)
+      end
+
+      # Single merge, both declaration sites: the resource's own members
+      # first (its pipeline completes its self-knowledge), stack members
+      # appended (the boundary's steps admit the finished manifest).
+      # Direct verbs arrive with no stack declarations, so a resource
+      # behaves identically converged directly or through an undeclared
+      # stack.
+      def presents_for(resource, presents)
+        own = resource.class.respond_to?(:presents) ? resource.class.presents || {} : {}
+        (own.keys + presents.keys).map(&:to_sym).uniq.each_with_object({}) do |scenario, merged|
+          merged[scenario] = Array(own[scenario]) + Array(presents[scenario])
+        end
       end
 
       def payload(manifest, presents, scenario)
