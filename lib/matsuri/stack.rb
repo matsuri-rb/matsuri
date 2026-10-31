@@ -161,6 +161,9 @@ module Matsuri
       Matsuri.log :fatal, "I don't know how to get to the console for #{name}. Define me in the stack definition."
     end
 
+    # To build this out beyond definition-supplied docker! calls, add a
+    # Tasks::Build carrying the mechanism — same shape as
+    # Tasks::KubectlOps: the hook declares, the task delivers.
     def build!(opt={})
       Matsuri.log :fatal, "I don't know how to build #{name}. Define me in the stack definition."
     end

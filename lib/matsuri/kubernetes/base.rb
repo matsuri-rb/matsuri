@@ -64,10 +64,6 @@ module Matsuri
       # Overridables
       let(:spec)        { fail NotImplementedError, 'Must define let(:spec)' }
 
-      def build!
-        fail NotImplementedError, 'Must implement #build!'
-      end
-
       def diff!(_opt = {})
         print_diff(diff)
       end

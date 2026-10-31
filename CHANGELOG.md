@@ -71,6 +71,13 @@ Working toward 0.3.0.
 
 ### Removed
 
+- **`Kubernetes::Base#build!`** — a NotImplementedError stub with no
+  caller: no CLI verb binds a per-resource build, and the working build
+  path has always been the stack-level hook (`Stack#build!`, supplied by
+  the stack definition and driven by `matsuri <env> build <stack>`).
+  A definition that implements its own `build!` is unaffected; direct
+  callers of the stub now get NoMethodError instead of
+  NotImplementedError.
 - **`--record` everywhere kubectl is invoked** — create, apply, replace,
   scale, imported-manifest apply, and `Deployment#rollout!`. kubectl
   deprecated the flag (~1.22): it stamped the
