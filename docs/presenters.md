@@ -209,6 +209,15 @@ pre-existing field to a ghost manager that never relinquishes.
 `tests/bin/probe-ssa.sh` pins the protocol and the refuted
 alternatives.
 
+The delivery verbs honor the protocol themselves: `apply` (and so
+converge) routes a server-side resource that is not yet live through
+`Seed`, `create` brings one into existence through it, and `recreate`
+tears down and reseeds. Every later apply is an ordinary server-side
+apply. Converge is sequential, so a stack member later in `build_order`
+converges only after an earlier member is fully seeded and ceded —
+place whatever hands a field to another manager after the workload it
+manages.
+
 Three concerns ship, each a machinery + declared-hole pair:
 `Matsuri::Presenters::SeedReplicas` (`let(:replicas)`), `SeedImage`
 (`let(:image)`, seeding only containers without one), and

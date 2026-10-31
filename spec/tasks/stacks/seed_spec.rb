@@ -36,7 +36,7 @@ RSpec.describe Matsuri::Tasks::Stacks::Seed do
     "kubectl --context=dev --namespace=specs patch deployment/web --type=json -p '#{removal_patch(idx)}'"
   end
 
-  it 'creates seeded as the seed owner, applies declared as the field manager, then removes the seed owner entry' do
+  it 'creates seeded as the seed owner, applies declared as the field manager, then cedes the seed owner entry' do
     expect(task).to receive(:shell_out!)
       .with('kubectl --context=dev --namespace=specs create --field-manager=matsuri-seed -f -', { input: seeded })
       .ordered
@@ -62,19 +62,19 @@ RSpec.describe Matsuri::Tasks::Stacks::Seed do
       .and_return(live_read(%w[matsuri-seed matsuri]), live_read(%w[matsuri matsuri-seed]))
     expect(task).to receive(:shell_out).with(patch_line(0), anything).and_return(patch_result(false))
     expect(task).to receive(:shell_out).with(patch_line(1), anything).and_return(patch_result(true))
-    task.remove_seed_owner!
+    task.cede!
   end
 
   it 'is fatal when the entry keeps moving' do
     allow(task).to receive(:shell_out!).with(get_line, anything).and_return(live_read(%w[matsuri-seed]))
     allow(task).to receive(:shell_out).and_return(patch_result(false, stderr: 'conflict'))
     expect(Matsuri).to receive(:log).with(:fatal, /could not remove matsuri-seed after 3 attempts/).and_raise(SystemExit)
-    expect { task.remove_seed_owner! }.to raise_error(SystemExit)
+    expect { task.cede! }.to raise_error(SystemExit)
   end
 
   it 'is fatal when no seed owner entry exists' do
     allow(task).to receive(:shell_out!).with(get_line, anything).and_return(live_read(%w[matsuri]))
     expect(Matsuri).to receive(:log).with(:fatal, /no managedFields entry for matsuri-seed/).and_raise(SystemExit)
-    expect { task.remove_seed_owner! }.to raise_error(SystemExit)
+    expect { task.cede! }.to raise_error(SystemExit)
   end
 end

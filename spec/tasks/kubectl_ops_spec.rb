@@ -34,10 +34,21 @@ RSpec.describe Matsuri::Tasks::KubectlOps do
 
     it 'routes through server-side apply under the field manager when the resource declares apply_via :server_side_apply' do
       allow(deployment).to receive(:apply_via).and_return(:server_side_apply)
+      allow(ops::Get).to receive(:new).and_return(instance_double(ops::Get, exists?: true))
       expect_task(ops::ServerSideApply,
                   input:         deployment.applied_to_yaml,
                   field_manager: 'matsuri',
                   description:   'deployment/web')
+      ops.apply(deployment)
+    end
+
+    it 'applies a server-side resource that is not live through the seeding protocol' do
+      allow(deployment).to receive(:apply_via).and_return(:server_side_apply)
+      allow(ops::Get).to receive(:new).and_return(instance_double(ops::Get, exists?: false))
+      seed = instance_double(Matsuri::Tasks::Stacks::Seed, run!: true)
+      expect(Matsuri::Tasks::Stacks::Seed).to receive(:new)
+        .with(hash_including(seeded: deployment.to_yaml, declared: deployment.applied_to_yaml))
+        .and_return(seed)
       ops.apply(deployment)
     end
 
@@ -67,16 +78,35 @@ RSpec.describe Matsuri::Tasks::KubectlOps do
     end
 
     it 'pins save_config false when ongoing delivery never consults last-applied' do
-      allow(config_map).to receive(:apply_via).and_return(:server_side_apply)
+      allow(config_map).to receive(:apply_via).and_return(:replace)
       expect_task(ops::Create, input: config_map.to_yaml, save_config: false)
+      ops.create(config_map)
+    end
+
+    it 'creates a server-side resource through the seeding protocol' do
+      allow(config_map).to receive(:apply_via).and_return(:server_side_apply)
+      seed = instance_double(Matsuri::Tasks::Stacks::Seed, run!: true)
+      expect(Matsuri::Tasks::Stacks::Seed).to receive(:new)
+        .with(hash_including(seeded: config_map.to_yaml, field_manager: 'matsuri'))
+        .and_return(seed)
       ops.create(config_map)
     end
   end
 
   describe '.recreate' do
     it 'pins save_config false when ongoing delivery never consults last-applied' do
+      allow(config_map).to receive(:apply_via).and_return(:replace)
+      create = instance_double(ops::Create)
+      expect(ops::Create).to receive(:new).with(hash_including(save_config: false)).and_return(create)
+      expect_task(ops::Recreate, name: 'app-settings', create: create)
+      ops.recreate(config_map)
+    end
+
+    it 'recreates a server-side resource through the seeding protocol after teardown' do
       allow(config_map).to receive(:apply_via).and_return(:server_side_apply)
-      expect_task(ops::Recreate, name: 'app-settings', save_config: false)
+      seed = instance_double(Matsuri::Tasks::Stacks::Seed)
+      allow(Matsuri::Tasks::Stacks::Seed).to receive(:new).and_return(seed)
+      expect_task(ops::Recreate, name: 'app-settings', create: seed)
       ops.recreate(config_map)
     end
   end
@@ -173,6 +203,26 @@ RSpec.describe Matsuri::Tasks::KubectlOps do
       ops.converge(deployment)
     end
 
+    it 'converges a server-side resource through the seeding protocol when nothing is live' do
+      allow(deployment).to receive(:apply_via).and_return(:server_side_apply)
+      allow(ops::Get).to receive(:new).and_return(instance_double(ops::Get, exists?: false))
+      seed = instance_double(Matsuri::Tasks::Stacks::Seed, run!: true)
+      expect(Matsuri::Tasks::Stacks::Seed).to receive(:new)
+        .with(hash_including(seeded:        deployment.to_yaml,
+                             declared:      deployment.applied_to_yaml,
+                             description:   'deployment/web',
+                             field_manager: 'matsuri'))
+        .and_return(seed)
+      ops.converge(deployment)
+    end
+
+    it 'converges a live server-side resource by ordinary server-side apply' do
+      allow(deployment).to receive(:apply_via).and_return(:server_side_apply)
+      allow(ops::Get).to receive(:new).and_return(instance_double(ops::Get, exists?: true))
+      expect_task(ops::ServerSideApply, field_manager: 'matsuri', description: 'deployment/web')
+      ops.converge(deployment)
+    end
+
     it 'converges recreate-policy resources by create when nothing is live' do
       allow(ops::Get).to receive(:new).and_return(instance_double(ops::Get, exists?: false))
       expect_task(ops::Create, description: 'configmap/app-settings', save_config: true)
@@ -187,10 +237,12 @@ RSpec.describe Matsuri::Tasks::KubectlOps do
     end
 
     it 'recreates recreate-policy resources on restart' do
+      create = instance_double(ops::Create)
+      expect(ops::Create).to receive(:new).with(hash_including(save_config: true)).and_return(create)
       expect_task(ops::Recreate,
                   resource_type: 'configmap',
                   name:          'app-settings',
-                  save_config:   true)
+                  create:        create)
       ops.converge(config_map, { restart: true })
     end
   end

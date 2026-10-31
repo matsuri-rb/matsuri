@@ -31,9 +31,14 @@ module Matsuri
 
       module_function
 
-      # field_manager rides to every mechanism; only the server-side task
-      # reads it.
+      # Under server-side delivery, a resource that is not yet live
+      # routes through the seeding protocol instead: an ordinary apply
+      # cannot land seeds, and nothing we send may ever own them. Every
+      # later apply is the ordinary mechanism. field_manager rides to
+      # every mechanism; only the server-side task reads it.
       def apply(resource, presenters: {})
+        return Stacks.seed(resource, presenters: presenters) if server_side?(resource.apply_via) && !exists?(resource)
+
         apply_task_for(resource.apply_via)
           .new(input:         apply_payload(resource, presenters),
                namespace:     resource.namespace,
@@ -71,10 +76,21 @@ module Matsuri
       end
 
       def create(resource, presenters: {})
-        Create.new(input:       payload(resource.manifest_for_export, presenters_for(resource, presenters), :on_create),
-                   namespace:   resource.namespace,
-                   description: description_for(resource),
-                   save_config: consults_last_applied?(resource.apply_via) && resource.save_config).run!
+        creation_task_for(resource, presenters).run!
+      end
+
+      # Bringing into existence: plain create for client-side delivery,
+      # the seeding protocol for server-side. Returned unrun so recreate
+      # can sequence it after teardown.
+      def creation_task_for(resource, presenters)
+        if server_side?(resource.apply_via)
+          Stacks.seed_task(resource, presenters: presenters)
+        else
+          Create.new(input:       payload(resource.manifest_for_export, presenters_for(resource, presenters), :on_create),
+                     namespace:   resource.namespace,
+                     description: description_for(resource),
+                     save_config: consults_last_applied?(resource.apply_via) && resource.save_config)
+        end
       end
 
       def delete(resource)
@@ -83,9 +99,8 @@ module Matsuri
 
       def recreate(resource, presenters: {})
         Recreate.new(identity_for(resource)
-          .merge(input:       payload(resource.manifest_for_export, presenters_for(resource, presenters), :on_create),
-                 description: description_for(resource),
-                 save_config: consults_last_applied?(resource.apply_via) && resource.save_config)).run!
+          .merge(description: description_for(resource),
+                 create:      creation_task_for(resource, presenters))).run!
       end
 
       def scale(resource, replicas)

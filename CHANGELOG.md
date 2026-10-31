@@ -275,7 +275,13 @@ Working toward 0.3.0.
   managedFields entry (a test+remove JSON patch — a stale index is a
   loud rejection with a bounded reread retry, never a wrong removal).
   The field manager ends sole owner of the declared fields; seeds end
-  unowned until a controller or deliverer takes them.
+  unowned until a controller or deliverer takes them. The delivery verbs
+  run the protocol themselves: `apply` (and so converge) routes a
+  not-yet-live server-side resource through `Seed`, `create` brings one
+  into existence through it, and `recreate` tears down and reseeds —
+  every later apply is the ordinary mechanism, and sequential
+  `build_order` means a member that hands a field to another manager can
+  simply ride later in the stack.
   `tests/bin/probe-ssa.sh` pins the protocol and the refuted
   alternatives against a live apiserver.
 - **The seed family.** `Matsuri::Presenters::SeedReplicas` / `SeedImage`

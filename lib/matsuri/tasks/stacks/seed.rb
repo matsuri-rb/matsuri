@@ -26,11 +26,11 @@ module Matsuri
       # 2. Ordinary declared server-side apply as the field manager.
       #    Equal values co-own; managedFields is never empty, so no
       #    before-first-apply ghost.
-      # 3. Remove the seed owner's managedFields entry with an atomic
-      #    test+remove JSON patch. Ownership IS the managedFields
+      # 3. Cede: remove the seed owner's managedFields entry with an
+      #    atomic test+remove JSON patch. Ownership IS the managedFields
       #    content — deleting the entry is the transfer. The field
       #    manager ends sole owner of the declared fields; seeds end
-      #    unowned until a controller takes them.
+      #    unowned until a controller or deliverer takes them.
       class Seed
         include Matsuri::Task
 
@@ -49,7 +49,7 @@ module Matsuri
           puts "Seeding #{description}".color(:yellow).bright if verbose
           create!
           apply!
-          remove_seed_owner!
+          cede!
         end
 
         def create!
@@ -64,7 +64,7 @@ module Matsuri
                                           field_manager: field_manager).run!
         end
 
-        def remove_seed_owner!
+        def cede!
           last = nil
           REMOVAL_ATTEMPTS.times do
             idx = seed_owner_index
