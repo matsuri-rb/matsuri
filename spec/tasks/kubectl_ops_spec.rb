@@ -41,6 +41,13 @@ RSpec.describe Matsuri::Tasks::KubectlOps do
     end
   end
 
+  describe '.status' do
+    it 'displays live state with identity derived from the resource' do
+      expect_task(ops::Status, resource_type: 'deployment', name: 'web', namespace: 'specs')
+      ops.status(deployment)
+    end
+  end
+
   describe '.converge' do
     it 'converges via apply by default' do
       expect_task(ops::Apply, description: 'deployment/web')

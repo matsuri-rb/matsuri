@@ -18,6 +18,7 @@ module Matsuri
       autoload :Delete,   'matsuri/tasks/kubectl_ops/delete'
       autoload :Recreate, 'matsuri/tasks/kubectl_ops/recreate'
       autoload :Scale,    'matsuri/tasks/kubectl_ops/scale'
+      autoload :Status,   'matsuri/tasks/kubectl_ops/status'
       autoload :Get,      'matsuri/tasks/kubectl_ops/get'
 
       module_function
@@ -49,6 +50,10 @@ module Matsuri
 
       def scale(resource, replicas)
         Scale.new(identity_for(resource).merge(replicas: replicas)).run!
+      end
+
+      def status(resource)
+        Status.new(identity_for(resource)).run!
       end
 
       def exists?(resource)

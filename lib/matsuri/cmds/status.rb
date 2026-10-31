@@ -12,7 +12,11 @@ module Matsuri
       end
 
       desc 'stack STACK_NAME', 'stack status'
-      status_cmd_for :stack
+      def stack(name = :not_specified)
+        with_config do |opt|
+          Matsuri::Registry.fetch_or_load(:stack, name).new.status!
+        end
+      end
 
       desc 'pod POD_NAME', 'pod status'
       status_cmd_for :pod
@@ -54,7 +58,7 @@ module Matsuri
       def status_resource
         with_config do |opt|
           resource = yield
-          resource.status!
+          Matsuri::Tasks::KubectlOps.status(resource)
         end
       end
 

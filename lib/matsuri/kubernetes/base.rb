@@ -68,10 +68,6 @@ module Matsuri
         fail NotImplementedError, 'Must implement #build!'
       end
 
-      def status!
-        Matsuri.log :fatal, "I don't know how to display a status for #{resource_type}"
-      end
-
       def diff!(_opt = {})
         print_diff(diff)
       end

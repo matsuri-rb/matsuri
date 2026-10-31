@@ -28,6 +28,11 @@ Working toward 0.3.0.
     express their converge-by-recreate behavior through these lets.
   - `annotate!` is removed outright: nothing bound it since `--record`
     died, and deliberate annotation belongs to the manifest + apply path.
+  - `status!` is removed from `Kubernetes::Base`. It was a fatal stub no
+    resource ever implemented — every `status <type> <name>` died with
+    "I don't know how to display a status". The `Status` task renders
+    `kubectl get -o wide` instead, so the verb works for the first time.
+    `Stack#status!` remains the overridable hook for stack definitions.
   - `Concerns::Scalable` is removed; `scale` is a task, and the CLI table
     already names which workloads scale.
   - `ImportedManifest` drops its five fatal verb stubs. Apply-only is now
