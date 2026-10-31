@@ -42,6 +42,11 @@ Working toward 0.3.0.
     shape serves single- and multi-doc manifests); semantics unchanged.
   - `ExportManifest#applied_to_yaml` is fixed (previously raised
     `NoMethodError`); it is now the canonical apply payload.
+  - `Kubernetes::Base#created?` is removed; the existence check is
+    `Tasks::KubectlOps.exists?(resource)` (the `Get` read task, which
+    `converge` already used). The verbose "already started / not
+    started" narration moves to `Get#exists?`. With it goes Base's
+    `ShellOut` include — resources no longer shell out at all.
 
 - **The client-side diff moves off the resource classes into
   `Matsuri::Concerns::Diffable` + `Matsuri::Tasks::HashDiff`.** The

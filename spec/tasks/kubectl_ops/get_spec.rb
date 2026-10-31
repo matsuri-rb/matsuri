@@ -25,6 +25,13 @@ RSpec.describe Matsuri::Tasks::KubectlOps::Get do
     expect(task.exists?).to be false
   end
 
+  it 'names what it found under verbose' do
+    verbose_task = described_class.new(resource_type: 'deployment', name: 'web', namespace: 'specs', verbose: true)
+    allow(verbose_task).to receive(:shell_out).and_return(live_lookup(true))
+    expect(Matsuri).to receive(:log).with(:info, /deployment\/web already started/)
+    expect(verbose_task.exists?).to be true
+  end
+
   it 'returns the live manifest as a parsed hash' do
     expect(task).to receive(:shell_out)
       .with('kubectl --context=dev --namespace=specs get deployment/web -o json', { echo_level: :debug, no_stdout: true })

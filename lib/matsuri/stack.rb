@@ -139,7 +139,7 @@ module Matsuri
         resource = dep(type, name).new(dep_options(type))
         # @TODO if-elsif-end ladder code smell, refactor
         if options[:check_only]
-          next if resource.created?
+          next if Matsuri::Tasks::KubectlOps.exists?(resource)
           send(options[:on_failure], type, name) || Matsuri.log(:fatal, "#{type}/#{name} not found on cluster")
         elsif type == :stack && !opts[:reboot]
           puts "Shallow converging stack #{name}".color(:red).bright if config.verbose

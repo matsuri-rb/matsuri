@@ -12,7 +12,6 @@ module Matsuri
     class Base
       include Let
       include RLet::LazyOptions
-      include Matsuri::ShellOut
       include Matsuri::Concerns::ExportManifest
       include Matsuri::Concerns::RegistryHelpers
       include Matsuri::Concerns::Diffable
@@ -77,19 +76,6 @@ module Matsuri
       #   let(:volumes)      { [maybe(use_keyfile?) { mongo-keyfile-volume }].compact }
       def maybe(cond)
         yield if cond
-      end
-
-      def created?
-        cmd = kubectl "get #{resource_type}/#{name}", echo_level: :debug, no_stdout: true
-        return cmd.status.success? unless config.verbose
-
-        status = if cmd.status.success?
-                   "already started"
-                 else
-                   "not started"
-                 end
-        Matsuri.log :info, "#{resource_type}/#{name} #{status}".color(:yellow)
-        cmd.status.success?
       end
     end
   end
