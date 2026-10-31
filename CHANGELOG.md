@@ -71,6 +71,18 @@ Working toward 0.3.0.
     (`Object#=~` was removed in Ruby 3.2; any diff touching a Hash or
     Array value raised `NoMethodError` on modern Ruby).
 
+- **Bare `diff` is now the server-side diff.** `matsuri <env> diff <type>
+  <name>` runs `kubectl diff` (`Tasks::KubectlOps::Diff`): the apiserver
+  dry-runs the same payload `apply` would send through defaulting and
+  admission, and the output shows live-vs-admitted — admission injections
+  included. `--hash-diff` restores the client-side filtered diff
+  (`Tasks::HashDiff`), which answers a different question: drift relative
+  to the declaration with cluster-owned noise filtered out. Both are
+  permanent. `--primary-container` is a HashDiff-only projection and
+  implies `--hash-diff`. kubectl's exit-code convention is honored: no
+  output and exit 0 means no differences; only exit codes above 1 are
+  errors.
+
 - **`Matsuri::App` is renamed `Matsuri::Stack`.** A stack is a bundle of
   resources managed together — one owner, one converge act; "app" never
   described that. Registry type is `stack`, definitions load from

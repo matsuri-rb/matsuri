@@ -9,6 +9,7 @@ module Matsuri
       include Matsuri::Cmd
 
       class_option :primary_container, aliases: :p, type: :boolean, default: false
+      class_option :hash_diff,         type: :boolean, default: false
 
       def self.diff_cmd_for(resource_name, image_tag: false)
         unless image_tag
@@ -90,7 +91,13 @@ module Matsuri
       def diff_resource
         with_config do |opt|
           resource = yield opt
-          Matsuri::Tasks::HashDiff.new(resource: resource, primary_container: opt[:primary_container]).run!
+          # --primary-container is a HashDiff-only projection, so it
+          # implies --hash-diff
+          if opt[:hash_diff] || opt[:primary_container]
+            Matsuri::Tasks::HashDiff.new(resource: resource, primary_container: opt[:primary_container]).run!
+          else
+            Matsuri::Tasks::KubectlOps.diff(resource)
+          end
         end
       end
     end

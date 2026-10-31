@@ -5,11 +5,12 @@ module Matsuri
     module KubectlOps
       # Full replacement of a live object with a rendered payload.
       #
-      # Legacy mechanism: no built-in resource routes here anymore (ConfigMap
-      # did, working around 2016-era kubectl apply gaps). Replace clobbers
-      # fields other writers own and never consults last-applied-configuration,
-      # so prefer apply. A resource that genuinely needs it opts in with
-      # `let(:apply_via) { :replace }`.
+      # One value of the apply_via delivery axis, mutually exclusive with
+      # apply (and with server-side apply when that arrives): a resource
+      # chooses it with `let(:apply_via) { :replace }`. No built-in
+      # declares it; the cost of choosing it is that replace clobbers
+      # fields other writers own and never consults
+      # last-applied-configuration — so apply is the default for a reason.
       class Replace
         include Matsuri::Task
 

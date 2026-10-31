@@ -81,7 +81,13 @@ module Matsuri
 
     def diff!(opt = {})
       members.each do |member|
-        Matsuri::Tasks::HashDiff.new(resource: member, primary_container: opt[:primary_container]).run!
+        # --primary-container is a HashDiff-only projection, so it
+        # implies --hash-diff
+        if opt[:hash_diff] || opt[:primary_container]
+          Matsuri::Tasks::HashDiff.new(resource: member, primary_container: opt[:primary_container]).run!
+        else
+          Matsuri::Tasks::KubectlOps.diff(member)
+        end
       end
     end
 

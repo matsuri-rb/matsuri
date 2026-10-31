@@ -41,6 +41,16 @@ RSpec.describe Matsuri::Tasks::KubectlOps do
     end
   end
 
+  describe '.diff' do
+    it 'diffs the same payload apply would send' do
+      expect_task(ops::Diff,
+                  input:       deployment.applied_to_yaml,
+                  namespace:   'specs',
+                  description: 'deployment/web')
+      ops.diff(deployment)
+    end
+  end
+
   describe '.manifest' do
     it 'reads the live manifest with identity derived from the resource' do
       get = instance_double(ops::Get, manifest: { 'kind' => 'Deployment' })

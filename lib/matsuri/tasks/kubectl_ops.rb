@@ -20,6 +20,7 @@ module Matsuri
       autoload :Scale,    'matsuri/tasks/kubectl_ops/scale'
       autoload :Status,   'matsuri/tasks/kubectl_ops/status'
       autoload :Get,      'matsuri/tasks/kubectl_ops/get'
+      autoload :Diff,     'matsuri/tasks/kubectl_ops/diff'
 
       module_function
 
@@ -64,6 +65,16 @@ module Matsuri
       # is not on the cluster.
       def manifest(resource)
         Get.new(identity_for(resource)).manifest
+      end
+
+      # Server-side diff of the same payload apply would send: one site
+      # builds the presented manifest for both diff and apply, so the
+      # diff can never drift from the delivery. When an SSA apply_via
+      # value exists, this is where it routes --server-side through.
+      def diff(resource)
+        Diff.new(input:       resource.applied_to_yaml,
+                 namespace:   resource.namespace,
+                 description: description_for(resource)).run!
       end
 
       # Lifecycle selection: the resource's converge_via policy picks the
