@@ -16,6 +16,10 @@ module Matsuri
     extend Mixlib::Config
     config_strict_mode false # Allow users to extend the key space
 
+    # Repo-wide save-config policy for the normal apply path's create and
+    # recreate; stacks override per stack, resources per definition.
+    default :save_config, true
+
     # Loads a platform file if it exists. Each subsequent file loaded
     # will override older ones.
     def self.load_configuration(load_paths = [])

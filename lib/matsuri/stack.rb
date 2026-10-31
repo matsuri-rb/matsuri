@@ -19,9 +19,13 @@ module Matsuri
     class_attribute :acceptors
     class_attribute :presents
 
+    class_attribute :save_config_policy
+
     # Declaration-surface vocabulary: match / match_kind / match_deployments
-    # wrap a present member so it applies selectively.
+    # wrap a present member so it applies selectively; seed_* constructors
+    # close a seed concern's hole over a declaration-time value.
     extend Matsuri::Transform::Combinators::Helpers
+    extend Matsuri::Presenters::Helpers
 
     # The collection name is the options key: each acceptor admits its own
     # component of the invocation options, whole. The built-in :image_tag
@@ -77,6 +81,14 @@ module Matsuri
         key = scenario.to_sym
         current = presents || {}
         self.presents = current.merge(key => Array(current[key]) + steps)
+      end
+
+      # Declares the save-config policy for every resource member this
+      # stack delivers (overriding the repo-wide Platform setting); a
+      # resource overrides again with its own let(:save_config). Normal
+      # apply path only.
+      def save_config(value)
+        self.save_config_policy = value
       end
     end
 
@@ -207,10 +219,14 @@ module Matsuri
 
     # stack-config never crosses a stack boundary: instance identity is the
     # (stack, stack-config) pair, and a nested stack is a different instance.
+    # The save-config policy rides to resource members only — a nested
+    # stack declares its own.
     def dep_options(type)
       return { image_tag: image_tag } if type == :stack
 
-      { image_tag: image_tag, stack_config: stack_config }
+      opts = { image_tag: image_tag, stack_config: stack_config }
+      opts[:save_config] = self.class.save_config_policy unless self.class.save_config_policy.nil?
+      opts
     end
 
     def members

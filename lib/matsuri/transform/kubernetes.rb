@@ -18,6 +18,11 @@ module Matsuri
         nodeSelectorTerms
       ].freeze
 
+      # The pod spec within a pod-template workload or a bare pod manifest.
+      def pod_spec_path(manifest)
+        manifest.get(:spec, :template, :spec) ? %i[spec template spec] : %i[spec]
+      end
+
       # Set the env variable of a container, defaults to container 0
       def set_env(spec, key, value, container: 0)
         path = [:containers, container, :env]

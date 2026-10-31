@@ -163,6 +163,60 @@ The leaf form receives the pipeline carrier directly — a `Map` — and no
 boundary copy of its own, so prefer the presenter forms for anything
 reused.
 
+## Seeds
+
+A seed completes a create payload with a field's boot value — the
+replica count, the boot image, initial resource settings — without ever
+contesting a declaration. The model:
+
+- **Additive on create.** Seeds ride `:on_create` declarations on stacks
+  and resources; the ongoing `:on_apply` payload never carries them.
+- **Don't-clobber is structural.** A field only seeds when the manifest
+  omits it. A workload that declares `spec.replicas` has opted out — the
+  seed yields, nothing overwrites. (Deployment's spec compacts, so
+  `let(:replicas) { nil }` is clean omission.)
+- **Controllers take ownership uncontested.** Because the create runs
+  without writing the seeded fields into last-applied (`save_config`
+  governs this), ongoing applies of a manifest that omits them have
+  nothing to say about them — an HPA that scales is never fought. The
+  cluster side of this is pinned by `tests/bin/probe-save-config.sh`.
+
+Three concerns ship, each a machinery + declared-hole pair:
+`Matsuri::Presenters::SeedReplicas` (`let(:replicas)`), `SeedImage`
+(`let(:image)`, seeding only containers without one), and
+`SeedResources` (`let(:resources)`, likewise). One seed concern per
+presenter — compose seeds in the pipeline, not by stacking includes.
+Each has a declaration-surface constructor closing the hole over its
+argument:
+
+```ruby
+Matsuri.define :stack, 'app' do
+  needs :deployment, 'app-web'
+  needs :deployment, 'app-worker'
+
+  present :on_create, match_deployments(seed_replicas(2))
+  present :on_create, match_deployments(seed_resources(
+    requests: { cpu: '500m', memory: '512Mi' }
+  ))
+  present :on_create, match({ kind: 'Deployment', name: 'app-worker' },
+                            seed_replicas(1))
+end
+```
+
+Seed values close at declaration time, so they must be literals or reads
+of global state (`Matsuri::Platform`, environment config) — instance
+values like the converge positional do not reach class-level
+declarations.
+
+### save_config
+
+`save_config` feeds create/recreate's `--save-config` flag on the normal
+apply path (it does not apply to server-side apply). It resolves
+most-specific-first: a definition's own `let(:save_config)`, then the
+owning stack's `save_config false` declaration, then the repo-wide
+`Matsuri::Platform.save_config` (default `true`). Like stack-config and
+`present` declarations, a stack's policy never crosses to nested stacks.
+
 ## Composition
 
 Pipelines are `Matsuri::Transform::Callable` values: `new` is the

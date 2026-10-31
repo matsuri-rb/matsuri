@@ -20,6 +20,7 @@ module Matsuri
 
       # Declaration-surface vocabulary, as on stacks.
       extend Matsuri::Transform::Combinators::Helpers
+      extend Matsuri::Presenters::Helpers
 
       # Appends transform members to a scenario's pipeline, as on stacks:
       # a scenario accumulates, declaration order is member order. Default
@@ -71,9 +72,13 @@ module Matsuri
 
       # Delivery policy, read by the Tasks::KubectlOps boundary. Resources
       # declare what delivery should do; the mechanism lives in the tasks.
+      # save_config resolves most-specific-first: a definition's own let,
+      # the owning stack's declaration (arriving as an option), then the
+      # repo-wide Matsuri::Platform.save_config (default true). It governs
+      # the normal apply path's create/recreate only.
       let(:converge_via) { :apply }
       let(:apply_via)    { :apply }
-      let(:save_config)  { true }
+      let(:save_config)  { options.key?(:save_config) ? options[:save_config] : Matsuri::Platform.save_config }
 
       # Diff policy, read by Tasks::HashDiff. The path to the primary
       # container within the manifest; resources with a pod template

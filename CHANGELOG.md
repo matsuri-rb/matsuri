@@ -194,6 +194,22 @@ Working toward 0.3.0.
 
 ### Added
 
+- **The seed family.** `Matsuri::Presenters::SeedReplicas` / `SeedImage`
+  / `SeedResources` — concern + declared-hole pairs that complete a
+  create payload with a field's boot value, with `seed_replicas(n)` /
+  `seed_image(img)` / `seed_resources(spec)` declaration-surface
+  constructors on stacks and resources. Additive on create: a field only
+  seeds when the manifest omits it, so a declared field is the opt-out
+  and nothing ever overwrites a declaration; the `:on_apply` payload
+  never carries seeded fields, so controllers (HPA) take ownership
+  uncontested — the cluster mechanics are pinned by
+  `tests/bin/probe-save-config.sh`. `save_config` becomes a resolution
+  chain, most-specific-first: a definition's own let, the owning stack's
+  `save_config false` declaration, then repo-wide
+  `Matsuri::Platform.save_config` (default `true`); normal apply path
+  only, never crossing nested stacks. The dialect gains
+  `pod_spec_path(manifest)` — the pod spec within a pod-template
+  workload or bare pod. See the Seeds section of docs/presenters.md.
 - **`tests/` — a live-cluster probe harness.** `bin/minikube-start.sh`
   runs a dedicated `matsuri` minikube profile (`--keep-context`; vfkit
   driver on macOS), and `bin/probe-save-config.sh` pins the delivery

@@ -20,6 +20,13 @@ module Matsuri
     autoload :ImageTag, 'matsuri/acceptors/image_tag'
   end
 
+  module Presenters
+    autoload :SeedImage,     'matsuri/presenters/seed_image'
+    autoload :SeedReplicas,  'matsuri/presenters/seed_replicas'
+    autoload :SeedResources, 'matsuri/presenters/seed_resources'
+    autoload :Helpers,       'matsuri/presenters/helpers'
+  end
+
   module Kubernetes
     autoload :Base,                    'matsuri/kubernetes/base'
 
