@@ -8,6 +8,8 @@ require 'json'
 module Matsuri
   module Kubernetes
     class Pod < Matsuri::Kubernetes::Base
+      include Matsuri::Transform::Env
+
       let(:api_version) { 'v1' }
       let(:kind)        { 'Pod' }
 
@@ -191,17 +193,6 @@ module Matsuri
 
       def base_path(path)
         File.join config.base_path, path
-      end
-
-      # Ruby 2.0+ uses ordered hashes
-      def expand_env(hash)
-        hash.map do |k,v|
-          if v.is_a?(Hash)
-            { name: k, valueFrom: v }
-          else
-            { name: k, value: v.to_s }
-          end
-        end
       end
 
       def env_from_secret(name:, key:)

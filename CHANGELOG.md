@@ -183,6 +183,34 @@ Working toward 0.3.0.
 
 ### Added
 
+- **`Matsuri::Presenter` — zero-config, context-free manifest steps.** A
+  presenter is Manifest→Manifest: construction takes nothing, and
+  parameterization happens before `#call` ever runs — definition lets
+  filling a concern's declared holes, or declaration-time values closed
+  over in a leaf `Callable`. Authors implement `#transform`; `#call` is
+  framework-owned and makes the one deep boundary copy (Marshal, because
+  the carrier is data), so input-never-mutated is a constraint rather
+  than a convention, and a fresh instance per call scopes let memoization
+  to a single manifest pass. The Kubernetes dialect is bare vocabulary
+  inside `#transform`. Registry type `presenter`, definitions in
+  `platform/presenters`, `Registry.presenter(name)` reader, bare classes
+  equally valid. No built-ins ship yet.
+- **`Transform::Kubernetes` — the manifest dialect.** Algebra + Env
+  addressed to Kubernetes shapes: `set_env`, `set_all_env`,
+  `set_resources` (strict, `EntryNotFound` on unknown container) and its
+  curried `with_resources`, `set_label`, `append_volume`,
+  `append_volume_mount`, `without_container`, and the node-affinity
+  helpers over a well-known path constant — a misspelled path cannot
+  exist at a call site. Pod now draws `expand_env` from `Transform::Env`
+  instead of defining its own (`sorted_env` unchanged).
+- **`Transform::Combinators` — Element→Element machinery.** `Match`
+  applies its element only to manifests meeting the declared
+  `{kind:, name:, namespace:}` criteria (the import-lookup addressing
+  grammar; unknown keys are an error) and is the identity otherwise.
+  The `Helpers` module carries the declaration vocabulary — `match`,
+  `match_kind`, `match_deployments`; sugars grow on demand. Combinators
+  are never registry-named: names cross the declaration boundary,
+  machinery does not.
 - **`Matsuri::Transform` — the pure manifest-transform strata.** Nothing
   under the namespace shells out; everything operates on plain data and
   composes as values. `Transform::Algebra` carries the path-addressed ops

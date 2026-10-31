@@ -13,6 +13,7 @@ module Matsuri
   autoload :Cmd,         'matsuri/cmd'
   autoload :Stack,       'matsuri/stack'
   autoload :Acceptor,    'matsuri/acceptor'
+  autoload :Presenter,   'matsuri/presenter'
   autoload :Transform,   'matsuri/transform'
 
   module Acceptors
