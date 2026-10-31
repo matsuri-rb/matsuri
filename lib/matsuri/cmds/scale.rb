@@ -29,7 +29,7 @@ module Matsuri
       def scale_resource(replicas)
         with_config do |opt|
           resource = yield
-          resource.scale!(replicas, opt)
+          Matsuri::Tasks::KubectlOps.scale(resource, replicas)
         end
       end
     end

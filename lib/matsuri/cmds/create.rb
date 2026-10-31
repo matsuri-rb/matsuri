@@ -83,7 +83,7 @@ module Matsuri
       def create_resource
         with_config do |opt|
           resource = yield
-          resource.create!
+          Matsuri::Tasks::KubectlOps.create(resource)
         end
       end
     end

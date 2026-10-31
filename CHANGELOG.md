@@ -11,6 +11,33 @@ Working toward 0.3.0.
 
 ### Breaking
 
+- **Delivery moves off the resource classes into `Matsuri::Tasks::KubectlOps`.**
+  Resources are pure manifest generators; the kubectl mechanism lives in
+  one task per verb (`Apply`, `Create`, `Replace`, `Delete`, `Recreate`,
+  `Scale`, plus the `Get` read), and the CLI selects the task. The
+  module-level boundary functions (`KubectlOps.apply/create/delete/
+  recreate/scale/converge`) are the single site deriving task inputs from
+  a rendered resource — post-generation manifest transforms will slot in
+  there. Consequences:
+  - `Kubernetes::Base` loses `create!`, `apply!`, `replace!`, `delete!`,
+    `recreate!`, `annotate!`, `converge!`, `converge_by_apply!`, and
+    `converge_by_recreate!`. Definitions overriding these must declare
+    delivery policy instead: `let(:converge_via)` (`:apply` default,
+    `:recreate`), `let(:apply_via)` (`:apply` default, `:replace`), and
+    `let(:save_config)` (default `true`). Pod, Secret, and ConfigMap
+    express their previous behavior through these lets.
+  - `annotate!` is removed outright: nothing bound it since `--record`
+    died, and deliberate annotation belongs to the manifest + apply path.
+  - `Concerns::Scalable` is removed; `scale` is a task, and the CLI table
+    already names which workloads scale.
+  - `ImportedManifest` drops its five fatal verb stubs. Apply-only is now
+    structural — the CLI never bound the other verbs — and its custom
+    `apply!` is the same `Apply` task fed multi-doc YAML.
+  - Create/apply payloads are sent as YAML rather than JSON (one payload
+    shape serves single- and multi-doc manifests); semantics unchanged.
+  - `ExportManifest#applied_to_yaml` is fixed (previously raised
+    `NoMethodError`); it is now the canonical apply payload.
+
 - **`Matsuri::App` is renamed `Matsuri::Stack`.** A stack is a bundle of
   resources managed together — one owner, one converge act; "app" never
   described that. Registry type is `stack`, definitions load from

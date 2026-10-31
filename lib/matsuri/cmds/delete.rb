@@ -46,7 +46,11 @@ module Matsuri
       delete_cmd_for :endpoints
 
       desc 'stack STACK_NAME', 'deletes all resources in a stack'
-      delete_cmd_for :stack
+      def stack(name = :not_specified)
+        with_config do |opt|
+          Matsuri::Registry.fetch_or_load(:stack, name).new.delete!
+        end
+      end
 
       desc 'secret SECRET_NAME', 'delete a secret'
       delete_cmd_for :secret
@@ -74,7 +78,7 @@ module Matsuri
       def delete_resource
         with_config do |opt|
           resource = yield
-          resource.delete!
+          Matsuri::Tasks::KubectlOps.delete(resource)
         end
       end
     end

@@ -17,7 +17,6 @@ module Matsuri
       include Matsuri::ShellOut
       include Matsuri::Concerns::ExportManifest
       include Matsuri::Concerns::RegistryHelpers
-      include Matsuri::Concerns::Awaiting
 
       # Namespace resolution
       let(:namespace)             { namespace_from_option || default_namespace }
@@ -56,6 +55,12 @@ module Matsuri
       # when the definition is invoked standalone.
       let(:stack_config) { options[:stack_config] }
 
+      # Delivery policy, read by the Tasks::KubectlOps boundary. Resources
+      # declare what delivery should do; the mechanism lives in the tasks.
+      let(:converge_via) { :apply }
+      let(:apply_via)    { :apply }
+      let(:save_config)  { true }
+
       # Overridables
       let(:spec)        { fail NotImplementedError, 'Must define let(:spec)' }
 
@@ -63,74 +68,8 @@ module Matsuri
         fail NotImplementedError, 'Must implement #build!'
       end
 
-      def create!
-        puts "Creating #{resource_type}/#{name}".color(:yellow).bright if config.verbose
-        puts to_json if config.debug
-        kubectl! "create --save-config=true -f -", input: to_json
-      end
-
-      def delete!
-        puts "Deleting #{resource_type}/#{name}".color(:yellow).bright if config.verbose
-        kubectl! "delete #{resource_type}/#{name}"
-      end
-
-      def apply!
-        puts "Applying (create or update) #{resource_type}/#{name}".color(:yellow).bright if config.verbose
-        puts to_json if config.debug
-        kubectl! "apply -f -", input: applied_to_json
-      end
-
-      def replace!
-        puts "Replacing (create or update) #{resource_type}/#{name}".color(:yellow).bright if config.verbose
-        puts to_json if config.debug
-        kubectl! "replace -f -", input: to_json
-      end
-
-      def recreate!
-        if created?
-          # Preload any lazy upstream variable assignments
-          to_json
-
-          delete!
-          awaiting!('resource deletion', interval: 0.5) { !created? }
-        end
-
-        create!
-      end
-
       def status!
         Matsuri.log :fatal, "I don't know how to display a status for #{resource_type}"
-      end
-
-      def annotate!(hash = {})
-        json = JSON.generate( { metadata: { annotations: hash } } )
-        Matsuri.log :info, "Annotating #{resource_type}/#{name} with #{hash.inspect}"
-        kubectl! "patch #{resource_type} #{name} -p '#{json}'"
-      end
-
-      def converge!(opts = {})
-        converge_by_apply!(opts)
-      end
-
-      def converge_by_apply!(opts)
-        puts "Converging #{resource_type}/#{name} via apply".color(:yellow) if config.verbose
-        puts "Rebuild not implemented. Applying instead.".color(:red).bright if opts[:rebuild]
-        apply!
-      end
-
-      def converge_by_recreate!(opts = {})
-        puts "Converging #{resource_type}/#{name} via recreate".color(:yellow) if config.verbose
-        puts "Rebuild not implemented. Recreating instead.".color(:red).bright if opts[:rebuild]
-
-        if opts[:restart] || opts[:rebuild]
-          if created?
-            recreate!
-          else
-            create!
-          end
-        else
-          create! unless created?
-        end
       end
 
       def diff!(_opt = {})

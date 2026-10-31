@@ -45,7 +45,7 @@ module Matsuri
       end
 
       def applied_to_yaml
-        applied_manifest.for_export.to_yaml
+        applied_manifest_for_export.to_yaml
       end
 
       def pretty_print

@@ -70,9 +70,7 @@ module Matsuri
       # These are things set up by the cluster administrator, so we can assume
       # if it is present on the server, we can skip it. As such, better to use
       # recreate than apply for secrets.
-      def converge!(opts = {})
-        converge_by_recreate!(opts)
-      end
+      let(:converge_via) { :recreate }
 
       class << self
         def load_path

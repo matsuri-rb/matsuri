@@ -99,7 +99,7 @@ module Matsuri
 
         # Same options as converge, so a member whose identity derives from
         # an accepted value addresses the same resource it created.
-        dep(type, name).new(dep_options(type)).delete!
+        Matsuri::Tasks::KubectlOps.delete(dep(type, name).new(dep_options(type)))
       end
     end
 
@@ -136,8 +136,10 @@ module Matsuri
         elsif type == :stack && !opts[:reboot]
           puts "Shallow converging stack #{name}".color(:red).bright if config.verbose
           resource.converge!
-        else
+        elsif type == :stack
           resource.converge!(opts)
+        else
+          Matsuri::Tasks::KubectlOps.converge(resource, opts)
         end
       end
     end

@@ -74,7 +74,7 @@ module Matsuri
       def apply_resource
         with_config do |opt|
           resource = yield
-          resource.apply!
+          Matsuri::Tasks::KubectlOps.apply(resource)
         end
       end
     end

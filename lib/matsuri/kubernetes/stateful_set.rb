@@ -4,7 +4,6 @@ module Matsuri
   module Kubernetes
     class StatefulSet < Matsuri::Kubernetes::Base
       include Matsuri::Concerns::PodTemplate
-      include Matsuri::Concerns::Scalable
 
       let(:api_version) { 'apps/v1' }
       let(:kind)        { 'StatefulSet' } # https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/

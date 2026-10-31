@@ -61,7 +61,7 @@ module Matsuri
       def recreate_resource
         with_config do |opt|
           resource = yield
-          resource.recreate!
+          Matsuri::Tasks::KubectlOps.recreate(resource)
         end
       end
     end

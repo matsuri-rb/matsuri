@@ -63,10 +63,11 @@ module Matsuri
   end
 
   module Tasks
-    autoload :Kubectl, 'matsuri/tasks/kubectl'
-    autoload :Docker,  'matsuri/tasks/docker'
-    autoload :Pod,     'matsuri/tasks/pod'
-    autoload :Cluster, 'matsuri/tasks/cluster'
+    autoload :Kubectl,    'matsuri/tasks/kubectl'
+    autoload :KubectlOps, 'matsuri/tasks/kubectl_ops'
+    autoload :Docker,     'matsuri/tasks/docker'
+    autoload :Pod,        'matsuri/tasks/pod'
+    autoload :Cluster,    'matsuri/tasks/cluster'
   end
 
   module Concerns
@@ -75,7 +76,6 @@ module Matsuri
 
     autoload :Awaiting,           'matsuri/concerns/awaiting'
     autoload :RegistryHelpers,    'matsuri/concerns/registry_helpers'
-    autoload :Scalable,           'matsuri/concerns/scalable'
     autoload :PodTemplate,        'matsuri/concerns/pod_template'
 
     module Pods

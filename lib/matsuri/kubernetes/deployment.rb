@@ -4,7 +4,6 @@ module Matsuri
   module Kubernetes
     class Deployment < Matsuri::Kubernetes::Base
       include Matsuri::Concerns::PodTemplate
-      include Matsuri::Concerns::Scalable
 
       let(:api_version) { 'apps/v1' }    # K8S 1.10
       let(:kind)        { 'Deployment' } # http://kubernetes.io/docs/user-guide/deployments/
