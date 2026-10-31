@@ -65,6 +65,7 @@ module Matsuri
   module Tasks
     autoload :Kubectl,    'matsuri/tasks/kubectl'
     autoload :KubectlOps, 'matsuri/tasks/kubectl_ops'
+    autoload :HashDiff,   'matsuri/tasks/hash_diff'
     autoload :Docker,     'matsuri/tasks/docker'
     autoload :Pod,        'matsuri/tasks/pod'
     autoload :Cluster,    'matsuri/tasks/cluster'
@@ -73,6 +74,7 @@ module Matsuri
   module Concerns
     autoload :ImportManifest,     'matsuri/concerns/import_manifest'
     autoload :ExportManifest,     'matsuri/concerns/export_manifest'
+    autoload :Diffable,           'matsuri/concerns/diffable'
 
     autoload :Awaiting,           'matsuri/concerns/awaiting'
     autoload :RegistryHelpers,    'matsuri/concerns/registry_helpers'

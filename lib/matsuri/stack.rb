@@ -80,7 +80,9 @@ module Matsuri
     end
 
     def diff!(opt = {})
-      members.each { |member| member.diff!(opt) }
+      members.each do |member|
+        Matsuri::Tasks::HashDiff.new(resource: member, primary_container: opt[:primary_container]).run!
+      end
     end
 
     # Override this. This command defines how all the stack depenencies

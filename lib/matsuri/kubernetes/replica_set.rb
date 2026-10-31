@@ -31,19 +31,7 @@ module Matsuri
 
       let(:match_expressions) { [] }
 
-      def diff!(opt = {})
-        deltas = opt[:primary_container] ? primary_container_diff : diff
-        print_diff(deltas)
-      end
-
-      def primary_container_diff
-        current = current_manifest(raw: true)
-        Matsuri.log :fatal, "Cannot fetch current manifest for #{resource_type}/#{name}" unless current
-
-        desired = JSON.parse(to_json)
-
-        Hashdiff.diff current['spec']['template']['spec']['containers'][0], desired['spec']['template']['spec']['containers'][0]
-      end
+      let(:primary_container_path) { ['spec', 'template', 'spec', 'containers', 0] }
 
       class << self
         def load_path

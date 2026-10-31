@@ -43,6 +43,8 @@ module Matsuri
       # distinguish between explicit zero and not specified.
       let(:revision_history_limit) { nil }
 
+      let(:primary_container_path) { ['spec', 'template', 'spec', 'containers', 0] }
+
       ### Helpers
 
       ### Matsuri Registry

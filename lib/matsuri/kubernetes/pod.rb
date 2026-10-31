@@ -11,6 +11,8 @@ module Matsuri
       let(:api_version) { 'v1' }
       let(:kind)        { 'Pod' }
 
+      let(:primary_container_path) { ['spec', 'containers', 0] }
+
       # Overridables
       let(:spec) do
         {
@@ -357,20 +359,6 @@ module Matsuri
       end
 
       # Helpers
-
-      def diff!(opt = {})
-        deltas = opt[:primary_container] ? primary_container_diff : diff
-        print_diff(deltas)
-      end
-
-      def containers_diff
-        current = current_manifest(raw: true)
-        Matsuri.log :fatal, "Cannot fetch current manifest for #{resource_type}/#{name}" unless current
-
-        desired = JSON.parse(to_json)
-
-        Hashdiff.diff current['spec']['containers'][0], desired['spec']['containers'][0]
-      end
 
       class << self
         def load_path

@@ -98,6 +98,8 @@ module Matsuri
       # See: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#successpolicy-v1-batch
       let(:success_policy)             { nil } # null | SuccessPolicySpec
 
+      let(:primary_container_path)    { ['spec', 'jobTemplate', 'spec', 'template', 'spec', 'containers', 0] }
+
 
       class << self
         def load_path

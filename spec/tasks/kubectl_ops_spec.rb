@@ -41,6 +41,16 @@ RSpec.describe Matsuri::Tasks::KubectlOps do
     end
   end
 
+  describe '.manifest' do
+    it 'reads the live manifest with identity derived from the resource' do
+      get = instance_double(ops::Get, manifest: { 'kind' => 'Deployment' })
+      expect(ops::Get).to receive(:new)
+        .with(hash_including(resource_type: 'deployment', name: 'web', namespace: 'specs'))
+        .and_return(get)
+      expect(ops.manifest(deployment)).to eq('kind' => 'Deployment')
+    end
+  end
+
   describe '.status' do
     it 'displays live state with identity derived from the resource' do
       expect_task(ops::Status, resource_type: 'deployment', name: 'web', namespace: 'specs')

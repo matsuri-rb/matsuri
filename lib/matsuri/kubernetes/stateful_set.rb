@@ -46,6 +46,8 @@ module Matsuri
 
       let(:volume_claim_templates)  { nil } # Make sure this is nil, otherwise stateful set cannot be updated with apply
 
+      let(:primary_container_path)  { ['spec', 'template', 'spec', 'containers', 0] }
+
       ### Helpers
       def volume_claim_template(name:, storage_class: nil, access_modes: 'ReadWriteOnce', storage_request:)
         {

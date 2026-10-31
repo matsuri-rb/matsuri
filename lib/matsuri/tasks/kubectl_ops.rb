@@ -60,6 +60,12 @@ module Matsuri
         Get.new(identity_for(resource)).exists?
       end
 
+      # Current live manifest as a plain parsed hash; nil when the resource
+      # is not on the cluster.
+      def manifest(resource)
+        Get.new(identity_for(resource)).manifest
+      end
+
       # Lifecycle selection: the resource's converge_via policy picks the
       # task; the conditional lives here once, not as behavior flags
       # inside a task.

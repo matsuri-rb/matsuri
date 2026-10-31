@@ -90,7 +90,7 @@ module Matsuri
       def diff_resource
         with_config do |opt|
           resource = yield opt
-          resource.diff!(opt)
+          Matsuri::Tasks::HashDiff.new(resource: resource, primary_container: opt[:primary_container]).run!
         end
       end
     end

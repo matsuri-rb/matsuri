@@ -2,8 +2,6 @@
 
 require 'rlet'
 
-require 'hashdiff'
-require 'unit'
 require 'matsuri/core_ext'
 
 require 'rainbow/ext/string'
@@ -17,6 +15,7 @@ module Matsuri
       include Matsuri::ShellOut
       include Matsuri::Concerns::ExportManifest
       include Matsuri::Concerns::RegistryHelpers
+      include Matsuri::Concerns::Diffable
 
       # Namespace resolution
       let(:namespace)             { namespace_from_option || default_namespace }
@@ -61,12 +60,14 @@ module Matsuri
       let(:apply_via)    { :apply }
       let(:save_config)  { true }
 
+      # Diff policy, read by Tasks::HashDiff. The path to the primary
+      # container within the manifest; resources with a pod template
+      # declare it so the focused diff (--primary-container) can project
+      # both manifests to the same container.
+      let(:primary_container_path) { nil }
+
       # Overridables
       let(:spec)        { fail NotImplementedError, 'Must define let(:spec)' }
-
-      def diff!(_opt = {})
-        print_diff(diff)
-      end
 
       # Helper functions
       # Conditionally returns block or nil
@@ -76,121 +77,6 @@ module Matsuri
       #   let(:volumes)      { [maybe(use_keyfile?) { mongo-keyfile-volume }].compact }
       def maybe(cond)
         yield if cond
-      end
-
-      def current_manifest(raw: false)
-        cmd = kubectl "get #{resource_type}/#{name} -o json", echo_level: :debug, no_stdout: true
-        return nil unless cmd.status.success?
-        r = JSON.parse(cmd.stdout)
-        raw ? r : Map.new(r)
-      end
-
-      def diff
-        current = current_manifest(raw: true)
-        Matsuri.log :fatal, "Cannot fetch current manifest for #{resource_type}/#{name}" unless current
-
-        desired = JSON.parse(to_json)
-
-        Hashdiff.diff(current, desired) do |path, current_value, desired_value|
-          filter_comparison_values(path, current_value, desired_value)
-        end
-      end
-
-      def filter_comparison_values(path, current_value, desired_value)
-        if empty_assignment_to_empty?(current_value, desired_value) or
-           readonly_path?(path) or
-           always_changed_path?(path) or
-           default_value_assigned_nothing?(path, current_value, desired_value) or
-           unit_comparison_is_equal?(current_value, desired_value)
-           # (
-           #   path.start_with?("metadata.") and
-           #   path !~ /^metadata\.\b(name|labels|namespace)\b/
-           # ) or
-          true
-        else
-          :perform_normal_comparison end
-      end
-
-      def empty_assignment_to_empty?(current_value, desired_value)
-        empty_value?(current_value) and empty_value?(desired_value)
-      end
-
-      def readonly_path?(path)
-        [
-          'status',
-        ].member?(path)
-      end
-
-      def always_changed_path?(path)
-        [
-           'metadata.annotations.kubectl.kubernetes.io/last-applied-configuration',
-           'metadata.annotations.kubernetes.io/change-cause',
-        ].member?(path)
-      end
-
-      def default_value_assigned_nothing?(path, current_value, desired_value)
-        # standard case of empty value desired but current value is
-        # atomic/predefined
-        (
-          empty_value?(desired_value) and
-            not (current_value.is_a?(Hash) or current_value.is_a?(Array))
-        ) or
-
-        # volumeMounts are not readOnly by default, making a setting of false
-        # redundant
-        (
-          path =~ /volumeMount.*readOnly/ and
-          current_value.nil? and
-          desired_value == false
-        ) or
-
-        # minReadySeconds is 0 by default but not presented as such
-        (
-          path == 'spec.minReadySeconds' and
-          current_value.nil? and
-          desired_value == 0
-        )
-      end
-
-      def unit_comparison_is_equal?(current_value, desired_value)
-        # Unit cannot handle nil values, so if one one of the values
-        # are empty, then return false (beacuse it is not comparable)
-        return false if empty_value?(current_value) || empty_value?(desired_value)
-
-        if current_value =~ /^\d+\s*[A-Za-z]+$/ or desired_value =~ /^\d+\s*[A-Za-z]+$/
-          (
-            includes_unit?(current_value) and
-            includes_unit?(desired_value) and
-            Unit(current_value) == Unit(desired_value)
-          ) or
-          (
-            Unit(current_value + 'B') == Unit(desired_value + 'B')
-          )
-        else
-          false
-        end
-      end
-
-      def includes_unit?(value)
-        Unit(value)
-        true
-      rescue TypeError
-        false
-      end
-
-      def empty_value?(value)
-        value.nil? or value == {} or value == [] or value == ""
-      end
-
-      def print_diff(deltas)
-        deltas.each do |line|
-          color = case line[0]
-                  when '-' then :red
-                  when '+' then :green
-                  when '~' then :yellow
-                  end
-          puts line.join(' ').color(color).bright
-        end
       end
 
       def created?

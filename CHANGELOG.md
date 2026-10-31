@@ -43,6 +43,34 @@ Working toward 0.3.0.
   - `ExportManifest#applied_to_yaml` is fixed (previously raised
     `NoMethodError`); it is now the canonical apply payload.
 
+- **The client-side diff moves off the resource classes into
+  `Matsuri::Concerns::Diffable` + `Matsuri::Tasks::HashDiff`.** The
+  comparison is the resource's (`Diffable#diff(current)` takes the
+  manifest compared against and returns filtered deltas; the noise
+  filters remain the per-resource override surface); fetching the
+  current manifest and printing belong to the `HashDiff` task. This
+  diff is a permanent companion to the planned server-side
+  `KubectlOps::Diff` (`kubectl diff`), not a stopgap: with admission
+  controllers in play, the server-side diff shows what admission
+  injects, while this one shows drift relative to the declaration
+  with that noise filtered out. Consequences:
+  - `Kubernetes::Base` loses `diff!`, `diff` (zero-arg), `print_diff`,
+    and `current_manifest`. Library callers of `current_manifest` use
+    `Tasks::KubectlOps.manifest(resource)` (a plain parsed hash — the
+    `Map` wrapping and `raw:` flag are gone).
+  - The per-class `primary_container_diff`/`containers_diff` overrides
+    on Pod, ReplicaSet, and Deployment are replaced by a declarative
+    `let(:primary_container_path)`; the focused diff projects both
+    manifests by that path generically.
+  - `--primary-container` works for the first time on `pod` (previously
+    `NoMethodError`: `Pod#diff!` called a method that never existed)
+    and on `stateful_set`, `daemon_set`, and `cron_job` (previously
+    silently fell back to a full diff). All workloads with a pod
+    template now declare the path.
+  - `unit_comparison_is_equal?` no longer crashes on non-string values
+    (`Object#=~` was removed in Ruby 3.2; any diff touching a Hash or
+    Array value raised `NoMethodError` on modern Ruby).
+
 - **`Matsuri::App` is renamed `Matsuri::Stack`.** A stack is a bundle of
   resources managed together — one owner, one converge act; "app" never
   described that. Registry type is `stack`, definitions load from

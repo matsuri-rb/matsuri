@@ -3,9 +3,9 @@
 module Matsuri
   module Tasks
     module KubectlOps
-      # Read-side of the delivery mechanism: existence checks against the
-      # live cluster, addressed by type/name. Queries, not effects, so it
-      # exposes predicates instead of run!.
+      # Read-side of the delivery mechanism: existence checks and manifest
+      # reads against the live cluster, addressed by type/name. Queries,
+      # not effects, so it exposes readers instead of run!.
       class Get
         include Matsuri::Task
 
@@ -16,6 +16,14 @@ module Matsuri
         def exists?
           cmd = kubectl "get #{resource_type}/#{name}", echo_level: :debug, no_stdout: true
           cmd.status.success?
+        end
+
+        # Plain parsed hash, string keys; nil when not on the cluster.
+        def manifest
+          cmd = kubectl "get #{resource_type}/#{name} -o json", echo_level: :debug, no_stdout: true
+          return nil unless cmd.status.success?
+
+          JSON.parse(cmd.stdout)
         end
       end
     end

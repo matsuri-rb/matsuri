@@ -50,6 +50,8 @@ module Matsuri
       # distinguish between explicit zero and not specified.
       let(:revision_history_limit) { nil }
 
+      let(:primary_container_path) { ['spec', 'template', 'spec', 'containers', 0] }
+
       ### Helpers
       def update!(version: nil)
         version ||= self.image_tag
@@ -68,31 +70,18 @@ module Matsuri
       ### @TODO Factor this out into helpers
 
       # @TODO This assumes the first container is the primary container
+      # Read-back through the task until read-back presenters absorb it.
       def current_image
-        manifest = current_manifest
+        manifest = Matsuri::Tasks::KubectlOps.manifest(self)
         return nil unless manifest
-        containers = manifest.get(:spec, :template, :spec, :containers)
-        return nil unless containers.any?
-        containers[0].get(:image)
+
+        container = manifest.dig(*primary_container_path)
+        container && container['image']
       end
 
       def current_image_tag
         image = current_image or return nil
         image.split(/:/).last
-      end
-
-      def diff!(opt = {})
-        deltas = opt[:primary_container] ? primary_container_diff : diff
-        print_diff(deltas)
-      end
-
-      def primary_container_diff
-        current = current_manifest(raw: true)
-        Matsuri.log :fatal, "Cannot fetch current manifest for #{resource_type}/#{name}" unless current
-
-        desired = JSON.parse(to_json)
-
-        Hashdiff.diff current['spec']['template']['spec']['containers'][0], desired['spec']['template']['spec']['containers'][0]
       end
 
       class << self

@@ -1,0 +1,42 @@
+# frozen_string_literal: true
+
+require 'rainbow/ext/string'
+
+module Matsuri
+  module Tasks
+    # Client-side diff: fetches the current manifest, asks the resource for
+    # the filtered deltas (Concerns::Diffable), and prints them. Sibling to
+    # KubectlOps rather than inside it — the comparison happens here, kubectl
+    # is only the fetch. The server-side counterpart (KubectlOps::Diff,
+    # wrapping kubectl diff) shows what the cluster will make of the
+    # manifest, admission injections included; this one shows drift relative
+    # to the declaration with the noise filtered. Both are kept.
+    class HashDiff
+      include Matsuri::Task
+
+      let(:resource)          { options.fetch(:resource) }
+      let(:primary_container) { options[:primary_container] }
+
+      def run!
+        current = Matsuri::Tasks::KubectlOps.manifest(resource)
+        unless current
+          Matsuri.log :fatal, "Cannot fetch current manifest for #{Matsuri::Tasks::KubectlOps.description_for(resource)}"
+        end
+
+        deltas = primary_container ? resource.primary_container_diff(current) : resource.diff(current)
+        print_diff(deltas)
+      end
+
+      def print_diff(deltas)
+        deltas.each do |line|
+          color = case line[0]
+                  when '-' then :red
+                  when '+' then :green
+                  when '~' then :yellow
+                  end
+          puts line.join(' ').color(color).bright
+        end
+      end
+    end
+  end
+end
