@@ -25,7 +25,7 @@ Working toward 0.3.0.
     delivery policy instead: `let(:converge_via)` (`:apply` default,
     `:recreate`), `let(:apply_via)` (`:apply` default, `:replace`), and
     `let(:save_config)` (default `true`). Pod, Secret, and ConfigMap
-    express their previous behavior through these lets.
+    express their converge-by-recreate behavior through these lets.
   - `annotate!` is removed outright: nothing bound it since `--record`
     died, and deliberate annotation belongs to the manifest + apply path.
   - `Concerns::Scalable` is removed; `scale` is a task, and the CLI table
@@ -113,6 +113,12 @@ Working toward 0.3.0.
 
 ### Changed
 
+- **ConfigMap applies normally.** The replace-instead-of-apply override
+  dated to 2016 kubectl issues (kubernetes#32432, kubernetes#41711) that
+  kubectl fixed years ago; `kubectl apply` handles configmaps fine. Apply
+  now goes through `apply` like every other resource, and create seeds
+  `last-applied-configuration` (`--save-config`) so the three-way merge
+  has its base. Converge-by-recreate policy is unchanged.
 - **Untagged stack converges propagate `latest` explicitly** (previously
   propagated nil and each workload class defaulted individually). Rendered
   output is unchanged; drift between per-class defaults is no longer

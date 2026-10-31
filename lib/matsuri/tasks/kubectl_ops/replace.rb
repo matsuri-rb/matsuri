@@ -4,6 +4,12 @@ module Matsuri
   module Tasks
     module KubectlOps
       # Full replacement of a live object with a rendered payload.
+      #
+      # Legacy mechanism: no built-in resource routes here anymore (ConfigMap
+      # did, working around 2016-era kubectl apply gaps). Replace clobbers
+      # fields other writers own and never consults last-applied-configuration,
+      # so prefer apply. A resource that genuinely needs it opts in with
+      # `let(:apply_via) { :replace }`.
       class Replace
         include Matsuri::Task
 

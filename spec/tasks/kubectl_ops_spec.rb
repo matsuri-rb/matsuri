@@ -27,6 +27,7 @@ RSpec.describe Matsuri::Tasks::KubectlOps do
     end
 
     it 'routes through replace when the resource declares apply_via :replace' do
+      allow(config_map).to receive(:apply_via).and_return(:replace)
       expect_task(ops::Replace, input: config_map.applied_to_yaml, description: 'configmap/app-settings')
       ops.apply(config_map)
     end
@@ -34,6 +35,7 @@ RSpec.describe Matsuri::Tasks::KubectlOps do
 
   describe '.create' do
     it 'passes the save_config policy through' do
+      allow(config_map).to receive(:save_config).and_return(false)
       expect_task(ops::Create, input: config_map.to_yaml, save_config: false)
       ops.create(config_map)
     end
@@ -47,7 +49,7 @@ RSpec.describe Matsuri::Tasks::KubectlOps do
 
     it 'converges recreate-policy resources by create when nothing is live' do
       allow(ops::Get).to receive(:new).and_return(instance_double(ops::Get, exists?: false))
-      expect_task(ops::Create, description: 'configmap/app-settings', save_config: false)
+      expect_task(ops::Create, description: 'configmap/app-settings', save_config: true)
       ops.converge(config_map)
     end
 
@@ -62,7 +64,7 @@ RSpec.describe Matsuri::Tasks::KubectlOps do
       expect_task(ops::Recreate,
                   resource_type: 'configmap',
                   name:          'app-settings',
-                  save_config:   false)
+                  save_config:   true)
       ops.converge(config_map, restart: true)
     end
   end

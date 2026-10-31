@@ -81,14 +81,6 @@ module Matsuri
 
       ### Delivery policy
 
-      # kubectl current does not support applying configmaps. Best is to create and replace
-      # See: https://github.com/kubernetes/kubernetes/issues/32432
-      #      https://github.com/kubernetes/kubernetes/issues/41711
-      # Replace never consults last-applied-configuration, so create does
-      # not seed it.
-      let(:apply_via)    { :replace }
-      let(:save_config)  { false }
-
       # Like secrets, config maps are set up by the cluster administrator:
       # if one is present on the server, we can skip it. Better to use
       # recreate than apply.
