@@ -21,8 +21,8 @@ RSpec.describe 'stack present declarations' do
         present :on_create, 'team-label'
       end
 
-      expect(stack.presents[:on_apply]).to eq ['team-label', :second]
-      expect(stack.presents[:on_create]).to eq ['team-label']
+      expect(stack.presenters[:on_apply]).to eq ['team-label', :second]
+      expect(stack.presenters[:on_create]).to eq ['team-label']
     end
 
     it 'stays local to the declaring stack' do
@@ -30,9 +30,9 @@ RSpec.describe 'stack present declarations' do
         present :on_apply, 'team-label'
       end
 
-      expect(declared.presents[:on_apply]).to eq ['team-label']
-      expect(Matsuri::Stack.presents).to be_nil
-      expect(Matsuri::Registry.stack('app').presents).to be_nil
+      expect(declared.presenters[:on_apply]).to eq ['team-label']
+      expect(Matsuri::Stack.presenters).to be_nil
+      expect(Matsuri::Registry.stack('app').presenters).to be_nil
     end
   end
 
@@ -131,7 +131,7 @@ RSpec.describe 'stack present declarations' do
       end
 
       expect(Matsuri::Tasks::HashDiff).to receive(:new)
-        .with(hash_including(presents: stack.presents))
+        .with(hash_including(presenters: stack.presenters))
         .and_return(instance_double(Matsuri::Tasks::HashDiff, run!: true))
       stack.new.diff!(hash_diff: true)
     end
@@ -143,8 +143,8 @@ RSpec.describe 'stack present declarations' do
         present :on_apply, 'team-label'
       end
 
-      expect(declared.presents[:on_apply]).to eq ['team-label']
-      expect(Matsuri::Registry.deployment('app-web').presents).to be_nil
+      expect(declared.presenters[:on_apply]).to eq ['team-label']
+      expect(Matsuri::Registry.deployment('app-web').presenters).to be_nil
     end
 
     it 'direct verbs assemble the resource own declarations, no stack needed' do

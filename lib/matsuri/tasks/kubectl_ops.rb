@@ -29,15 +29,15 @@ module Matsuri
 
       module_function
 
-      def apply(resource, presents: {})
+      def apply(resource, presenters: {})
         task = resource.apply_via == :replace ? Replace : Apply
-        task.new(input:       apply_payload(resource, presents),
+        task.new(input:       apply_payload(resource, presenters),
                  namespace:   resource.namespace,
                  description: description_for(resource)).run!
       end
 
-      def create(resource, presents: {})
-        Create.new(input:       payload(resource.manifest_for_export, presents_for(resource, presents), :on_create),
+      def create(resource, presenters: {})
+        Create.new(input:       payload(resource.manifest_for_export, presenters_for(resource, presenters), :on_create),
                    namespace:   resource.namespace,
                    description: description_for(resource),
                    save_config: resource.save_config).run!
@@ -47,9 +47,9 @@ module Matsuri
         Delete.new(identity_for(resource)).run!
       end
 
-      def recreate(resource, presents: {})
+      def recreate(resource, presenters: {})
         Recreate.new(identity_for(resource)
-          .merge(input:       payload(resource.manifest_for_export, presents_for(resource, presents), :on_create),
+          .merge(input:       payload(resource.manifest_for_export, presenters_for(resource, presenters), :on_create),
                  description: description_for(resource),
                  save_config: resource.save_config)).run!
       end
@@ -76,8 +76,8 @@ module Matsuri
       # is one site, so the diff can never drift from the delivery — the
       # invariant extends through presenters. When an SSA apply_via value
       # exists, this is where it routes --server-side through.
-      def diff(resource, presents: {})
-        Diff.new(input:       apply_payload(resource, presents),
+      def diff(resource, presenters: {})
+        Diff.new(input:       apply_payload(resource, presenters),
                  namespace:   resource.namespace,
                  description: description_for(resource)).run!
       end
@@ -85,7 +85,7 @@ module Matsuri
       # Lifecycle selection: the resource's converge_via policy picks the
       # task; the conditional lives here once, not as behavior flags
       # inside a task.
-      def converge(resource, opts = {}, presents: {})
+      def converge(resource, opts = {}, presenters: {})
         verbose = Matsuri::Config.verbose
 
         case resource.converge_via
@@ -94,19 +94,19 @@ module Matsuri
           puts 'Rebuild not implemented. Recreating instead.'.color(:red).bright if opts[:rebuild]
 
           if opts[:restart] || opts[:rebuild]
-            recreate(resource, presents: presents)
+            recreate(resource, presenters: presenters)
           else
-            create(resource, presents: presents) unless exists?(resource)
+            create(resource, presenters: presenters) unless exists?(resource)
           end
         else
           puts "Converging #{description_for(resource)} via apply".color(:yellow) if verbose
           puts 'Rebuild not implemented. Applying instead.'.color(:red).bright if opts[:rebuild]
-          apply(resource, presents: presents)
+          apply(resource, presenters: presenters)
         end
       end
 
-      def apply_payload(resource, presents)
-        payload(resource.applied_manifest_for_export, presents_for(resource, presents), :on_apply)
+      def apply_payload(resource, presenters)
+        payload(resource.applied_manifest_for_export, presenters_for(resource, presenters), :on_apply)
       end
 
       # Single merge, both declaration sites: the resource's own members
@@ -115,15 +115,15 @@ module Matsuri
       # Direct verbs arrive with no stack declarations, so a resource
       # behaves identically converged directly or through an undeclared
       # stack.
-      def presents_for(resource, presents)
-        own = resource.class.respond_to?(:presents) ? resource.class.presents || {} : {}
-        (own.keys + presents.keys).map(&:to_sym).uniq.each_with_object({}) do |scenario, merged|
-          merged[scenario] = Array(own[scenario]) + Array(presents[scenario])
+      def presenters_for(resource, presenters)
+        own = resource.class.respond_to?(:presenters) ? resource.class.presenters || {} : {}
+        (own.keys + presenters.keys).map(&:to_sym).uniq.each_with_object({}) do |scenario, merged|
+          merged[scenario] = Array(own[scenario]) + Array(presenters[scenario])
         end
       end
 
-      def payload(manifest, presents, scenario)
-        serialize(presented(manifest, presents, scenario))
+      def payload(manifest, presenters, scenario)
+        serialize(presentation(manifest, presenters, scenario))
       end
 
       # The scenario's pipeline over the rendered manifest. Multi-doc
@@ -132,8 +132,8 @@ module Matsuri
       # Presented output re-normalizes through deep_stringify_keys — the
       # same rule *_for_export already applied — so Maps and symbol keys
       # introduced by transforms never reach the payload.
-      def presented(manifest, presents, scenario)
-        pipeline = Matsuri::Transform::Callable.new(Array(presents[scenario]))
+      def presentation(manifest, presenters, scenario)
+        pipeline = Matsuri::Transform::Callable.new(Array(presenters[scenario]))
         return manifest if pipeline.members.empty?
 
         if manifest.is_a?(Array)

@@ -16,7 +16,7 @@ module Matsuri
       include Matsuri::Concerns::RegistryHelpers
       include Matsuri::Concerns::Diffable
 
-      class_attribute :presents
+      class_attribute :presenters
 
       # Declaration-surface vocabulary, as on stacks.
       extend Matsuri::Transform::Combinators::Helpers
@@ -29,8 +29,8 @@ module Matsuri
       # admit the finished manifest.
       def self.present(scenario, *steps)
         key = scenario.to_sym
-        current = presents || {}
-        self.presents = current.merge(key => Array(current[key]) + steps)
+        current = presenters || {}
+        self.presenters = current.merge(key => Array(current[key]) + steps)
       end
 
       # Namespace resolution

@@ -248,7 +248,7 @@ Working toward 0.3.0.
   consequences: the module functions serialize payloads from
   `*_manifest_for_export` themselves (resources' `to_yaml`/
   `applied_to_yaml` overrides no longer shape delivery payloads, only
-  `show`), and `converge` grew a `presents:` keyword — a literal
+  `show`), and `converge` grew a `presenters:` keyword — a literal
   trailing-hash `converge(r, restart: true)` call now needs braces.
   The client-side HashDiff diffs against the presented declaration too:
   it assembles the same `:on_apply` pipeline over its usual basis

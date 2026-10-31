@@ -16,7 +16,7 @@ module Matsuri
 
       let(:resource)          { options.fetch(:resource) }
       let(:primary_container) { options[:primary_container] }
-      let(:presents)          { options[:presents] || {} }
+      let(:presenters)        { options[:presenters] || {} }
 
       def run!
         current = Matsuri::Tasks::KubectlOps.manifest(resource)
@@ -40,9 +40,9 @@ module Matsuri
       # normalization diff always applied to the declaration.
       def desired_manifest
         ops = Matsuri::Tasks::KubectlOps
-        presented = ops.presented(resource.manifest_for_export,
-                                  ops.presents_for(resource, presents), :on_apply)
-        JSON.parse(presented.to_json)
+        presentation = ops.presentation(resource.manifest_for_export,
+                                        ops.presenters_for(resource, presenters), :on_apply)
+        JSON.parse(presentation.to_json)
       end
 
       def print_diff(deltas)

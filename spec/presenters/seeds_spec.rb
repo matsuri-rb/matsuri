@@ -81,9 +81,9 @@ RSpec.describe 'seed presenters' do
 
       member = stack.new.members.first
       expect(ops.payload(member.manifest_for_export,
-                         ops.presents_for(member, stack.presents), :on_create))
+                         ops.presenters_for(member, stack.presenters), :on_create))
         .to match(/replicas: 2/)
-      expect(ops.apply_payload(member, stack.presents)).not_to match(/replicas/)
+      expect(ops.apply_payload(member, stack.presenters)).not_to match(/replicas/)
     end
   end
 end

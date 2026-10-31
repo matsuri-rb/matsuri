@@ -52,7 +52,7 @@ RSpec.describe Matsuri::Tasks::KubectlOps do
   end
 
   describe 'present scenarios' do
-    let(:presents) { { on_apply: ['team-label'], on_create: ['team-label'] } }
+    let(:presenters) { { on_apply: ['team-label'], on_create: ['team-label'] } }
 
     it 'apply assembles :on_apply' do
       task = instance_double(ops::Apply, run!: true)
@@ -60,7 +60,7 @@ RSpec.describe Matsuri::Tasks::KubectlOps do
         expect(args[:input]).to match(/team: platform/)
         task
       end
-      ops.apply(deployment, presents: presents)
+      ops.apply(deployment, presenters: presenters)
     end
 
     it 'create assembles :on_create' do
@@ -69,13 +69,13 @@ RSpec.describe Matsuri::Tasks::KubectlOps do
         expect(args[:input]).to match(/team: platform/)
         task
       end
-      ops.create(config_map, presents: presents)
+      ops.create(config_map, presenters: presenters)
     end
 
     it 'diff sends exactly the payload apply would send, presented' do
-      expect(ops.apply_payload(deployment, presents))
-        .to eq ops.presented(deployment.applied_manifest_for_export, presents, :on_apply).to_yaml
-      expect(ops.apply_payload(deployment, presents)).to match(/team: platform/)
+      expect(ops.apply_payload(deployment, presenters))
+        .to eq ops.presentation(deployment.applied_manifest_for_export, presenters, :on_apply).to_yaml
+      expect(ops.apply_payload(deployment, presenters)).to match(/team: platform/)
     end
 
     it 'the empty pipeline is byte-identical to the rendered payload' do
@@ -88,7 +88,7 @@ RSpec.describe Matsuri::Tasks::KubectlOps do
         { 'kind' => 'Service',    'metadata' => { 'name' => 'web' } }
       ]
       matched = { on_apply: [Matsuri::Transform::Combinators.match_deployments('team-label')] }
-      presented = ops.presented(docs, matched, :on_apply)
+      presented = ops.presentation(docs, matched, :on_apply)
 
       expect(presented[0]['metadata']['labels']).to eq('team' => 'platform')
       expect(presented[1]['metadata']).not_to have_key('labels')

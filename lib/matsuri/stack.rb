@@ -17,7 +17,7 @@ module Matsuri
 
     class_attribute :build_order
     class_attribute :acceptors
-    class_attribute :presents
+    class_attribute :presenters
 
     class_attribute :save_config_policy
 
@@ -79,8 +79,8 @@ module Matsuri
       # delivery verb assembles its own.
       def present(scenario, *steps)
         key = scenario.to_sym
-        current = presents || {}
-        self.presents = current.merge(key => Array(current[key]) + steps)
+        current = presenters || {}
+        self.presenters = current.merge(key => Array(current[key]) + steps)
       end
 
       # Declares the save-config policy for every resource member this
@@ -115,9 +115,9 @@ module Matsuri
         # implies --hash-diff
         if opt[:hash_diff] || opt[:primary_container]
           Matsuri::Tasks::HashDiff.new(resource: member, primary_container: opt[:primary_container],
-                                       presents: stack_presents).run!
+                                       presenters: stack_presenters).run!
         else
-          Matsuri::Tasks::KubectlOps.diff(member, presents: stack_presents)
+          Matsuri::Tasks::KubectlOps.diff(member, presenters: stack_presenters)
         end
       end
     end
@@ -178,7 +178,7 @@ module Matsuri
         elsif type == :stack
           resource.converge!(opts)
         else
-          Matsuri::Tasks::KubectlOps.converge(resource, opts, presents: stack_presents)
+          Matsuri::Tasks::KubectlOps.converge(resource, opts, presenters: stack_presenters)
         end
       end
     end
@@ -214,8 +214,8 @@ module Matsuri
     # Helper functions
     # Like stack-config, present declarations never cross a stack boundary:
     # a nested stack assembles from its own class.
-    def stack_presents
-      self.class.presents || {}
+    def stack_presenters
+      self.class.presenters || {}
     end
 
     # stack-config never crosses a stack boundary: instance identity is the
