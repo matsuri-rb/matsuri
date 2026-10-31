@@ -52,35 +52,8 @@ module Matsuri
       let(:primary_container_path) { ['spec', 'template', 'spec', 'containers', 0] }
 
       ### Helpers
-      def update!(version: nil)
-        version ||= self.image_tag
-        rollout! versions: { primary_container => "#{primary_image}:#{version}" }
-      end
-
-      def rollout!(versions:)
-        version_changes = versions.map { |(k,v)| "#{k}=#{v}" }.join(' ')
-        kubectl! "set image #{resource_type}/#{name} #{version_changes}"
-      end
-
       def watch_rollout!
         kubectl! "rollout status #{resource_type}/#{name}"
-      end
-
-      ### @TODO Factor this out into helpers
-
-      # @TODO This assumes the first container is the primary container
-      # Read-back through the task until read-back presenters absorb it.
-      def current_image
-        manifest = Matsuri::Tasks::KubectlOps.manifest(self)
-        return nil unless manifest
-
-        container = manifest.dig(*primary_container_path)
-        container && container['image']
-      end
-
-      def current_image_tag
-        image = current_image or return nil
-        image.split(/:/).last
       end
 
       class << self

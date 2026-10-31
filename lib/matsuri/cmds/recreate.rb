@@ -14,10 +14,7 @@ module Matsuri
           end
         else
           define_method(resource_name) do |name = :not_specified, image_tag = nil|
-            recreate_resource do
-              image_tag ||= Matsuri::Registry.fetch_or_load(resource_name, name).new.try(:current_image_tag)
-              Matsuri::Registry.send(resource_name, name).new(image_tag: image_tag_for(image_tag))
-            end
+            recreate_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new(image_tag: image_tag_for(image_tag)) }
           end
         end
       end

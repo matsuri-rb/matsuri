@@ -182,6 +182,17 @@ contesting a declaration. The model:
   nothing to say about them — an HPA that scales is never fought. The
   cluster side of this is pinned by `tests/bin/probe-save-config.sh`.
 
+This is matsuri's whole answer to externally-owned fields — there is no
+read-back. Matsuri never reads live cluster state to make a declaration
+decision: a field someone else rolls (an image tag updated by a deploy
+operator, replicas moved by an HPA) is omitted from the ongoing payload,
+not read back and re-sent. Under client-side apply the omission
+guarantees non-interference (the probe harness pins it); under an
+ongoing deployment operator the field belongs to that operator's field
+manager via server-side apply. If you deliver tags manually, name the
+tag — the invocation positional or the stack's `:image_tag` acceptor is
+the source, never the cluster.
+
 Three concerns ship, each a machinery + declared-hole pair:
 `Matsuri::Presenters::SeedReplicas` (`let(:replicas)`), `SeedImage`
 (`let(:image)`, seeding only containers without one), and

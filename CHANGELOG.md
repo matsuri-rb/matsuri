@@ -105,6 +105,23 @@ Working toward 0.3.0.
   `platform/stacks`, the definition module is `Stacks`, and the CLI verbs
   address stacks. There is no back-compat alias for the `app` type;
   definitions must rename their directory and `Matsuri.define :app` calls.
+- **Read-back support is dropped in favor of seeds + server-side
+  apply.** Matsuri no longer reads live cluster state to make a
+  declaration decision. `Deployment#current_image`/`#current_image_tag`
+  are removed, along with the apply/create/recreate ladder rung that
+  backfilled a tag-less invocation from the live image — a tag-less
+  `apply deployment` now renders the acceptor default, same as `diff`
+  always did (the rung made diff and apply disagree for exactly the
+  invocations it served). The rolling-update-era `Deployment#update!`
+  and `#rollout!` (already broken since resources stopped shelling out)
+  are removed with it. The field the read-back protected is owned
+  structurally instead: a workload whose tag is rolled externally seeds
+  its image on create and omits it from the apply payload, so ongoing
+  applies have nothing to say about it — under client-side apply this
+  is pinned by `tests/bin/probe-save-config.sh`, and under an ongoing
+  deployment operator the tag belongs to that operator's field manager
+  via server-side apply.
+
 - **`Matsuri::Stack` no longer shells out.** The `ShellOut` include is
   gone, matching the resources. `docker!` remains on stacks as the hook
   surface for definition-supplied `build!`/`push!` — it delegates to
@@ -184,10 +201,10 @@ Working toward 0.3.0.
   one — no caller ever passed it to Deployment, ReplicaSet, or
   StatefulSet, and dropping it collapses their `default_metadata`
   overrides back to the base (which also restores `final_annotations`
-  assembly on those three kinds). `maybe_param_replicas` stays for now:
-  its real requirement — apply should not clobber live replica counts
-  set by an HPA or manual scale — belongs to the planned read-back
-  manifest transforms.
+  assembly on those three kinds). Its real requirement — apply should
+  not clobber live replica counts set by an HPA or manual scale — is
+  answered structurally by the seed family: the manifest omits the
+  field, so apply has nothing to say about it.
 
 ### Changed
 
@@ -195,10 +212,9 @@ Working toward 0.3.0.
   CLI verbs (`show`/`diff`/`apply`/`create`/`recreate` with an image-tag
   positional) no longer hardcode `'latest'` per cmd file; the positional
   defaults to nil and routes through the built-in `ImageTag` acceptor —
-  the same single owner the stack `:image_tag` collection uses. Behavior
-  is unchanged by default, and the apply/create/recreate ladder keeps
-  its middle rung: positional, then the live `current_image_tag`
-  read-back, then the acceptor default.
+  the same single owner the stack `:image_tag` collection uses. With
+  read-back dropped, every verb resolves the tag the same way:
+  positional, else the acceptor default.
 - **ConfigMap applies normally.** The replace-instead-of-apply override
   dated to 2016 kubectl issues (kubernetes#32432, kubernetes#41711) that
   kubectl fixed years ago; `kubectl apply` handles configmaps fine. Apply
