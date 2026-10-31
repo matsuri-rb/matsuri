@@ -183,6 +183,30 @@ Working toward 0.3.0.
 
 ### Added
 
+- **`present` pipelines on stacks.** `present(scenario, *members)`
+  appends transform members to a scenario's pipeline — unlike `accept`,
+  a scenario accumulates, and declaration order is member order. Members
+  are presenter names, classes, Callables, or anything `#call`-able; the
+  combinator vocabulary (`match`, `match_kind`, `match_deployments`) is
+  available in the stack class body. Scenarios are intent regimes, not
+  verbs: `:on_create` (brought into existence — `create`, recreate's
+  create leg) and `:on_apply` (delivered to something existing —
+  `apply`, `replace`, `diff`). `apply_via` picks how the payload
+  travels; the scenario picks what it says — flipping delivery mechanism
+  never changes which presenters run. Declarations ride to the
+  `KubectlOps` boundary as pure data and each verb assembles its own
+  scenario there; one site builds the presented payload for both diff
+  and apply, so diff previews delivery through presenters. The empty
+  pipeline is the identity: undeclared stacks send byte-identical
+  payloads. Declarations never cross a stack boundary. Multi-doc
+  manifests present per document. See docs/presenters.md. Boundary
+  consequences: the module functions serialize payloads from
+  `*_manifest_for_export` themselves (resources' `to_yaml`/
+  `applied_to_yaml` overrides no longer shape delivery payloads, only
+  `show`), and `converge` grew a `presents:` keyword — a literal
+  trailing-hash `converge(r, restart: true)` call now needs braces.
+  The client-side HashDiff compares the unpresented declaration;
+  extending it through presenters is open.
 - **`Matsuri::Presenter` — zero-config, context-free manifest steps.** A
   presenter is Manifest→Manifest: construction takes nothing, and
   parameterization happens before `#call` ever runs — definition lets

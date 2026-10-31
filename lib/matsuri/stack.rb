@@ -17,6 +17,11 @@ module Matsuri
 
     class_attribute :build_order
     class_attribute :acceptors
+    class_attribute :presents
+
+    # Declaration-surface vocabulary: match / match_kind / match_deployments
+    # wrap a present member so it applies selectively.
+    extend Matsuri::Transform::Combinators::Helpers
 
     # The collection name is the options key: each acceptor admits its own
     # component of the invocation options, whole. The built-in :image_tag
@@ -60,6 +65,19 @@ module Matsuri
       def accept(collection, acceptor)
         self.acceptors = (acceptors || {}).merge(collection.to_sym => acceptor)
       end
+
+      # Appends transform members to a scenario's pipeline. Unlike accept,
+      # where a collection names a slot and last declaration wins, a
+      # scenario accumulates: declaration order is member order. Members
+      # are presenter names, presenter classes, Callables, or anything
+      # #call-able; scenarios are intent regimes (:on_create brings into
+      # existence, :on_apply delivers to something existing) and each
+      # delivery verb assembles its own.
+      def present(scenario, *steps)
+        key = scenario.to_sym
+        current = presents || {}
+        self.presents = current.merge(key => Array(current[key]) + steps)
+      end
     end
 
     accept :image_tag, Matsuri::Acceptors::ImageTag
@@ -86,7 +104,7 @@ module Matsuri
         if opt[:hash_diff] || opt[:primary_container]
           Matsuri::Tasks::HashDiff.new(resource: member, primary_container: opt[:primary_container]).run!
         else
-          Matsuri::Tasks::KubectlOps.diff(member)
+          Matsuri::Tasks::KubectlOps.diff(member, presents: stack_presents)
         end
       end
     end
@@ -147,7 +165,7 @@ module Matsuri
         elsif type == :stack
           resource.converge!(opts)
         else
-          Matsuri::Tasks::KubectlOps.converge(resource, opts)
+          Matsuri::Tasks::KubectlOps.converge(resource, opts, presents: stack_presents)
         end
       end
     end
@@ -181,6 +199,12 @@ module Matsuri
     end
 
     # Helper functions
+    # Like stack-config, present declarations never cross a stack boundary:
+    # a nested stack assembles from its own class.
+    def stack_presents
+      self.class.presents || {}
+    end
+
     # stack-config never crosses a stack boundary: instance identity is the
     # (stack, stack-config) pair, and a nested stack is a different instance.
     def dep_options(type)
