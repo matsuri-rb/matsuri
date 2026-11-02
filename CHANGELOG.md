@@ -428,14 +428,6 @@ Working toward 0.3.0.
   is valid. Registry type `acceptor`, definitions in `platform/acceptors`,
   bare classes equally valid. See docs/acceptors.md and
   docs/design/acceptors.md.
-- **Stack and acceptor documentation** — docs/stacks.md and
-  docs/design/stacks.md (constraints and the properties they induce),
-  docs/acceptors.md and docs/design/acceptors.md in the same form. Stack
-  fixture and specs pin the converge sequence, member resolution, and
-  per-stack `build_order` locality.
-- **`rake docs:fmt`** — reformats docs/**/*.md through pandoc (gfm, 72
-  columns, em-dashes and fence style preserved). Pandoc is included in the
-  nix devshell.
 
 ### Fixed
 

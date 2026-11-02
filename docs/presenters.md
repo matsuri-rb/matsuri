@@ -25,7 +25,8 @@ Presenters are defined in `platform/presenters`. Authors implement
 `#transform` against a manifest that is already theirs to mutate, and
 return it. The Kubernetes dialect (`set_env`, `set_label`,
 `append_volume`, `update_in`, and friends from
-`Matsuri::Transform::Kubernetes`) is bare vocabulary inside `#transform`.
+`Matsuri::Transform::Kubernetes`) is bare vocabulary inside
+`#transform`.
 
 ```ruby
 Matsuri.define :presenter, 'fluentd-sidecar' do
@@ -75,14 +76,14 @@ Scenario names do not name kubectl verbs. There are two regimes:
 
 Each delivery verb assembles the pipeline for the regime it operates in:
 `create` and the create leg of `recreate` assemble `:on_create`;
-`apply`, `replace`, and `diff` assemble `:on_apply`. Neither replace
-nor server-side apply is a third regime — `apply_via` (`:apply`,
-`:replace`, `:server_side_apply`) picks how the payload travels, and
-the scenario picks what the payload says; the two axes stay orthogonal,
-so flipping a resource's `apply_via` never changes which presenters run.
-Diff is not a scenario either: its meaning is "what converge will send",
-so it assembles `:on_apply` and the preview extends through presenters
-for free.
+`apply`, `replace`, and `diff` assemble `:on_apply`. Neither replace nor
+server-side apply is a third regime — `apply_via` (`:apply`, `:replace`,
+`:server_side_apply`) picks how the payload travels, and the scenario
+picks what the payload says; the two axes stay orthogonal, so flipping a
+resource's `apply_via` never changes which presenters run. Diff is not a
+scenario either: its meaning is "what converge will send", so it
+assembles `:on_apply` and the preview extends through presenters for
+free.
 
 Declarations never cross a stack boundary: a nested stack assembles from
 its own declarations, the same rule stack-config follows.
@@ -197,26 +198,24 @@ the source, never the cluster.
 Under server-side delivery (`apply_via :server_side_apply`), ongoing
 applies merge by field ownership under the repo's field manager
 (`Matsuri::Platform.field_manager`, default `matsuri`), and creation is
-a protocol rather than a single verb (`Tasks::Stacks::Seed`): create
-the seeded payload as `<field_manager>-seed` (the seed owner), deliver
-the declared payload with an ordinary server-side apply, then
-atomically remove the seed owner's managedFields entry. The field
-manager ends sole owner of the declared fields and the seeds end
-unowned — a deliverer rolling the image, or a controller scaling, takes
-them uncontested. The order is not stylistic: a server-side apply
-against an object with empty managedFields attributes every
-pre-existing field to a ghost manager that never relinquishes.
-`tests/bin/probe-ssa.sh` pins the protocol and the refuted
-alternatives.
+a protocol rather than a single verb (`Tasks::Stacks::Seed`): create the
+seeded payload as `<field_manager>-seed` (the seed owner), deliver the
+declared payload with an ordinary server-side apply, then atomically
+remove the seed owner's managedFields entry. The field manager ends sole
+owner of the declared fields and the seeds end unowned — a deliverer
+rolling the image, or a controller scaling, takes them uncontested. The
+order is not stylistic: a server-side apply against an object with empty
+managedFields attributes every pre-existing field to a ghost manager
+that never relinquishes. `tests/bin/probe-ssa.sh` pins the protocol and
+the refuted alternatives.
 
 The delivery verbs honor the protocol themselves: `apply` (and so
 converge) routes a server-side resource that is not yet live through
 `Seed`, `create` brings one into existence through it, and `recreate`
 tears down and reseeds. Every later apply is an ordinary server-side
 apply. Converge is sequential, so a stack member later in `build_order`
-converges only after an earlier member is fully seeded and ceded —
-place whatever hands a field to another manager after the workload it
-manages.
+converges only after an earlier member is fully seeded and ceded — place
+whatever hands a field to another manager after the workload it manages.
 
 Three concerns ship, each a machinery + declared-hole pair:
 `Matsuri::Presenters::SeedReplicas` (`let(:replicas)`), `SeedImage`
@@ -250,12 +249,12 @@ declarations.
 `save_config` feeds create/recreate's `--save-config` flag, consulted
 only when ongoing delivery consults last-applied (`apply_via :apply`):
 under `:replace` or `:server_side_apply` it is pinned false, because a
-seeded last-applied is a prune trap for any later client-side apply.
-It resolves
-most-specific-first: a definition's own `let(:save_config)`, then the
-owning stack's `save_config false` declaration, then the repo-wide
-`Matsuri::Platform.save_config` (default `true`). Like stack-config and
-`present` declarations, a stack's policy never crosses to nested stacks.
+seeded last-applied is a prune trap for any later client-side apply. It
+resolves most-specific-first: a definition's own `let(:save_config)`,
+then the owning stack's `save_config false` declaration, then the
+repo-wide `Matsuri::Platform.save_config` (default `true`). Like
+stack-config and `present` declarations, a stack's policy never crosses
+to nested stacks.
 
 ## Composition
 
