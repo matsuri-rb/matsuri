@@ -72,8 +72,9 @@ Or install it yourself as:
 
 The documentation covers the golden paths:
 
-- [Setup](docs/setup.md) — environments, kubectl contexts, and
-  namespaces
+- [Setup](docs/setup.md) — repo layout, environments, kubectl contexts,
+  and namespaces
+- [Boot](docs/boot.md) — invocation and the boot sequence
 - [Resources](docs/resources.md) — defining resources with `let()`
 - [Stacks](docs/stacks.md) — bundling resources and converging them
   together

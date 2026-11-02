@@ -5,36 +5,31 @@ require 'json'
 
 module Matsuri
   module Initializer
-    def self.start(cmd, args)
-      # Flush stdout to keep Jenkins updated
+    def self.start(args)
+      # Flush stdout to keep CI harnesses updated
       STDOUT.sync = true
 
-      # Look for the matsuri repo by walking up the parent directories for config/matsuri.rb
-      matsuri_base_path = find_matsuri_base(ENV['PWD'])
+      # Look for the matsuri repo by walking up the parent directories for
+      # config/matsuri.rb. ENV['PWD'] preserves the path as the shell
+      # presented it; non-shell execs may not set it, hence the fallback.
+      matsuri_base_path = find_matsuri_base(ENV['PWD'] || Dir.pwd)
       Matsuri.log :fatal, 'Unable to find the Matsuri repo. Looking for a config/matsuri.rb file.' unless matsuri_base_path
       Matsuri::Config.base_path = matsuri_base_path
 
-      cmd_base = File.basename(cmd)
+      # The repo contributes code through matsuri, not through its launcher;
+      # every repo-authored file from here on may assume lib/ is loadable.
+      # See docs/design/boot.md
+      $LOAD_PATH.unshift(Matsuri::Config.lib_path) if File.directory?(Matsuri::Config.lib_path)
 
-      # If we symlink a command to the matsuri binary, then we're assuming
-      # that the name is the name of the environment. Otherwise, we expect
-      # the first argument to be the environment name
-      mat_env, final_args = case
-                            when ENV['MATSURI_ENV'].present? && ENV['MATSURI_ENV'] != 'matsuri'
-                              [ENV['MATSURI_ENV'], args]
-                            when cmd_base == 'matsuri'
-                              [ARGV.first, ARGV[1..-1]]
-                            else
-                              [cmd_base, args]
-                            end
-
-      # Expose matsuri environment to custom initializer
-      Matsuri::Config.environment = mat_env
+      # The environment has exactly one source: the first positional
+      # argument (see docs/design/boot.md). Set before loading configuration
+      # so config files and the custom initializer can read it.
+      Matsuri::Config.environment = args.first
       Matsuri::Config.load_configuration(Matsuri::Config.repo_defaults_path)
       Matsuri::Platform.load_configuration(Matsuri::Config.platform_load_paths)
 
       require Matsuri::Config.initializer_path if File.file?(Matsuri::Config.initializer_path)
-      Matsuri::Cmds::Cli.start(final_args)
+      Matsuri::Cmds::Cli.start(args.drop(1))
     end
 
     # Wish we have tail recursion here ...

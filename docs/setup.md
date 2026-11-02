@@ -1,4 +1,25 @@
-# Setup: Environments and kubectl Contexts
+# Setup
+
+## A Matsuri Repo
+
+The minimal skeleton:
+
+    Gemfile                 # pins the matsuri version (and plugins)
+    bin/matsuri             # wrapper: pins the bundle, nothing else
+    config/
+      matsuri.rb            # marks the repo base; Config overrides
+      platform.rb           # environment definitions
+      initializer.rb        # loads plugins and your library
+    lib/                    # your organization's extension library
+    platform/               # resource definitions
+
+`config/matsuri.rb` is the marker: matsuri finds the repo by walking up
+from the working directory until it sees one. A working example repo
+lives in [tests/example](../tests/example). How the pieces load — the
+wrapper, the environment argument, the initializer — is covered in
+[Boot](boot.md).
+
+## Environments and kubectl Contexts
 
 Every kubectl command matsuri runs is scoped to a context and a
 namespace:

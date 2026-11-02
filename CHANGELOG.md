@@ -11,6 +11,14 @@ Working toward 0.3.0.
 
 ### Breaking
 
+- **The environment has exactly one source: the first positional
+  argument.** The `MATSURI_ENV` variable and symlink-name detection
+  (any binary name other than `matsuri` becoming the environment) are
+  removed. A per-environment entry point is argument injection in a
+  repo wrapper — `bin/staging` is `exec bin/matsuri staging "$@"`. The
+  command is now self-describing: what was typed, what `ps` shows, and
+  what matsuri resolved are the same string. `Initializer.start` takes
+  `(args)` instead of `(cmd, args)`. See docs/design/boot.md.
 - **Delivery moves off the resource classes into `Matsuri::Tasks::KubectlOps`.**
   Resources are pure manifest generators; the kubectl mechanism lives in
   one task per verb (`Apply`, `Create`, `Replace`, `Delete`, `Recreate`,
@@ -263,6 +271,12 @@ Working toward 0.3.0.
 
 ### Added
 
+- **The repo's `lib/` joins the load path at boot.** Immediately after
+  repo discovery, the initializer prepends `Config.lib_path` (the key
+  existed, nothing consumed it), so a repo's own extension library
+  resolves identically under `bundle exec`, a bare gem install, or a
+  checkout — no gemspec and no wrapper-exported load paths. Boot
+  promise layers are documented in docs/design/boot.md.
 - **Server-side apply.** `apply_via :server_side_apply` delivers through
   `Tasks::KubectlOps::ServerSideApply` (`kubectl apply --server-side
   --field-manager=<m>`); the manager name comes from the resource's
