@@ -1,0 +1,7 @@
+# Raw manifest, outside matsuri: namespaces precede everything matsuri
+# converges, so they are applied directly.
+#   kubectl --context matsuri apply -f platform/namespaces/
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: checkout-dev

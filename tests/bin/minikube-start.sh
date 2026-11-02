@@ -15,8 +15,13 @@ case "$(uname -s)" in
   *) DRIVER="${DRIVER:-podman}" ;;
 esac
 
-exec minikube start \
+minikube start \
   -p "${PROFILE}" \
   --driver="${DRIVER}" \
   --keep-context \
   "$@"
+
+# The example repo's namespaces precede anything matsuri converges;
+# they are raw manifests, applied outside matsuri.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+kubectl --context "${PROFILE}" apply -f "${SCRIPT_DIR}/../example/platform/namespaces"
