@@ -271,6 +271,17 @@ Working toward 0.3.0.
 
 ### Added
 
+- **`Presenters::PruneEmpty`** — prunes empty values (`nil`, `{}`, `[]`)
+  from payloads, bottom-up; empty strings survive and array elements are
+  never dropped. Under server-side apply an empty collection is an
+  ownership claim over a field the definition does not manage, and
+  inside an atomic struct (`.spec.selector`) it diverges from the
+  server's persisted normal form, breaking the seeding protocol's
+  equal-values co-ownership with a conflict. Declared on both intent
+  regimes, a pruned payload declares in persistence normal form: ceding
+  a field and saying nothing are the same act. `let(:exceptions)` names
+  paths kept even when empty (ships with none); the `prune_empty(except:)`
+  helper closes it declaration-side. See docs/presenters.md.
 - **The repo's `lib/` joins the load path at boot.** Immediately after
   repo discovery, the initializer prepends `Config.lib_path` (the key
   existed, nothing consumed it), so a repo's own extension library

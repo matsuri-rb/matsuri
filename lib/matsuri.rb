@@ -31,6 +31,7 @@ module Matsuri
     autoload :SeedImage,     'matsuri/presenters/seed_image'
     autoload :SeedReplicas,  'matsuri/presenters/seed_replicas'
     autoload :SeedResources, 'matsuri/presenters/seed_resources'
+    autoload :PruneEmpty,    'matsuri/presenters/prune_empty'
     autoload :Helpers,       'matsuri/presenters/helpers'
   end
 

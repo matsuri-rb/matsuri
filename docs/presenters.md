@@ -256,6 +256,46 @@ repo-wide `Matsuri::Platform.save_config` (default `true`). Like
 stack-config and `present` declarations, a stack's policy never crosses
 to nested stacks.
 
+## Prune Empty
+
+`Matsuri::Presenters::PruneEmpty` prunes empty values — `nil`, `{}`,
+`[]` — from the payload, bottom-up (a parent emptied by pruning prunes
+too). Empty strings survive: `""` is a value Kubernetes assigns meaning
+to. Array elements are never dropped — removing elements changes list
+semantics — only their interiors prune.
+
+Under server-side apply this is more than hygiene. An empty collection
+in a payload is an ownership claim over a field the definition does not
+manage, and inside an atomic struct (`.spec.selector`) it diverges from
+the server's persisted normal form — the server drops empty members on
+storage — so the seeding protocol's equal-values co-ownership turns into
+a loud conflict. A pruned payload declares in persistence normal form:
+ceding a field and saying nothing are the same act.
+
+Declare it on both intent regimes, after any seeds, so the create's echo
+equals the declaration:
+
+```ruby
+present :on_create, prune_empty
+present :on_apply,  prune_empty
+```
+
+The merge is not uniformly monoidal — for some fields an empty value is
+a genuine assertion (an atomic field held empty against other writers).
+`let(:exceptions)` carries those paths, each preserved even when empty;
+it ships with none. Fill it through the helper or a named definition:
+
+```ruby
+present :on_apply, prune_empty(except: [%i[spec selector matchExpressions]])
+
+Matsuri.define :presenter, 'prune-empty' do
+  include Matsuri::Presenters::PruneEmpty
+  let(:exceptions) { [%i[spec selector matchExpressions]] }
+end
+```
+
+Paths address hash keys only; they do not descend into arrays.
+
 ## Composition
 
 Pipelines are `Matsuri::Transform::Callable` values: `new` is the

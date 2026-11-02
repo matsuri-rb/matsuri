@@ -27,6 +27,13 @@ module Matsuri
           let(:resources) { resources_spec }
         end
       end
+
+      def prune_empty(except: [])
+        Class.new(Matsuri::Presenter) do
+          include Matsuri::Presenters::PruneEmpty
+          let(:exceptions) { except }
+        end
+      end
     end
   end
 end
