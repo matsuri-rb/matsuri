@@ -3,46 +3,48 @@
 module Matsuri
   module Kubernetes
     class Ingress < Matsuri::Kubernetes::Base
-      let(:api_version) { 'extensions/v1beta1' }    # K8S 1.10
+      let(:api_version) { 'networking.k8s.io/v1' }
       let(:kind)        { 'Ingress' }
 
-      let(:default_annotations) do
-        {
-          'kubernetes.io/ingress.class' => ingress_class
-        }.merge(ingress_annotations).compact
-      end
-
+      let(:default_annotations) { ingress_annotations }
       let(:ingress_annotations) { {} } # Reserved for ingress controller annotations
 
       # Overridables
       let(:spec) do
         {
-          backend:   default_backend,
-          rules:     rules,
-          tls:       tls
+          ingressClassName: ingress_class,
+          defaultBackend:   default_backend,
+          rules:            rules,
+          tls:              tls
         }.compact
       end
 
+      # Names an IngressClass resource; replaces the retired
+      # kubernetes.io/ingress.class annotation.
+      let(:ingress_class)   { nil }
       let(:default_backend) { nil }
       let(:rules)           { nil }
       let(:tls)             { nil }
-
-      # Annotations
-      let(:ingress_class)   { nil }
 
       ### Helpers
       def http_rule(host:, paths:)
         { host: host, http: { paths: maybe_array(paths) } }
       end
 
-      def path(path = nil, service:, port:)
-        # Path may be unspecified, and thus all paths will be routed to this backend
-        # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#httpingresspath-v1beta1-extensions
-        { path: path, backend: backend(service: service, port: port) }.compact
+      # pathType is required in networking.k8s.io/v1: Prefix, Exact, or
+      # ImplementationSpecific. path may be omitted only for
+      # ImplementationSpecific.
+      def path(path = nil, service:, port:, path_type: 'Prefix')
+        { path: path, pathType: path_type, backend: backend(service: service, port: port) }.compact
       end
 
       def backend(service:, port:)
-        { serviceName: service, servicePort: port }
+        { service: { name: service, port: service_port(port) } }
+      end
+
+      # An Integer is a port number; anything else names a port.
+      def service_port(port)
+        port.is_a?(Integer) ? { number: port } : { name: port }
       end
 
       # Passing a hash to an array does not do this

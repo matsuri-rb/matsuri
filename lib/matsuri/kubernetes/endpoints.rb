@@ -26,11 +26,11 @@ module Matsuri
       let(:addresses)         { [localhost, address] }
       let(:localhost)         { { ip: '127.0.0.1' } }
       let(:address)           { { ip: public_ip_address, targetRef: target_ref } }
-      let(:target_ref)        { fail NotImplementedError, 'Must define let(:target_ref)' }
+      let(:target_ref)        { fail Matsuri::UndefinedLet, 'Must define let(:target_ref)' }
 
       let(:ports)             { [port(port_num)] }
       let(:public_ip_address) { config.dev_addr }
-      let(:port_num)          { fail NotImplementedError, 'Must define let(:port_num)' }
+      let(:port_num)          { fail Matsuri::UndefinedLet, 'Must define let(:port_num)' }
       let(:port_proto)        { 'tcp' }
 
       # Helpers

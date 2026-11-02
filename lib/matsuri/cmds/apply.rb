@@ -14,11 +14,7 @@ module Matsuri
           end
         else
           define_method(resource_name) do |name = :not_specified, image_tag = nil|
-            apply_resource do
-              image_tag ||= Matsuri::Registry.fetch_or_load(resource_name, name).new.try(:current_image_tag)
-              image_tag ||= 'latest'
-              Matsuri::Registry.send(resource_name, name).new(image_tag: image_tag)
-            end
+            apply_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new(image_tag: image_tag_for(image_tag)) }
           end
         end
       end
@@ -28,9 +24,6 @@ module Matsuri
 
       desc 'pod POD_NAME', 'apply changes to a pod'
       apply_cmd_for :pod, image_tag: true
-
-      desc 'rc RC_NAME', 'apply changes to a rc'
-      apply_cmd_for :rc, image_tag: true
 
       desc 'replica-set REPLICA-SET_NAME', 'apply changes to a replica-set'
       apply_cmd_for :replica_set, image_tag: true
@@ -77,7 +70,7 @@ module Matsuri
       def apply_resource
         with_config do |opt|
           resource = yield
-          resource.apply!
+          Matsuri::Tasks::KubectlOps.apply(resource)
         end
       end
     end

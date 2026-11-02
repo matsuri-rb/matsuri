@@ -137,14 +137,6 @@ module Matsuri
         fetch_or_load :ingress, name
       end
 
-      def replication_controller(name)
-        fetch_or_load :replication_controller, name
-      end
-
-      def rc(name)
-        replication_controller(name)
-      end
-
       def replica_set(name)
         fetch_or_load :replica_set, name
       end
@@ -205,8 +197,16 @@ module Matsuri
         horizontal_pod_autoscaler(name)
       end
 
-      def app(name)
-        fetch_or_load :app, name
+      def stack(name)
+        fetch_or_load :stack, name
+      end
+
+      def acceptor(name)
+        fetch_or_load :acceptor, name
+      end
+
+      def presenter(name)
+        fetch_or_load :presenter, name
       end
 
       private
@@ -246,10 +246,11 @@ end
 
 # Register the definition classes
 # TODO: Consider making this dynamically and lazy loaded
-Matsuri::Registry.register_class 'app',                       class: Matsuri::App
+Matsuri::Registry.register_class 'stack',                     class: Matsuri::Stack
+Matsuri::Registry.register_class 'acceptor',                  class: Matsuri::Acceptor
+Matsuri::Registry.register_class 'presenter',                 class: Matsuri::Presenter
 Matsuri::Registry.register_class 'imported_manifest',         class: Matsuri::Kubernetes::ImportedManifest
 Matsuri::Registry.register_class 'pod',                       class: Matsuri::Kubernetes::Pod
-Matsuri::Registry.register_class 'replication_controller',    class: Matsuri::Kubernetes::ReplicationController, aliases: %w[rc]
 Matsuri::Registry.register_class 'service',                   class: Matsuri::Kubernetes::Service
 Matsuri::Registry.register_class 'ingress',                   class: Matsuri::Kubernetes::Ingress
 Matsuri::Registry.register_class 'endpoints',                 class: Matsuri::Kubernetes::Endpoints

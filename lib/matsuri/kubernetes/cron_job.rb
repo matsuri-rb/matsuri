@@ -10,7 +10,7 @@ module Matsuri
 
 
       # Parameters passed from command line
-      let(:image_tag)            { options[:image_tag] || 'latest' }
+      let(:image_tag)            { options[:image_tag] }
 
       # https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#cronjobspec-v1-batch
       let(:spec) do
@@ -80,7 +80,7 @@ module Matsuri
 
       let(:selector)                   { nil } # This will be autopopulated by cronjob
       #let(:selector)                   { { matchLabels: match_labels, matchExpressions: match_expressions } }
-      let(:match_labels)               { fail NotImplementedError, 'Must define let(:match_labels)' }
+      let(:match_labels)               { fail Matsuri::UndefinedLet, 'Must define let(:match_labels)' }
       let(:match_expressions)          { [] }
 
       let(:job_template_suspend)       { nil } # boolean, default: false
@@ -97,6 +97,8 @@ module Matsuri
 
       # See: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#successpolicy-v1-batch
       let(:success_policy)             { nil } # null | SuccessPolicySpec
+
+      let(:primary_container_path)    { ['spec', 'jobTemplate', 'spec', 'template', 'spec', 'containers', 0] }
 
 
       class << self

@@ -11,18 +11,8 @@ module Matsuri
         end
       end
 
-      desc 'dns', 'deletes cluster dns'
-      def dns
-        with_config do |_|
-          Matsuri::AddOns::DNS.delete!
-        end
-      end
-
       desc 'pod POD_NAME', 'delete a pod'
       delete_cmd_for :pod
-
-      desc 'rc RC_NAME', 'delete a replication controller'
-      delete_cmd_for :rc
 
       desc 'replica_set REPLICA_SET_NAME', 'delete a replica_set'
       delete_cmd_for :replica_set
@@ -55,8 +45,12 @@ module Matsuri
       desc 'endpoints ENDPOINTS_NAME', 'delete an endpoint set'
       delete_cmd_for :endpoints
 
-      desc 'app APP_NAME', 'deletes all resources in an app'
-      delete_cmd_for :app
+      desc 'stack STACK_NAME', 'deletes all resources in a stack'
+      def stack(name = :not_specified)
+        with_config do |opt|
+          Matsuri::Registry.fetch_or_load(:stack, name).new.delete!
+        end
+      end
 
       desc 'secret SECRET_NAME', 'delete a secret'
       delete_cmd_for :secret
@@ -84,7 +78,7 @@ module Matsuri
       def delete_resource
         with_config do |opt|
           resource = yield
-          resource.delete!
+          Matsuri::Tasks::KubectlOps.delete(resource)
         end
       end
     end

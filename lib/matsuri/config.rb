@@ -30,23 +30,8 @@ module Matsuri
     # to pull the correct kube context.
     default :map_env_to_kube_context, false
 
-    # Container Image Versions
-    default :etcd_version,      nil # 2.0.12
-    default :hyperkube_version, nil # v1.0.1
-    default :kube2dns_version,  nil # 1.11
-    default :skydns_version,    nil # 2015-03-11-001
-
     # Networking
-    default :dev_addr,         '127.0.0.1' # Replace with local ip
-    default :kubernetes_cidr,  '10.1.0.0/16'
-    default :etcd_addr,        '127.0.0.1:4001'
-    default :etcd_bind_addr,   '0.0.0.0:4001'
-    default :master_addr,      '127.0.0.1'
-    default :master_bind_addr, '0.0.0.0'
-    default :api_servers,      'http://localhost:8080'
-    default :master_url,       'http://127.0.0.1:8080'
-    default :cluster_dns,      '10.0.0.10'
-    default :cluster_domain,   'dev.local'
+    default :dev_addr, '127.0.0.1' # Replace with local ip
 
     # Shellout defaults
     default(:shellout_cwd)      { base_path }
@@ -69,7 +54,6 @@ module Matsuri
 
     default(:images_path)                     { File.join platform_path, 'images' }
     default(:pods_path)                       { File.join platform_path, 'pods' }
-    default(:rcs_path)                        { File.join platform_path, 'replication_controllers' }
     default(:replica_sets_path)               { File.join platform_path, 'replica_sets' }
     default(:daemon_sets_path)                { File.join platform_path, 'daemon_sets' }
     default(:deployments_path)                { File.join platform_path, 'deployments' }
@@ -81,7 +65,9 @@ module Matsuri
     default(:services_path)                   { File.join platform_path, 'services' }
     default(:ingresses_path)                  { File.join platform_path, 'ingresses' }
     default(:endpoints_path)                  { File.join platform_path, 'endpoints' }
-    default(:apps_path)                       { File.join platform_path, 'apps' }
+    default(:stacks_path)                     { File.join platform_path, 'stacks' }
+    default(:acceptors_path)                  { File.join platform_path, 'acceptors' }
+    default(:presenters_path)                 { File.join platform_path, 'presenters' }
     default(:secrets_path)                    { File.join platform_path, 'secrets' } # Kubernetes Secret definition, not the actual secrets
     default(:config_maps_path)                { File.join platform_path, 'config_maps' } # Kubernetes ConfigMaps definition, not the actual config ovelay
     default(:horizontal_pod_autoscalers_path) { File.join platform_path, 'horizontal_pod_autoscalers' }

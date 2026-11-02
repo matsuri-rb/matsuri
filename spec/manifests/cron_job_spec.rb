@@ -41,7 +41,14 @@ RSpec.describe 'cron_job manifest' do
                 'annotations' => {}
               },
               'spec' => {
-                'containers' => [{ 'name' => 'report', 'image' => 'report:latest' }]
+                'containers'       => [{ 'name' => 'report', 'image' => 'report:latest' }],
+                'volumes'          => [],
+                'imagePullSecrets' => [],
+                'nodeSelector'     => {},
+                'affinity'         => {},
+                'tolerations'      => [],
+                'restartPolicy'    => 'OnFailure',
+                'securityContext'  => {}
               }
             }
           }

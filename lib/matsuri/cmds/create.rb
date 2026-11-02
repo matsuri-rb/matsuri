@@ -14,27 +14,13 @@ module Matsuri
           end
         else
           define_method(resource_name) do |name = :not_specified, image_tag = nil|
-            create_resource do
-              image_tag ||= Matsuri::Registry.fetch_or_load(resource_name, name).new.try(:current_image_tag)
-              image_tag ||= 'latest'
-              Matsuri::Registry.send(resource_name, name).new(image_tag: image_tag)
-            end
+            create_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new(image_tag: image_tag_for(image_tag)) }
           end
-        end
-      end
-
-      desc 'dns', 'creates cluster dns'
-      def dns
-        with_config do |_|
-          Matsuri::AddOns::DNS.create!
         end
       end
 
       desc 'pod POD_NAME [IMAGE_TAG]', 'create a pod'
       create_cmd_for :pod, image_tag: true
-
-      desc 'rc RC_NAME [IMAGE_TAG]', 'create a replication controller'
-      create_cmd_for :rc, image_tag: true
 
       desc 'replica-set RS_NAME [IMAGE_TAG]', 'create a replica set'
       create_cmd_for :replica_set, image_tag: true
@@ -93,7 +79,7 @@ module Matsuri
       def create_resource
         with_config do |opt|
           resource = yield
-          resource.create!
+          Matsuri::Tasks::KubectlOps.create(resource)
         end
       end
     end

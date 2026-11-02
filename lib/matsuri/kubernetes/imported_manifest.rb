@@ -11,13 +11,17 @@ module Matsuri
     # 1. The generated manifest is usually an array of hashes, not a hash
     # 2. It isn't generated so much as imported from a raw manifest provided by an upstream vendor
     # 3. There are helpers to transform the manifest and customize it locally
-    # 4. This current version is apply-only, and does not support deletions and other operations
+    # 4. Apply-only: the CLI binds no other verb for imported manifests
     class ImportedManifest < Matsuri::Kubernetes::Base
       include Matsuri::Concerns::ImportManifest
 
-      # Override this to run transforms
+      # Override this to run transforms; the Transform::Kubernetes dialect
+      # is in scope (set_env, update_in, append_volume, ...)
       let(:extracted_manifests) { imported_manifests }
-      let(:namespace)           { Matsuri.fail "Must define let(:namespace); check the imported manifest and use the namespace found there" }
+      let(:namespace)           { fail Matsuri::UndefinedLet, "Must define let(:namespace); check the imported manifest and use the namespace found there" }
+
+      # Identity for delivery messages; there is no single kind to derive it from
+      let(:resource_type)       { 'imported manifest' }
 
       # Used to hook into ExportManifest concern
       let(:manifest_for_export)         { normalize_manifests(extracted_manifests) }
@@ -34,35 +38,10 @@ module Matsuri
           join('')
       end
 
-      # Override this to avoid triggering the normal path
-      # Also, use the to_yaml transform so we can apply multiple manifest
-      def apply!
-        puts "Applying (create or update) imported manifest #{import_path}".color(:yellow).bright if config.verbose
-        puts to_json if config.debug
-        kubectl! "apply --namespace #{namespace} --record=true -f -", input: to_yaml
-      end
-
-      def create!
-        Matsuri.log :fatal, "create not supported for imported manifests"
-      end
-
-      def delete!
-        Matsuri.log :fatal, "delete not supported for imported manifests"
-      end
-
-      def recreate!
-        Matsuri.log :fatal, "recreate not supported for imported manfiests"
-      end
-
-      def diff!
-        Matsuri.log :fatal, "diff not yet supported for imported manfiest. Coming soon."
-        # Implementation notes
-        # Probably have to iterate through the manfiest set, look them up individually and
-        # print the diff from each of those
-      end
-
-      def annotate!
-        Matsuri.log :fatal, "annotate not supported for imported manifests"
+      def applied_to_yaml
+        applied_manifest_for_export.
+          map(&:to_yaml).
+          join('')
       end
 
       ### Matsuri Registry

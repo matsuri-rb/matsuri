@@ -77,6 +77,6 @@ RSpec.describe 'Concerns::Pods::SpreadTopology' do
       let(:container) { { name: 'c', image: 'i', resources: resources } }
     end
 
-    expect { klass.new.to_json }.to raise_error(NotImplementedError, /topology_spread_constraints/)
+    expect { klass.new.to_json }.to raise_error(Matsuri::UndefinedLet, /topology_spread_constraints/)
   end
 end

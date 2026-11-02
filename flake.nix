@@ -22,6 +22,13 @@
           devShell = mkShell {
             buildInputs = [
               ruby_4_0
+              pandoc
+
+              # Cluster harness for tests/ (delivery semantics probes)
+              minikube
+              kubectl
+            ] ++ lib.optionals stdenv.isDarwin [
+              vfkit # hypervisor backend for minikube on macOS
             ];
           };
     });

@@ -14,20 +14,13 @@ module Matsuri
           end
         else
           define_method(resource_name) do |name = :not_specified, image_tag = nil|
-            recreate_resource do
-              image_tag ||= Matsuri::Registry.fetch_or_load(resource_name, name).new.try(:current_image_tag)
-              image_tag ||= 'latest'
-              Matsuri::Registry.send(resource_name, name).new(image_tag: image_tag)
-            end
+            recreate_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new(image_tag: image_tag_for(image_tag)) }
           end
         end
       end
 
       desc 'pod POD_NAME [IMAGE TAG]', 'recreate a pod'
       recreate_cmd_for :pod, image_tag: true
-
-      desc 'rc RC_NAME [IMAGE TAG]', 'recreate a replication controller'
-      recreate_cmd_for :rc, image_tag: true
 
       desc 'replica-set REPLICA_SET_NAME [IMAGE TAG]', 'recreate a replica set'
       recreate_cmd_for :replica_set, image_tag: true
@@ -64,7 +57,7 @@ module Matsuri
       def recreate_resource
         with_config do |opt|
           resource = yield
-          resource.recreate!
+          Matsuri::Tasks::KubectlOps.recreate(resource)
         end
       end
     end

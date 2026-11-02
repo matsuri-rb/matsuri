@@ -11,8 +11,12 @@ module Matsuri
         end
       end
 
-      desc 'app APP_NAME', 'app status'
-      status_cmd_for :app
+      desc 'stack STACK_NAME', 'stack status'
+      def stack(name = :not_specified)
+        with_config do |opt|
+          Matsuri::Registry.fetch_or_load(:stack, name).new.status!
+        end
+      end
 
       desc 'pod POD_NAME', 'pod status'
       status_cmd_for :pod
@@ -30,9 +34,6 @@ module Matsuri
           Matsuri::ShellOut.kubectl 'top nodes'
         end
       end
-
-      desc 'rc RC_NAME [IMAGE_TAG]', 'replication controller status'
-      status_cmd_for :rc
 
       desc 'service SERVICE_NAME', 'service status'
       status_cmd_for :service
@@ -57,7 +58,7 @@ module Matsuri
       def status_resource
         with_config do |opt|
           resource = yield
-          resource.status!
+          Matsuri::Tasks::KubectlOps.status(resource)
         end
       end
 

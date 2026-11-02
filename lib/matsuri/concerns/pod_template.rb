@@ -13,7 +13,7 @@ module Matsuri
       included do
         # Define this to point to an existing pod definition. This is the name
         # registered to Matsuri::Registry
-        let(:pod_name) { fail NotImplementedError, 'Must define let(:pod_name)' }
+        let(:pod_name) { fail Matsuri::UndefinedLet, 'Must define let(:pod_name)' }
 
         # By default, point the template to an existing pod definition
         # Overide let(:pod_name)
@@ -26,20 +26,12 @@ module Matsuri
         let(:pod_annotations)     { pod_def.final_annotations }
         let(:pod_spec)            { pod_def.spec }
         let(:pod_options)         { default_pod_options }
-        let(:default_pod_options) { { image_tag: image_tag, release: release } }
+        # Once mapped, the acceptor instance is the accepted values; the
+        # template forwards it so pod definitions read the same binding the
+        # owning resource holds.
+        let(:default_pod_options) { { image_tag: image_tag, stack_config: stack_config } }
       end
 
-      ### Helpers
-      def selected_pods_json
-        fail NotImpelmentedError, 'Match Expressions not yet implemented' if Array(match_expressions).any?
-        sel = match_labels.to_a.map { |(k,v)| "#{k}=#{v}" }.join(',')
-        cmd = kubectl "get pods -l #{sel} -o json", echo_level: :debug, no_stdout: true
-        JSON.parse(cmd.stdout)
-      end
-
-      def selected_pods
-        selected_pods_json['items']
-      end
     end
   end
 end

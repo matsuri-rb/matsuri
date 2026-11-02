@@ -26,7 +26,7 @@ module Matsuri
         extend Concern
 
         included do
-          let(:topology_spread_constraints) { fail NotImplementedError, 'define let(:topology_spread_constraints) required' }
+          let(:topology_spread_constraints) { fail Matsuri::UndefinedLet, 'define let(:topology_spread_constraints) required' }
 
           ### Strategies: one builder, specialized by topology key
           let(:balance_across_zones) { [balanced_spread(zone_topology_key, max_skew: zone_max_skew, when_unsatisfiable: zone_when_unsatisfiable)] }

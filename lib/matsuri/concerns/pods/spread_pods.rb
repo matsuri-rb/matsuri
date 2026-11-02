@@ -16,7 +16,7 @@ module Matsuri
         extend Concern
 
         included do
-          let(:pod_anti_affinity)          { fail NotImplementedError, 'define let(:pod_anti_affinity) required' }
+          let(:pod_anti_affinity)          { fail Matsuri::UndefinedLet, 'define let(:pod_anti_affinity) required' }
 
           let(:schedule_one_per_node)      { required_during_scheduling(other_pods_of_type_in_node) }
           let(:schedule_one_per_zone)      { required_during_scheduling(other_pods_of_type_in_zone) }

@@ -79,32 +79,12 @@ module Matsuri
         Hash[hash.map { |k,v| [k, base64(v) ] }]
       end
 
-      ### Overrides
+      ### Delivery policy
 
-      # kubectl current does not support applying configmaps. Best is to create and replace
-      # See: https://github.com/kubernetes/kubernetes/issues/32432
-      #      https://github.com/kubernetes/kubernetes/issues/41711
-      # Do not save config (force replace)
-      def create!
-        puts "Creating #{resource_type}/#{name}".color(:yellow).bright if config.verbose
-        puts to_json if config.debug
-        kubectl! 'create -f -', input: to_json
-      end
-
-      # Apply does not really work with ConfigMaps. Best use replace instead.
-      def apply!
-        puts "Replace #{resource_type}/#{name}".color(:yellow).bright if config.verbose
-        puts to_json if config.debug
-        kubectl! 'replace -f -', input: applied_to_json
-      end
-
-      # Secrets are not generally something passed around in developer copies
-      # These are things set up by the cluster administrator, so we can assume
-      # if it is present on the server, we can skip it. As such, better to use
-      # recreate than apply for secrets.
-      def converge!(opts = {})
-        converge_by_recreate!(opts)
-      end
+      # Like secrets, config maps are set up by the cluster administrator:
+      # if one is present on the server, we can skip it. Better to use
+      # recreate than apply.
+      let(:converge_via) { :recreate }
 
       class << self
         def load_path

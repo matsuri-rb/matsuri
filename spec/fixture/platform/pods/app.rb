@@ -29,7 +29,7 @@ Matsuri.define :pod, 'app' do
   let(:container) do
     {
       name:      'app',
-      image:     "app:#{image_tag}",
+      image:     'app:latest',
       resources: resources
     }
   end

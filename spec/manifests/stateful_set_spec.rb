@@ -32,7 +32,14 @@ RSpec.describe 'stateful_set manifest' do
             'annotations' => {}
           },
           'spec' => {
-            'containers' => [{ 'name' => 'db', 'image' => 'postgres:latest' }]
+            'containers'       => [{ 'name' => 'db', 'image' => 'postgres:latest' }],
+            'volumes'          => [],
+            'imagePullSecrets' => [],
+            'nodeSelector'     => {},
+            'affinity'         => {},
+            'tolerations'      => [],
+            'restartPolicy'    => 'Always',
+            'securityContext'  => {}
           }
         },
         'serviceName'         => 'db',

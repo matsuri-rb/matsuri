@@ -3,6 +3,13 @@
 require 'matsuri/core_ext'
 
 module Matsuri
+  # Raised when a declared hole — a let() with no sensible default — is read
+  # before a definition fills it. Inherits NoMethodError: the definition has
+  # no working version of that let. The raise lands in the code that expected
+  # the value, so the implementer can inspect that context and see what the
+  # definition needs.
+  class UndefinedLet < NoMethodError; end
+
   autoload :Initializer, 'matsuri/initializer'
   autoload :Config,      'matsuri/config'
   autoload :Platform,    'matsuri/platform'
@@ -11,14 +18,28 @@ module Matsuri
 
   autoload :Task,        'matsuri/task'
   autoload :Cmd,         'matsuri/cmd'
-  autoload :App,         'matsuri/app'
+  autoload :Stack,       'matsuri/stack'
+  autoload :Acceptor,    'matsuri/acceptor'
+  autoload :Presenter,   'matsuri/presenter'
+  autoload :Transform,   'matsuri/transform'
+
+  module Acceptors
+    autoload :ImageTag, 'matsuri/acceptors/image_tag'
+  end
+
+  module Presenters
+    autoload :SeedImage,     'matsuri/presenters/seed_image'
+    autoload :SeedReplicas,  'matsuri/presenters/seed_replicas'
+    autoload :SeedResources, 'matsuri/presenters/seed_resources'
+    autoload :PruneEmpty,    'matsuri/presenters/prune_empty'
+    autoload :Helpers,       'matsuri/presenters/helpers'
+  end
 
   module Kubernetes
     autoload :Base,                    'matsuri/kubernetes/base'
 
     # Core
     autoload :Pod,                     'matsuri/kubernetes/pod'
-    autoload :ReplicationController,   'matsuri/kubernetes/replication_controller'
     autoload :Service,                 'matsuri/kubernetes/service'
     autoload :Endpoints,               'matsuri/kubernetes/endpoints'
     autoload :Ingress,                 'matsuri/kubernetes/ingress'
@@ -43,10 +64,6 @@ module Matsuri
     autoload :ImportedManifest,        'matsuri/kubernetes/imported_manifest'
   end
 
-  module AddOns
-    autoload :DNS, 'matsuri/add_ons/dns'
-  end
-
   module Cmds
     autoload :Cli,      'matsuri/cmds/cli'
     autoload :Kubectl,  'matsuri/cmds/kubectl'
@@ -63,19 +80,22 @@ module Matsuri
   end
 
   module Tasks
-    autoload :Kubectl, 'matsuri/tasks/kubectl'
-    autoload :Docker,  'matsuri/tasks/docker'
-    autoload :Pod,     'matsuri/tasks/pod'
-    autoload :Cluster, 'matsuri/tasks/cluster'
+    autoload :Kubectl,    'matsuri/tasks/kubectl'
+    autoload :KubectlOps, 'matsuri/tasks/kubectl_ops'
+    autoload :Stacks,     'matsuri/tasks/stacks'
+    autoload :HashDiff,   'matsuri/tasks/hash_diff'
+    autoload :Docker,     'matsuri/tasks/docker'
+    autoload :Pod,        'matsuri/tasks/pod'
+    autoload :Cluster,    'matsuri/tasks/cluster'
   end
 
   module Concerns
     autoload :ImportManifest,     'matsuri/concerns/import_manifest'
     autoload :ExportManifest,     'matsuri/concerns/export_manifest'
+    autoload :Diffable,           'matsuri/concerns/diffable'
 
     autoload :Awaiting,           'matsuri/concerns/awaiting'
     autoload :RegistryHelpers,    'matsuri/concerns/registry_helpers'
-    autoload :Scalable,           'matsuri/concerns/scalable'
     autoload :PodTemplate,        'matsuri/concerns/pod_template'
 
     module Pods

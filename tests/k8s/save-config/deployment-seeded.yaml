@@ -1,0 +1,20 @@
+# The create payload: the declaration plus the seeded replicas. Sent once,
+# by create, without --save-config.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: save-config-probe
+  namespace: matsuri-probes
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: save-config-probe
+  template:
+    metadata:
+      labels:
+        app: save-config-probe
+    spec:
+      containers:
+        - name: pause
+          image: registry.k8s.io/pause:3.9

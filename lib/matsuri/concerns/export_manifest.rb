@@ -17,7 +17,7 @@ module Matsuri
           }
         end
 
-        let(:manifest)         { fail NotImplementedError, 'Must define let(:manifest)' }
+        let(:manifest)         { fail Matsuri::UndefinedLet, 'Must define let(:manifest)' }
 
         # Some resources only allow certain fields to be applied. Override this
         # to restrict it.
@@ -25,11 +25,11 @@ module Matsuri
         let(:manifest_for_export)         { manifest.deep_stringify_keys }
         let(:applied_manifest_for_export) { applied_manifest.deep_stringify_keys }
 
-        let(:api_version) { fail NotImplementedError, 'Must define let(:api_version)' }
-        let(:kind)        { fail NotImplementedError, 'Must define let(:kind)' }
+        let(:api_version) { fail Matsuri::UndefinedLet, 'Must define let(:api_version)' }
+        let(:kind)        { fail Matsuri::UndefinedLet, 'Must define let(:kind)' }
         let(:metadata)    { { } }
-        let(:name)        { fail NotImplementedError, 'Must define let(:name)' }
-        let(:spec)        { fail NotImplementedError, 'Must define let(:spec)' }
+        let(:name)        { fail Matsuri::UndefinedLet, 'Must define let(:name)' }
+        let(:spec)        { fail Matsuri::UndefinedLet, 'Must define let(:spec)' }
       end
 
       def to_json
@@ -45,7 +45,7 @@ module Matsuri
       end
 
       def applied_to_yaml
-        applied_manifest.for_export.to_yaml
+        applied_manifest_for_export.to_yaml
       end
 
       def pretty_print

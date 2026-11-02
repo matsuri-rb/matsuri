@@ -1,0 +1,7 @@
+# frozen_string_literal: true
+
+source 'https://rubygems.org'
+
+# A real platform repo pins a version: gem 'matsuri', '~> 0.3'
+# This example runs against the working tree.
+gem 'matsuri', path: '../..'

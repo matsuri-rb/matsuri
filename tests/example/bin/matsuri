@@ -1,0 +1,14 @@
+#!/bin/bash -e
+
+# Pin the bundle to this repo's Gemfile and exec. That is the wrapper's
+# entire job: the Gemfile owns which matsuri runs (see docs/design/boot.md
+# in the matsuri repo). Invoke from the repo base.
+#
+# A per-environment entry point is argument injection, in a sibling script:
+#   exec "$(dirname "$0")/matsuri" staging "$@"
+SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PLATFORM_DIR="${SCRIPT_DIR}/.."
+
+export BUNDLE_GEMFILE="${PLATFORM_DIR}/Gemfile"
+
+exec bundle exec matsuri "$@"

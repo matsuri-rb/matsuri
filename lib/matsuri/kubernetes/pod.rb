@@ -8,8 +8,12 @@ require 'json'
 module Matsuri
   module Kubernetes
     class Pod < Matsuri::Kubernetes::Base
+      include Matsuri::Transform::Env
+
       let(:api_version) { 'v1' }
       let(:kind)        { 'Pod' }
+
+      let(:primary_container_path) { ['spec', 'containers', 0] }
 
       # Overridables
       let(:spec) do
@@ -55,7 +59,7 @@ module Matsuri
       end
 
       # Get image tag from the command line
-      let(:image_tag)          { options[:image_tag] || 'latest' }
+      let(:image_tag)          { options[:image_tag] }
 
       let(:containers)         { [container] }
       let(:init_containers)    { nil }
@@ -119,11 +123,11 @@ module Matsuri
       let(:sysctls)              { nil }
 
       # Default container
-      let(:container)   { fail NotImplementedError, 'Must define let(:container)'}
-      let(:volume)      { fail NotImplementedError, 'Must define let(:volume)' }
+      let(:container)   { fail Matsuri::UndefinedLet, 'Must define let(:container)'}
+      let(:volume)      { fail Matsuri::UndefinedLet, 'Must define let(:volume)' }
 
       let(:primary_container) { containers.first[:name] }
-      let(:primary_image)     { fail NotImplementedError, 'Must define let(:primary_image) for deployment or replication controller' }
+      let(:primary_image)     { fail Matsuri::UndefinedLet, 'Must define let(:primary_image) for deployment or replication controller' }
 
       # Resources for default container
       let(:resources)          { { requests: resource_requests, limits: resource_limits } }
@@ -131,8 +135,8 @@ module Matsuri
       let(:resource_limits)    { { cpu: cpu_limit,   memory: mem_limit  }.compact }
 
       # We want to make sure all limits are defined
-      let(:cpu_limit)   { fail NotImplementedError, 'Must define let(:cpu_limit)' }
-      let(:mem_limit)   { fail NotImplementedError, 'Must define let(:mem_limit)' }
+      let(:cpu_limit)   { fail Matsuri::UndefinedLet, 'Must define let(:cpu_limit)' }
+      let(:mem_limit)   { fail Matsuri::UndefinedLet, 'Must define let(:mem_limit)' }
       let(:cpu_request) { cpu_limit }
       let(:mem_request) { mem_limit }
 
@@ -160,23 +164,11 @@ module Matsuri
       ### Helpers
 
       # Pods are practically useless with using apply. When we converge, we want
-      # to recreate instead. Pods unmanaged by rc, rs, or deployment are more useful
-      # in dev mode than anywhere else
-      def converge!(opts = {})
-        converge_by_recreate!(opts)
-      end
+      # to recreate instead. Pods unmanaged by a workload controller are more
+      # useful in dev mode than anywhere else
+      let(:converge_via) { :recreate }
 
       # Helper methods
-      def up?
-        cmd = kubectl "get #{resource_type}/#{name} -o json", echo_level: :debug, no_stdout: true
-        Matsuri.log :fatal, "Unable to get status for #{resource_type}/#{name}" unless cmd.status.success?
-        pod_json = JSON.parse(cmd.stdout)
-        Matsuri.log :debug, pod_json['status']
-        return false unless pod_json['status']['phase'] == 'Running'
-        return false unless pod_json['status']['containerStatuses'].any?
-        pod_json['status']['containerStatuses'].all? { |c| c['ready'] == true }
-      end
-
       def config_file(path)
         File.join config.config_path, path
       end
@@ -191,17 +183,6 @@ module Matsuri
 
       def base_path(path)
         File.join config.base_path, path
-      end
-
-      # Ruby 2.0+ uses ordered hashes
-      def expand_env(hash)
-        hash.map do |k,v|
-          if v.is_a?(Hash)
-            { name: k, valueFrom: v }
-          else
-            { name: k, value: v.to_s }
-          end
-        end
       end
 
       def env_from_secret(name:, key:)
@@ -359,20 +340,6 @@ module Matsuri
       end
 
       # Helpers
-
-      def diff!(opt = {})
-        deltas = opt[:primary_container] ? primary_container_diff : diff
-        print_diff(deltas)
-      end
-
-      def containers_diff
-        current = current_manifest(raw: true)
-        Matsuri.log :fatal, "Cannot fetch current manifest for #{resource_type}/#{name}" unless current
-
-        desired = JSON.parse(to_json)
-
-        Hashdiff.diff current['spec']['containers'][0], desired['spec']['containers'][0]
-      end
 
       class << self
         def load_path

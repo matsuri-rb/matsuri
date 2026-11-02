@@ -16,8 +16,8 @@ module Matsuri
             show_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new }
           end
         else
-          define_method(resource_name) do |name = :not_specified, image_tag = 'latest'|
-            show_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new(image_tag: image_tag) }
+          define_method(resource_name) do |name = :not_specified, image_tag = nil|
+            show_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new(image_tag: image_tag_for(image_tag)) }
           end
         end
       end
@@ -36,10 +36,11 @@ module Matsuri
         end
       end
 
-      desc 'dns', 'displays DNS Add On definition'
-      def dns
+      desc 'stack STACK_NAME', 'show manifests for all stack members'
+      option :stack_config, type: :string, banner: 'PATH'
+      def stack(name = :not_specified)
         with_config do |opt|
-          Matsuri::AddOns::DNS.show!(opt)
+          Matsuri::Registry.stack(name).new(config: stack_config_data(opt)).show!(opt)
         end
       end
 
@@ -48,9 +49,6 @@ module Matsuri
 
       desc 'pod POD_NAME', 'show manifest for pod'
       show_cmd_for :pod, image_tag: true
-
-      desc 'rc RC_NAME', 'show manifest for rc'
-      show_cmd_for :rc, image_tag: true
 
       desc 'replica_set REPLICA_SET_NAME', 'show manifest for replica_set'
       show_cmd_for :replica_set, image_tag: true

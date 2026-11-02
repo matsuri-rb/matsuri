@@ -50,11 +50,14 @@ module Matsuri
       subcommand 'delete', Matsuri::Cmds::Delete
       map stop: :delete
 
-      desc 'converge APP_NAME [IMAGE_TAG]', 'Idempotently converges an app and all dependencies'
+      desc 'converge STACK_NAME [IMAGE_TAG]', 'Idempotently converges a stack and all dependencies'
       option :restart, type: :boolean, default: false
+      option :stack_config, type: :string, banner: 'PATH'
       def converge(name, image_tag = nil)
         with_config do |opt|
-          Matsuri::Registry.app(name).new(image_tag: image_tag).converge!(opt)
+          Matsuri::Registry.stack(name)
+            .new(image_tag: image_tag, config: stack_config_data(opt))
+            .converge!(opt)
         end
       end
 
@@ -65,68 +68,61 @@ module Matsuri
         end
       end
 
-      desc 'reload APP_NAME', 'Reloads an app without recreating underlying pods'
+      desc 'reload STACK_NAME', 'Reloads a stack without recreating underlying pods'
       def reload(name, image_tag = nil)
         with_config do |opt|
-          Matsuri::Registry.app(name).new(image_tag: image_tag).reload!(opt)
+          Matsuri::Registry.stack(name).new(image_tag: image_tag).reload!(opt)
         end
       end
 
       desc 'scale SUBCOMMAND ...ARGS', 'scale resource'
       subcommand 'scale', Matsuri::Cmds::Scale
 
-      desc 'rollout RC_NAME [TAG]', 'Rolls out a new image for a replication controller'
-      def rollout(name, image_tag = nil)
-        with_config do |opt|
-          Matsuri::Registry.rc(name).new.rollout!(image_tag, opt)
-        end
-      end
-
-      desc 'migrate APP_NAME VERSION', 'Migrates an app to VERSION'
+      desc 'migrate STACK_NAME VERSION', 'Migrates a stack to VERSION'
       def migrate(name, version)
         with_config do |opt|
-          Matsuri::Registry.app(name).new.migrate!(version, opt)
+          Matsuri::Registry.stack(name).new.migrate!(version, opt)
         end
       end
 
-      desc 'update APP_NAME [VERSION]', 'Updates an app to VERSION'
+      desc 'update STACK_NAME [VERSION]', 'Updates a stack to VERSION'
       option :skip_migrations
       def update(name, version = nil)
         with_config do |opt|
-          Matsuri::Registry.app(name).new.update!(version, opt)
+          Matsuri::Registry.stack(name).new.update!(version, opt)
         end
       end
 
-      desc 'sh APP_NAME', 'Shells into an app container'
+      desc 'sh STACK_NAME', 'Shells into a stack container'
       option :root, aliases: :r, type: :boolean, default: false
       option :user, aliases: :u, type: :string
       option :pod,  aliases: :p, type: :string
       def sh(name, *args)
         with_config do |opt|
-          Matsuri::Registry.app(name).new.sh!(opt, args)
+          Matsuri::Registry.stack(name).new.sh!(opt, args)
         end
       end
 
-      desc 'sh! APP_NAME', 'Shells into an app container as root'
+      desc 'sh! STACK_NAME', 'Shells into a stack container as root'
       option :pod,  aliases: :p, type: :string
       def sh!(name, *args)
         with_config do |opt|
           opt[:root] = true
-          Matsuri::Registry.app(name).new.sh!(opt, args)
+          Matsuri::Registry.stack(name).new.sh!(opt, args)
         end
       end
 
-      desc 'console APP_NAME', 'Gets to the console of an app'
+      desc 'console STACK_NAME', 'Gets to the console of a stack'
       option :root, type: :boolean, default: false
       option :user, type: :string
       option :pod,  aliases: :p, type: :string
       def console(name, *args)
         with_config do |opt|
-          Matsuri::Registry.app(name).new.console!(opt, args)
+          Matsuri::Registry.stack(name).new.console!(opt, args)
         end
       end
 
-      desc 'build APP_NAME', 'Builds docker image for app'
+      desc 'build STACK_NAME', 'Builds docker image for stack'
       option :dev,         type: :boolean,  default: false
       option :version,     type: :string
       option :branch,      type: :string
@@ -134,16 +130,16 @@ module Matsuri
       option :repo,        type: :string
       def build(name)
         with_config do |opt|
-          Matsuri::Registry.app(name).new.build!(opt)
+          Matsuri::Registry.stack(name).new.build!(opt)
         end
       end
 
-      desc 'push APP_NAME', 'Pushes docker image for app'
+      desc 'push STACK_NAME', 'Pushes docker image for stack'
       option :dev,     type: :boolean, default: false
       option :version, type: :string,  default: 'latest'
       def push(name)
         with_config do |opt|
-          Matsuri::Registry.app(name).new.push!(opt)
+          Matsuri::Registry.stack(name).new.push!(opt)
         end
       end
     end

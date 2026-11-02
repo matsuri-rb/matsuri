@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'deployment manifest' do
-  let(:manifest) { JSON.parse(Matsuri::Registry.deployment('web').new.to_json) }
+  let(:manifest) { JSON.parse(Matsuri::Registry.deployment('web').new(image_tag: 'latest').to_json) }
 
   it 'renders the golden manifest through the pod template' do
     expect(manifest).to eq(
@@ -35,7 +35,14 @@ RSpec.describe 'deployment manifest' do
             'annotations' => {}
           },
           'spec' => {
-            'containers' => [{ 'name' => 'web', 'image' => 'app:latest' }]
+            'containers'       => [{ 'name' => 'web', 'image' => 'app:latest' }],
+            'volumes'          => [],
+            'imagePullSecrets' => [],
+            'nodeSelector'     => {},
+            'affinity'         => {},
+            'tolerations'      => [],
+            'restartPolicy'    => 'Always',
+            'securityContext'  => {}
           }
         },
         'strategy' => {

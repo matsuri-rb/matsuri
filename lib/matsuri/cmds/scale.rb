@@ -11,9 +11,6 @@ module Matsuri
         end
       end
 
-      desc 'rc RC_NAME REPLICAS', 'scale a replication controller'
-      scale_cmd_for :rc
-
       desc 'replica-set RS_NAME REPLICAS', 'scale a replica set'
       scale_cmd_for :replica_set
       map replicaset: :replica_set
@@ -32,7 +29,7 @@ module Matsuri
       def scale_resource(replicas)
         with_config do |opt|
           resource = yield
-          resource.scale!(replicas, opt)
+          Matsuri::Tasks::KubectlOps.scale(resource, replicas)
         end
       end
     end

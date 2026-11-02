@@ -19,7 +19,7 @@ module Matsuri
         }
       end
 
-      let(:scale_target_ref) { fail NotImplementedError, 'Must define let(:scale_target_ref)' }
+      let(:scale_target_ref) { fail Matsuri::UndefinedLet, 'Must define let(:scale_target_ref)' }
       let(:min_replicas)     { 1 }
       let(:max_replicas)     { nil }
 

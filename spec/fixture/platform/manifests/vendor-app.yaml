@@ -1,0 +1,25 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vendor-app
+  namespace: specs
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: app
+          image: vendor/app:1.0
+          env:
+            - name: LOG_LEVEL
+              value: info
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vendor-app
+  namespace: specs
+spec:
+  ports:
+    - port: 80

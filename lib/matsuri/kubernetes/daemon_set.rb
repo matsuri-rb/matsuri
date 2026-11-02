@@ -22,10 +22,10 @@ module Matsuri
       let(:selector) { { matchLabels: match_labels, matchExpressions: match_expressions } }
 
       # Parameters
-      let(:image_tag) { options[:image_tag] || 'latest' }
+      let(:image_tag) { options[:image_tag] }
 
       # Explicitly define replicas
-      let(:match_labels)      { fail NotImplementedError, 'Must define let(:match_labels)' }
+      let(:match_labels)      { fail Matsuri::UndefinedLet, 'Must define let(:match_labels)' }
       let(:match_expressions) { [] }
 
       # Update strategy
@@ -42,6 +42,8 @@ module Matsuri
       # The number of old ReplicaSets to retain to allow rollback. This is a pointer to
       # distinguish between explicit zero and not specified.
       let(:revision_history_limit) { nil }
+
+      let(:primary_container_path) { ['spec', 'template', 'spec', 'containers', 0] }
 
       ### Helpers
 

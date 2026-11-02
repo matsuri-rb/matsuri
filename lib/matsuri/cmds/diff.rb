@@ -9,6 +9,7 @@ module Matsuri
       include Matsuri::Cmd
 
       class_option :primary_container, aliases: :p, type: :boolean, default: false
+      class_option :hash_diff,         type: :boolean, default: false
 
       def self.diff_cmd_for(resource_name, image_tag: false)
         unless image_tag
@@ -16,17 +17,22 @@ module Matsuri
             diff_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new }
           end
         else
-          define_method(resource_name) do |name = :not_specified, image_tag = 'latest'|
-            diff_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new(image_tag: image_tag) }
+          define_method(resource_name) do |name = :not_specified, image_tag = nil|
+            diff_resource { Matsuri::Registry.fetch_or_load(resource_name, name).new(image_tag: image_tag_for(image_tag)) }
           end
+        end
+      end
+
+      desc 'stack STACK_NAME', 'diff manifests for all stack members'
+      option :stack_config, type: :string, banner: 'PATH'
+      def stack(name = :not_specified)
+        with_config do |opt|
+          Matsuri::Registry.stack(name).new(config: stack_config_data(opt)).diff!(opt)
         end
       end
 
       desc 'pod POD_NAME', 'diff manifest for pod'
       diff_cmd_for :pod, image_tag: true
-
-      desc 'rc RC_NAME', 'diff manifest for rc'
-      diff_cmd_for :rc, image_tag: true
 
       desc 'replica_set REPLICA_SET_NAME', 'diff manifest for replica_set'
       diff_cmd_for :replica_set, image_tag: true
@@ -85,7 +91,13 @@ module Matsuri
       def diff_resource
         with_config do |opt|
           resource = yield opt
-          resource.diff!(opt)
+          # --primary-container is a HashDiff-only projection, so it
+          # implies --hash-diff
+          if opt[:hash_diff] || opt[:primary_container]
+            Matsuri::Tasks::HashDiff.new(resource: resource, primary_container: opt[:primary_container]).run!
+          else
+            Matsuri::Tasks::KubectlOps.diff(resource)
+          end
         end
       end
     end
