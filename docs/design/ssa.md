@@ -62,8 +62,8 @@ Properties:
 
 - The create's echo equals the declaration. What the server persists
   from the seeded create is value-equal to what the ongoing apply sends,
-  so the equal-values co-ownership the seeding protocol depends on holds —
-  including inside atomic structs, where any divergence is loud.
+  so the equal-values co-ownership the seeding protocol depends on holds
+  — including inside atomic structs, where any divergence is loud.
 - Generation stays unconditional. A definition may render its empty
   collections unconditionally, the natural shape for a generator; the
   delivery boundary, not the generator, knows persistence normal form.
@@ -77,14 +77,14 @@ Properties:
 
 A seeded field — the boot image, an initial replica count — must exist
 from the seeded create and end owned by no one, because the ongoing
-declaration never carries it. No single apply can promise both. Creation therefore runs as
-three acts: create the seeded payload under the seed owner (a manager
-named for the ongoing one, with a seed suffix), deliver the declared
-payload with an ordinary server-side apply, then cede — remove the seed
-owner's managedFields entry with an atomic test-and-remove. The order is
-not stylistic: an apply against an object with empty managedFields
-attributes every pre-existing field to a synthetic manager that never
-applies again and so never relinquishes.
+declaration never carries it. No single apply can promise both. Creation
+therefore runs as three acts: create the seeded payload under the seed
+owner (a manager named for the ongoing one, with a seed suffix), deliver
+the declared payload with an ordinary server-side apply, then cede —
+remove the seed owner's managedFields entry with an atomic
+test-and-remove. The order is not stylistic: an apply against an object
+with empty managedFields attributes every pre-existing field to a
+synthetic manager that never applies again and so never relinquishes.
 
 Properties:
 
