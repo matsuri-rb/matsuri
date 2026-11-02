@@ -207,7 +207,9 @@ rolling the image, or a controller scaling, takes them uncontested. The
 order is not stylistic: a server-side apply against an object with empty
 managedFields attributes every pre-existing field to a ghost manager
 that never relinquishes. `tests/bin/probe-ssa.sh` pins the protocol and
-the refuted alternatives.
+the refuted alternatives. The operator-facing walkthrough — declaring
+only what you manage, conflicts, interrupted converges — is [Server-Side
+Apply](ssa.md).
 
 The delivery verbs honor the protocol themselves: `apply` (and so
 converge) routes a server-side resource that is not yet live through

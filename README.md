@@ -81,6 +81,8 @@ The documentation covers the golden paths:
 - [Acceptors](docs/acceptors.md) — importing configuration values
 - [Presenters](docs/presenters.md) — transforms, seeds, and server-side
   apply
+- [Server-Side Apply](docs/ssa.md) — field ownership, normal form, and
+  the creation protocol
 - [Diff](docs/diff.md) — previewing what converge will send
 - [Local Development](docs/local-dev.md) — the local-dev workflows
 - [Known Issues](docs/known-issues.md)

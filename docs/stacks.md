@@ -136,8 +136,10 @@ The first converge of a server-side resource routes through the seeding
 protocol (seeded create, declared apply, cede); every later apply is an
 ordinary server-side apply. Converge is sequential, so a member later in
 the stack converges only after an earlier member is fully seeded and
-ceded. The full model — seeds, field managers, and the creation protocol
-— is in the Seeds section of [Presenters](presenters.md).
+ceded. The operator walkthrough — declaring only what you manage,
+conflicts, interrupted converges — is [Server-Side Apply](ssa.md); the
+full model of seeds and field managers is in the Seeds section of
+[Presenters](presenters.md).
 
 See also the seed and delivery specs:
 [spec/presenters/seeds_spec.rb](../spec/presenters/seeds_spec.rb) and

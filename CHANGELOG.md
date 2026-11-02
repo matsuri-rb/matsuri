@@ -300,7 +300,8 @@ Working toward 0.3.0.
   is an incident-time human judgment made with raw kubectl. `diff` on a
   server-side resource routes `--server-side` under the same manager, so
   the preview shows the same conflict frontier delivery will hit
-  (conflicts surface as diff errors).
+  (conflicts surface as diff errors). Usage is documented in
+  docs/ssa.md, the constraints in docs/design/ssa.md.
 - **`Tasks::Stacks::Seed` — the creation protocol for
   server-side-applied resources.** Server-side apply cannot safely
   create an object whose payload carries seeds: seeds sent by apply are
