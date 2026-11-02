@@ -23,9 +23,9 @@ module Matsuri
       let(:secret_type) { 'Opaque' }
       let(:data) { { secret_key => secret_value } }
 
-      let(:secret_key)   { fail NotImplementedError, 'Must define let(:secret_key)' }
+      let(:secret_key)   { fail Matsuri::UndefinedLet, 'Must define let(:secret_key)' }
       let(:secret_value) { secret_from_path(full_secret_path) }
-      let(:secret_path)  { fail NotImplementedError, 'Must define let(:secret_path)' }
+      let(:secret_path)  { fail Matsuri::UndefinedLet, 'Must define let(:secret_path)' }
 
       let(:full_secret_path) { secret_file(secret_path) }
 

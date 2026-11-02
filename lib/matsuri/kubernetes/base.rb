@@ -91,7 +91,7 @@ module Matsuri
       let(:primary_container_path) { nil }
 
       # Overridables
-      let(:spec)        { fail NotImplementedError, 'Must define let(:spec)' }
+      let(:spec)        { fail Matsuri::UndefinedLet, 'Must define let(:spec)' }
 
       # Helper functions
       # Conditionally returns block or nil

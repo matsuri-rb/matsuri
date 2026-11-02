@@ -3,6 +3,13 @@
 require 'matsuri/core_ext'
 
 module Matsuri
+  # Raised when a declared hole — a let() with no sensible default — is read
+  # before a definition fills it. Inherits NoMethodError: the definition has
+  # no working version of that let. The raise lands in the code that expected
+  # the value, so the implementer can inspect that context and see what the
+  # definition needs.
+  class UndefinedLet < NoMethodError; end
+
   autoload :Initializer, 'matsuri/initializer'
   autoload :Config,      'matsuri/config'
   autoload :Platform,    'matsuri/platform'

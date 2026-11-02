@@ -13,7 +13,7 @@ module Matsuri
       extend Concern
 
       included do
-        let(:replicas) { fail NotImplementedError, 'Must define let(:replicas)' }
+        let(:replicas) { fail Matsuri::UndefinedLet, 'Must define let(:replicas)' }
       end
 
       def transform(manifest)

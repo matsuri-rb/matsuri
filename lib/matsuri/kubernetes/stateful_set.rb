@@ -26,18 +26,18 @@ module Matsuri
       let(:image_tag) { options[:image_tag] }
 
       let(:selector) { { matchLabels: match_labels, matchExpressions: match_expressions }.compact }
-      let(:service_name) { fail NotImplementedError, 'Must define let(:service_name). Will define "pod-specific-string.serviceName.default.svc.cluster.local"' }
+      let(:service_name) { fail Matsuri::UndefinedLet, 'Must define let(:service_name). Will define "pod-specific-string.serviceName.default.svc.cluster.local"' }
 
       # Explicitly define replicas
-      let(:replicas)          { fail NotImplementedError, 'Must define let(:replicas)' }
-      let(:match_labels)      { fail NotImplementedError, 'Must define let(:match_labels)' }
+      let(:replicas)          { fail Matsuri::UndefinedLet, 'Must define let(:replicas)' }
+      let(:match_labels)      { fail Matsuri::UndefinedLet, 'Must define let(:match_labels)' }
       let(:match_expressions) { nil} # Default this to nil so it drops off unless defined
 
       let(:revision_history_limit) { nil }
 
       # Deployment Strategy. Defaults to Rolling Update. Recreate is the other one.
-      let(:pod_management_policy)   { fail NotImplementedError, 'Must define let(:pod_management_policy) as OrderedReady or Parallel' }
-      let(:update_strategy)         { fail NotImplementedError, 'Must define let(:update_strategy). See: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies' }
+      let(:pod_management_policy)   { fail Matsuri::UndefinedLet, 'Must define let(:pod_management_policy) as OrderedReady or Parallel' }
+      let(:update_strategy)         { fail Matsuri::UndefinedLet, 'Must define let(:update_strategy). See: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies' }
       let(:on_delete_strategy)      { { type: 'OnDelete' } }
       let(:rolling_update_strategy) { { type: 'RollingUpdate', rollingUpdate: rolling_update } }
       let(:rolling_update)          { { partition: partition } }

@@ -13,7 +13,7 @@ module Matsuri
       included do
         # Define this to point to an existing pod definition. This is the name
         # registered to Matsuri::Registry
-        let(:pod_name) { fail NotImplementedError, 'Must define let(:pod_name)' }
+        let(:pod_name) { fail Matsuri::UndefinedLet, 'Must define let(:pod_name)' }
 
         # By default, point the template to an existing pod definition
         # Overide let(:pod_name)

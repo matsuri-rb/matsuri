@@ -14,7 +14,7 @@ module Matsuri
       included do
         include Matsuri::Transform::Kubernetes
 
-        let(:import_path)           { fail NotImplementedError, 'Must define let(:import_path)' }
+        let(:import_path)           { fail Matsuri::UndefinedLet, 'Must define let(:import_path)' }
 
         ### Override
         let(:imported_metadata)     { imported_pod_metadata }
@@ -32,7 +32,7 @@ module Matsuri
 
         let(:extracted_manifest)     { Map.new(lookup_manifests(imported_manifests, import_filter_criteria).first) }
         let(:imported_manifests)     { YAML.load_stream(File.read(full_import_path)) }
-        let(:import_filter_criteria) { fail NotImplementedError, 'Must define let(:import_filter_criteria)' }
+        let(:import_filter_criteria) { fail Matsuri::UndefinedLet, 'Must define let(:import_filter_criteria)' }
       end
 
       # Assumes that the complex key of {kind, name, namespace} is unique within a given set of manifests

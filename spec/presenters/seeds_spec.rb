@@ -55,7 +55,7 @@ RSpec.describe 'seed presenters' do
   describe 'the concern pattern' do
     it 'an unfilled hole fails fast at first read' do
       unfilled = Class.new(Matsuri::Presenter) { include Matsuri::Presenters::SeedReplicas }
-      expect { unfilled.call(workload) }.to raise_error(NotImplementedError, /replicas/)
+      expect { unfilled.call(workload) }.to raise_error(Matsuri::UndefinedLet, /replicas/)
     end
 
     it 'a named definition fills the hole with a let' do

@@ -8,12 +8,12 @@ module Matsuri
     class StorageClass < Matsuri::Kubernetes::Base
       let(:kind)        { 'StorageClass' }
       let(:api_version) { 'storage.k8s.io/v1' }
-      let(:provisioner) { fail NotImplementedError, 'Must define let(:provisioner). Example: let(:provisoner) { gce_pd }' }
+      let(:provisioner) { fail Matsuri::UndefinedLet, 'Must define let(:provisioner). Example: let(:provisoner) { gce_pd }' }
 
       let(:gce_pd)      { 'kubernetes.io/gce-pd' }
       let(:aws_ebs)     { 'kubernetes.io/aws-ebs' }
 
-      let(:parameters)  { fail NotImplementedError, 'Must define let(:parameters)' }
+      let(:parameters)  { fail Matsuri::UndefinedLet, 'Must define let(:parameters)' }
 
       ### K8S default is "Immediate", but "WaitForFirstConsumer" is the sensible default
       let(:volume_binding_mode) { 'WaitForFirstConsumer' }

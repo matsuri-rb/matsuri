@@ -14,7 +14,7 @@ module Matsuri
       extend Concern
 
       included do
-        let(:resources) { fail NotImplementedError, 'Must define let(:resources)' }
+        let(:resources) { fail Matsuri::UndefinedLet, 'Must define let(:resources)' }
       end
 
       def transform(manifest)

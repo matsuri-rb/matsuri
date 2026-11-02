@@ -18,7 +18,7 @@ module Matsuri
       # Override this to run transforms; the Transform::Kubernetes dialect
       # is in scope (set_env, update_in, append_volume, ...)
       let(:extracted_manifests) { imported_manifests }
-      let(:namespace)           { Matsuri.fail "Must define let(:namespace); check the imported manifest and use the namespace found there" }
+      let(:namespace)           { fail Matsuri::UndefinedLet, "Must define let(:namespace); check the imported manifest and use the namespace found there" }
 
       # Identity for delivery messages; there is no single kind to derive it from
       let(:resource_type)       { 'imported manifest' }

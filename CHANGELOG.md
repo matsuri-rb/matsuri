@@ -247,6 +247,19 @@ Working toward 0.3.0.
   propagated nil and each workload class defaulted individually). Rendered
   output is unchanged; drift between per-class defaults is no longer
   possible.
+- **Declared holes raise `Matsuri::UndefinedLet` instead of
+  `NotImplementedError`.** Ruby reserves `NotImplementedError` for
+  features the current platform does not implement, and it descends from
+  `ScriptError`, so a bare `rescue` lets it fly past.
+  `UndefinedLet < NoMethodError` names what actually happened: the
+  definition has no working version of that let. The raise lands in the
+  code that expected the value, so the implementer can inspect that
+  context and see what the definition needs. Specs
+  asserting on unfilled holes should expect the new class. Relatedly,
+  `Stack#status!` (an abstract method, not a let) raises `NoMethodError`
+  directly, and the `ImportedManifest` namespace hole — previously a call
+  to the undefined `Matsuri.fail`, which died as the wrong `NoMethodError`
+  with its message lost — raises `UndefinedLet` with its message intact.
 
 ### Added
 

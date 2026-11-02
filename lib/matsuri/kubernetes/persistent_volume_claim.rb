@@ -20,10 +20,10 @@ module Matsuri
       let(:resources)    { { limits: limits, requests: requests }.compact }
       let(:limits)       { nil }
       let(:requests)     { { storage: storage_size } }
-      let(:storage_size) { fail NotImplementedError, 'Must define let(:storage_size)' }
+      let(:storage_size) { fail Matsuri::UndefinedLet, 'Must define let(:storage_size)' }
       let(:selector)     { { matchLabels: match_labels, matchExpressions: match_expressions }.compact }
 
-      let(:match_labels)      { fail NotImplementedError, 'Must define let(:match_labels)' }
+      let(:match_labels)      { fail Matsuri::UndefinedLet, 'Must define let(:match_labels)' }
       let(:match_expressions) { nil }
 
       class << self

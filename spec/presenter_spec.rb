@@ -9,7 +9,7 @@ module PresenterSpec
     extend Concern
 
     included do
-      let(:image) { fail NotImplementedError, 'Must define let(:image)' }
+      let(:image) { fail Matsuri::UndefinedLet, 'Must define let(:image)' }
     end
 
     def transform(manifest)
@@ -74,7 +74,7 @@ RSpec.describe Matsuri::Presenter do
 
     it 'an unfilled hole fails fast at first read' do
       unfilled = Class.new(described_class) { include PresenterSpec::ExampleSeedImage }
-      expect { unfilled.call(workload) }.to raise_error(NotImplementedError, /image/)
+      expect { unfilled.call(workload) }.to raise_error(Matsuri::UndefinedLet, /image/)
     end
 
     it 'a helper can close a declaration-time value into an anonymous definition' do

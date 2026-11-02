@@ -13,7 +13,7 @@ module Matsuri
       extend Concern
 
       included do
-        let(:image) { fail NotImplementedError, 'Must define let(:image)' }
+        let(:image) { fail Matsuri::UndefinedLet, 'Must define let(:image)' }
       end
 
       def transform(manifest)

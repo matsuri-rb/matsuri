@@ -100,7 +100,7 @@ module Matsuri
     # Maybe we can find some useful, standardized way of displaying
     # status.
     def status!
-      fail NotImplementedError, 'Must implement #status!'
+      fail NoMethodError, 'Must implement #status!'
     end
 
     # Renders every member manifest as one kubectl-compatible YAML stream.

@@ -80,7 +80,7 @@ module Matsuri
 
       let(:selector)                   { nil } # This will be autopopulated by cronjob
       #let(:selector)                   { { matchLabels: match_labels, matchExpressions: match_expressions } }
-      let(:match_labels)               { fail NotImplementedError, 'Must define let(:match_labels)' }
+      let(:match_labels)               { fail Matsuri::UndefinedLet, 'Must define let(:match_labels)' }
       let(:match_expressions)          { [] }
 
       let(:job_template_suspend)       { nil } # boolean, default: false

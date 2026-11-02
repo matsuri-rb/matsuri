@@ -72,6 +72,6 @@ RSpec.describe 'Concerns::Pods::SpreadPods' do
       let(:container) { { name: 'c', image: 'i', resources: resources } }
     end
 
-    expect { klass.new.to_json }.to raise_error(NotImplementedError, /pod_anti_affinity/)
+    expect { klass.new.to_json }.to raise_error(Matsuri::UndefinedLet, /pod_anti_affinity/)
   end
 end

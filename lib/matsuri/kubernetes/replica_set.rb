@@ -25,8 +25,8 @@ module Matsuri
       let(:image_tag) { options[:image_tag] }
 
       # Explicitly define replicas
-      let(:replicas)          { fail NotImplementedError, 'Must define let(:replicas)' }
-      let(:match_labels)      { fail NotImplementedError, 'Must define let(:match_labels)' }
+      let(:replicas)          { fail Matsuri::UndefinedLet, 'Must define let(:replicas)' }
+      let(:match_labels)      { fail Matsuri::UndefinedLet, 'Must define let(:match_labels)' }
 
       let(:match_expressions) { [] }
 

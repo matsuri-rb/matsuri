@@ -123,11 +123,11 @@ module Matsuri
       let(:sysctls)              { nil }
 
       # Default container
-      let(:container)   { fail NotImplementedError, 'Must define let(:container)'}
-      let(:volume)      { fail NotImplementedError, 'Must define let(:volume)' }
+      let(:container)   { fail Matsuri::UndefinedLet, 'Must define let(:container)'}
+      let(:volume)      { fail Matsuri::UndefinedLet, 'Must define let(:volume)' }
 
       let(:primary_container) { containers.first[:name] }
-      let(:primary_image)     { fail NotImplementedError, 'Must define let(:primary_image) for deployment or replication controller' }
+      let(:primary_image)     { fail Matsuri::UndefinedLet, 'Must define let(:primary_image) for deployment or replication controller' }
 
       # Resources for default container
       let(:resources)          { { requests: resource_requests, limits: resource_limits } }
@@ -135,8 +135,8 @@ module Matsuri
       let(:resource_limits)    { { cpu: cpu_limit,   memory: mem_limit  }.compact }
 
       # We want to make sure all limits are defined
-      let(:cpu_limit)   { fail NotImplementedError, 'Must define let(:cpu_limit)' }
-      let(:mem_limit)   { fail NotImplementedError, 'Must define let(:mem_limit)' }
+      let(:cpu_limit)   { fail Matsuri::UndefinedLet, 'Must define let(:cpu_limit)' }
+      let(:mem_limit)   { fail Matsuri::UndefinedLet, 'Must define let(:mem_limit)' }
       let(:cpu_request) { cpu_limit }
       let(:mem_request) { mem_limit }
 

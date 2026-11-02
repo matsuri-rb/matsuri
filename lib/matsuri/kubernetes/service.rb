@@ -17,8 +17,8 @@ module Matsuri
       end
 
       let(:ports)        { [port(port_num)] }
-      let(:port_num)     { fail NotImplementedError, 'Must define let(:port_num)' }
-      let(:selector)     { fail NotImplementedError, 'Must define let(:selector)' }
+      let(:port_num)     { fail Matsuri::UndefinedLet, 'Must define let(:port_num)' }
+      let(:selector)     { fail Matsuri::UndefinedLet, 'Must define let(:selector)' }
       let(:service_type) { 'ClusterIP' }
       let(:cluster_ip)   { nil }
 
